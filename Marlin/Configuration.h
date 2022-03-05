@@ -1697,7 +1697,7 @@
     #define ABL_BILINEAR_SUBDIVISION
     #if ENABLED(ABL_BILINEAR_SUBDIVISION)
       // Number of subdivisions between probe points
-      #define BILINEAR_SUBDIVISIONS 1
+      #define BILINEAR_SUBDIVISIONS 2
     #endif
 
   #endif
