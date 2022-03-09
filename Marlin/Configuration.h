@@ -635,20 +635,21 @@
   #define AMBIENT_FOR_CALIBRATION 19.0f             // Room temperature in °C when calibrating MPC.
   #define TEMPERATURE_AT_T10 29.2f                  // Hotend temp in °C after heating from cold (ambient) at full power for 10s.
   #define TEMPERATURE_AT_T20 53.0f                  // Hotend temp in °C after heating from cold (ambient) at full power for 20s.
-  #define PWM_AT_200C 45                            // PWM value when steady at 200°C (with fan off).
+  #define PWM_AT_200C 37                            // PWM value when steady at 200°C (with fan off).
 
   // Take fan speed into account in calculations. Assumes every extruder has a fan and that
   // they have the same numbering. i.e. fan N cools extruder N.
   #define MPC_INCLUDE_FAN
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define PWM_AT_200C_FAN255  57                  // PWM value when steady at 200°C with fan on full.
+    #define PWM_AT_200C_FAN255  49                  // PWM value when steady at 200°C with fan on full.
   #endif
 
-  #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f      // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA). Most filaments are similar.
+//  #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f      // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
+  #define FILAMENT_HEAT_CAPACITY_PERMM 3.6e-3f      // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
 
   // Advanced options
   #define MPC_STEADYSTATE 0.5                       // temperature change rate in K/s below which steady state model correction logic kicks in
-  #define MPC_SMOOTHING 0.5                         // larger values smooth the temperature readings more but introduce latency
+  #define MPC_SMOOTHING 0.25                        // smaller values smooth the temperature readings more but introduce latency
 #endif // MPCTEMP
 
 //===========================================================================
@@ -1249,7 +1250,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.58 }
+#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.28 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
