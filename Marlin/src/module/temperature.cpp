@@ -1190,7 +1190,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
       float ambient_xfer_coeff = (float)PWM_AT_200C / 127 * HEATER_POWER / (200 - AMBIENT_FOR_CALIBRATION);
       #if ENABLED(MPC_INCLUDE_FAN)
         constexpr float fan255_adjustment = (float)(PWM_AT_200C_FAN255 - PWM_AT_200C) / 127 * HEATER_POWER / (200 - AMBIENT_FOR_CALIBRATION);
-        const float fan_fraction = (float)thermalManager.fan_speed[ee] / 255;
+        const float fan_fraction = (float)fan_speed[ee] / 255;
         ambient_xfer_coeff += fan_fraction * fan255_adjustment;
       #endif
 
@@ -1224,7 +1224,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
 
       // Any delta between temp_hotend[ee].modeled_sensor_temp and temp_hotend[ee].celsius is either model
       // error diverging slowly or (fast) noise. Slowly correct towards this temperature and noise will average out.
-      const float delta_to_apply = (temp_hotend[ee].celsius - temp_hotend[ee].modeled_sensor_temp) * (MPC_SMOOTHING * MPC_dT);
+      const float delta_to_apply = (temp_hotend[ee].celsius - temp_hotend[ee].modeled_sensor_temp) * MPC_SMOOTHING_FACTOR;
       temp_hotend[ee].modeled_block_temp += delta_to_apply;
       temp_hotend[ee].modeled_sensor_temp += delta_to_apply;
 
