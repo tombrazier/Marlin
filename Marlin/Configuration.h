@@ -973,7 +973,7 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define GEARED_EXTRUDER
+//#define GEARED_EXTRUDER
 #if ENABLED(GEARED_EXTRUDER)
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 2 }
 #else
