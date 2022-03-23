@@ -865,7 +865,8 @@ volatile bool Temperature::raw_temps_ready = false;
     SERIAL_ECHOLNPGM("Moving to tuning position");
     TERN_(HAS_FAN, zero_fan_speeds());
     disable_all_heaters();
-    TERN_(HAS_FAN, soft_pwm_amount_fan[active_extruder] = FAN_MAX_PWM);
+    TERN_(HAS_FAN, set_fan_speed(TERN(SINGLENOZZLE, 0, active_extruder), 255));
+    TERN_(HAS_FAN, planner.sync_fan_speeds(fan_speed));
     gcode.home_all_axes(true);
     const xyz_pos_t tuningpos = MPC_TUNING_POS;
     do_blocking_move_to(tuningpos);
@@ -888,23 +889,24 @@ volatile bool Temperature::raw_temps_ready = false;
         next_test_ms += 10000UL;
       }
     }
-    TERN_(HAS_FAN, soft_pwm_amount_fan[active_extruder] = FAN_OFF_PWM);
+    TERN_(HAS_FAN, set_fan_speed(TERN(SINGLENOZZLE, 0, active_extruder), 0));
+    TERN_(HAS_FAN, planner.sync_fan_speeds(fan_speed));
 
-    SERIAL_ECHOLNPGM("Heating by 130C");
+    SERIAL_ECHOLNPGM("Heating to 200C");
     temp_hotend[active_extruder].soft_pwm_amount = MPC_MAX >> 1;
     const millis_t heat_start_time = ms;
     next_test_ms = ms;
     celsius_float_t temp_samples[16];
     uint8_t sample_count = 0;
     uint16_t sample_distance = 1;
-    float t1_time;
+    float t1_time = 0;
 
     while(wait_for_heatup) {
       housekeeping(ms, current_temp, next_report_ms);
 
       if (ELAPSED(ms, next_test_ms)) {
-        // record samples between ambient + 30C and and ambient + 130C
-        if (current_temp >= ambient_temp + 30.0f) {
+        // record samples between 100C and 200C
+        if (current_temp >= 100.0f) {
           // if there are too many samples, space them more widely
           if (sample_count == COUNT(temp_samples)) {
             for (uint8_t i = 0; i < COUNT(temp_samples) / 2; i++)
@@ -917,7 +919,7 @@ volatile bool Temperature::raw_temps_ready = false;
           temp_samples[sample_count++] = current_temp;
         }
 
-        if (current_temp >= ambient_temp + 130.0f) break;
+        if (current_temp >= 200.0f) break;
 
         next_test_ms += 1000UL * sample_distance;
       }
@@ -930,7 +932,7 @@ volatile bool Temperature::raw_temps_ready = false;
     const float t2 = temp_samples[(sample_count - 1) >> 1];
     const float t3 = temp_samples[sample_count - 1];
     const float asymp_temp = (t2 * t2 - t1 * t3) / (2 * t2 - t1 - t3);
-    const float block_responsiveness = -log((t2 - asymp_temp) / (t1 - asymp_temp)) / (sample_distance * sample_count >> 1);
+    const float block_responsiveness = -log((t2 - asymp_temp) / (t1 - asymp_temp)) / (sample_distance * (sample_count >> 1));
     const float ambient_xfer_coeff = float(MPC_HEATER_POWER) * MPC_MAX / 255 / (asymp_temp - ambient_temp);
     const float block_heat_capacity = ambient_xfer_coeff / block_responsiveness;
     const float sensor_responsiveness = block_responsiveness / (1.0f - (ambient_temp - asymp_temp) * exp(-block_responsiveness * t1_time) / (t1 - asymp_temp));
@@ -938,39 +940,43 @@ volatile bool Temperature::raw_temps_ready = false;
     #if HAS_FAN
       SERIAL_ECHOLNPGM("Testing the fan");
       temp_hotend[active_extruder].target = t3;
-      soft_pwm_amount_fan[active_extruder] = FAN_MAX_PWM;
+      set_fan_speed(TERN(SINGLENOZZLE, 0, active_extruder), 255);
+      planner.sync_fan_speeds(fan_speed);
       next_test_ms = ms + MPC_dT * 1000;
-      millis_t test_start_time = 0;
+      millis_t settle_end_ms = ms + 30000UL;
+      millis_t test_end_ms = settle_end_ms + 10000UL;
       float total_energy = 0.0f;
 
       while(wait_for_heatup) {
         housekeeping(ms, current_temp, next_report_ms);
 
         if (ELAPSED(ms, next_test_ms)) {
-          // use MPC to control the temperature and once it is at target, track power output for 10s
-          if (test_start_time == 0 && current_temp <= t3)
-            test_start_time = ms;
-          else if (test_start_time != 0) {
-            total_energy += float(MPC_HEATER_POWER) * temp_hotend[active_extruder].soft_pwm_amount / 127 * MPC_dT; 
-            if (ELAPSED(ms, test_start_time + 10000UL)) break;
-          }
+          // use MPC to control the temperature, let it settle for 30s and then track power output for 10s
           temp_hotend[active_extruder].soft_pwm_amount = (int)get_pid_output_hotend(active_extruder) >> 1;
+
+          if (ELAPSED(ms, test_end_ms)) break;
+          if (ELAPSED(ms, settle_end_ms))
+            total_energy += float(MPC_HEATER_POWER) * temp_hotend[active_extruder].soft_pwm_amount / 127 * MPC_dT; 
 
           next_test_ms += MPC_dT * 1000;
         }
 
-        if (!WITHIN(current_temp, t3 - 10.0f, t3 + 10.0f)) {
+        if (!WITHIN(current_temp, t3 - 15.0f, t3 + 15.0f)) {
           SERIAL_ECHOLNPGM("Temperature error while measuring fan loss");
           break;
         }
       }
-      const float power_fan255 = total_energy * 1000 / (ms - test_start_time);
+      const float power_fan255 = total_energy * 1000 / (test_end_ms - settle_end_ms);
       const float ambient_xfer_coeff_fan255 = power_fan255 / (t3 - ambient_temp);
 
       temp_hotend[active_extruder].target = 0.0f;
       temp_hotend[active_extruder].soft_pwm_amount = 0;
-      soft_pwm_amount_fan[active_extruder] = FAN_OFF_PWM;
+      set_fan_speed(TERN(SINGLENOZZLE, 0, active_extruder), 0);
+      planner.sync_fan_speeds(fan_speed);
     #endif
+
+    if (!wait_for_heatup)
+      SERIAL_ECHOLNPGM("Test was interrupted");
 
     wait_for_heatup = false;
 
@@ -984,8 +990,10 @@ volatile bool Temperature::raw_temps_ready = false;
         SERIAL_ECHOLNPGM("sample ", i, " : ", temp_samples[i]);
       SERIAL_ECHOLNPGM("t1 ", t1, " t2 ", t2, " t3 ", t3);
       SERIAL_ECHOLNPGM("asymp_temp ", asymp_temp);
-      SERIAL_ECHOLNPGM("block_responsiveness ", block_responsiveness * 100);
-    */
+      SERIAL_ECHOPGM("block_responsiveness ");
+      SERIAL_PRINT(block_responsiveness, 4);
+      SERIAL_EOL();
+    //*/
     SERIAL_ECHOLNPGM("MPC_AMBIENT ", ambient_temp);
     SERIAL_ECHOLNPGM("MPC_BLOCK_HEAT_CAPACITY ", block_heat_capacity);
     SERIAL_ECHOPGM("MPC_SENSOR_RESPONSIVENESS ");
@@ -1358,7 +1366,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
 
       float ambient_xfer_coeff = ambient_xfer_coeff_fan0;
       #if ENABLED(MPC_INCLUDE_FAN)
-        const float fan_fraction = (float)fan_speed[ee] / 255;
+        const float fan_fraction = (float)fan_speed[TERN(SINGLENOZZLE, 0, ee)] / 255;
         ambient_xfer_coeff += fan_fraction * fan255_adjustment;
       #endif
 
