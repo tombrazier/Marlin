@@ -647,11 +647,11 @@
   #endif
 
   // Or set the measured physical constants directly (from M306 output)
-  #define MPC_BLOCK_HEAT_CAPACITY 17.36f          // Heat block heat capacity in J/K.
-  #define MPC_SENSOR_RESPONSIVENESS 0.21f         // Rate of change of sensor temperature in K/s per K difference from heat block.
-  #define MPC_AMBIENT_XFER_COEFF 0.0728f          // Heat transfer coefficient from heat block to room air with fan off in W/K.
+  #define MPC_BLOCK_HEAT_CAPACITY 16.7f           // Heat block heat capacity in J/K.
+  #define MPC_SENSOR_RESPONSIVENESS 0.22f         // Rate of change of sensor temperature in K/s per K difference from heat block.
+  #define MPC_AMBIENT_XFER_COEFF 0.068f           // Heat transfer coefficient from heat block to room air with fan off in W/K.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 0.118f  // Heat transfer coefficient from heat block to room air with fan on full in W/K.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 0.097f  // Heat transfer coefficient from heat block to room air with fan on full in W/K.
   #endif
 
   #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f      // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
