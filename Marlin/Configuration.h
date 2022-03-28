@@ -592,12 +592,12 @@
 //===========================================================================
 //============================= PID Settings ================================
 //===========================================================================
-// PID Tuning Guide here: https://reprap.org/wiki/PID_Tuning
 
-// Uncomment one of the following two lines to enable PID or model predictive
-// temperature control. Or disable both to enable bang-bang control.
-//#define PIDTEMP
+// Enable PIDTEMP for PID control or MPCTEMP for Predictive Model.
+// temperature control. Disable both for bang-bang heating.
+//#define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
 #define MPCTEMP
+
 #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1 0.95      // Smoothing factor within any PID loop
@@ -630,35 +630,33 @@
  */
 
 #if ENABLED(MPCTEMP)
-  #define MPC_MAX BANG_MAX                          // Limits current to nozzle while MPC is active; 255=full current.
-  #define MPC_HEATER_POWER 36.0f                    // 36W for a 12V, 4ohm heater cartridge.
+  #define MPC_MAX BANG_MAX                            // Limits current to nozzle while MPC is active; 255=full current.
+  #define MPC_HEATER_POWER { 40.0f }                  // Heat cartridge powers in W.
 
-  #define MPC_INCLUDE_FAN                           // Model fan speed.
+  #define MPC_INCLUDE_FAN                             // Model fan speed.
 
-  #define MPC_AMBIENT 19.0f                         // Room temperature in °C when calibrating MPC.
+  #define MPC_AMBIENT 19.0f                           // Typical room temperature in °C.
 
-  // Easy manual tuning parameters (from M105 output)
-  //#define MPC_TEMPERATURE_10S 28.6f                 // Hotend temp in °C after heating from cold (ambient) at full power for 10s.
-  //#define MPC_TEMPERATURE_20S 49.4f                 // Hotend temp in °C after heating from cold (ambient) at full power for 20s.
-  //#define MPC_PWM_200C 37                           // PWM value when steady at 200°C (with fan off).
+  // Measured physical constants from M306
+  #define MPC_BLOCK_HEAT_CAPACITY { 16.7f }           // Heat block heat capacities in J/K.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }         // Rate of change of sensor temperature in K/s per K difference from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.068f }           // Heat transfer coefficients from heat block to room air with fan off in W/K.
   #if ENABLED(MPC_INCLUDE_FAN)
-    //#define MPC_PWM_200C_FAN255  49                 // PWM value when steady at 200°C with fan on full.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }  // Heat transfer coefficients from heat block to room air with fan on full in W/K.
   #endif
 
-  // Or set the measured physical constants directly (from M306 output)
-  #define MPC_BLOCK_HEAT_CAPACITY 16.7f           // Heat block heat capacity in J/K.
-  #define MPC_SENSOR_RESPONSIVENESS 0.22f         // Rate of change of sensor temperature in K/s per K difference from heat block.
-  #define MPC_AMBIENT_XFER_COEFF 0.068f           // Heat transfer coefficient from heat block to room air with fan off in W/K.
+  // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 0.097f  // Heat transfer coefficient from heat block to room air with fan on full in W/K.
+    //#define MPC_FAN_0_ALL_HOTENDS
+    //#define MPC_FAN_0_ACTIVE_HOTEND
   #endif
 
-  #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f      // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
-//  #define FILAMENT_HEAT_CAPACITY_PERMM 3.6e-3f      // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
+  #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f        // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
+//  #define FILAMENT_HEAT_CAPACITY_PERMM 3.6e-3f        // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
 
   // Advanced options
-  #define MPC_STEADYSTATE 0.5f                      // temperature change rate in K/s below which steady state model correction logic kicks in
-  #define MPC_SMOOTHING_FACTOR 1.0f                 // max value 1.0, noisy temperature sensors may need a lower value for stability
+  #define MPC_STEADYSTATE 0.5f                        // temperature change rate in K/s below which steady state model correction logic kicks in
+  #define MPC_SMOOTHING_FACTOR 1.0f                   // max value 1.0, noisy temperature sensors may need a lower value for stability
 
   #define MPC_TUNING_POS { X_CENTER, Y_CENTER, 1.0f } // positon for M306 autotuning, ideally middle of bed just above the surface
 #endif // MPCTEMP
