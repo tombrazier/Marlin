@@ -631,7 +631,7 @@
 
 #if ENABLED(MPCTEMP)
   #define MPC_MAX BANG_MAX                            // Limits current to nozzle while MPC is active; 255=full current.
-  #define MPC_HEATER_POWER { 40.0f }                  // Heat cartridge powers in W.
+  #define MPC_HEATER_POWER { 36.0f }                  // Heat cartridge powers in W.
 
   #define MPC_INCLUDE_FAN                             // Model fan speed.
 
