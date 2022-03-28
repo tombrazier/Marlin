@@ -45,7 +45,7 @@ void GcodeSuite::M306() {
     return;
   }
 
-  else if (parser.seen_test('E')) {
+  else if (parser.seen("ACFPR")) {
     const heater_id_t hid = (heater_id_t)parser.intval('E', 0);
     MPC_t& constants = thermalManager.temp_hotend[hid].constants;
     constants.heater_power = parser.floatval('P', constants.heater_power);
