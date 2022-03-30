@@ -656,7 +656,7 @@ volatile bool Temperature::raw_temps_ready = false;
 
     // PID Tuning loop
     wait_for_heatup = true; // Can be interrupted with M108
-    TERN_(HAS_STATUS_MESSAGE, ui.set_status(F("Wait for heat up...")));
+    LCD_MESSAGE(MSG_HEATING);
     while (wait_for_heatup) {
 
       const millis_t ms = millis();
@@ -863,6 +863,10 @@ volatile bool Temperature::raw_temps_ready = false;
       hal.idletask();
     };
 
+    SERIAL_ECHOLNPGM("Measuring MPC constants for extruder ", active_extruder);
+    MPCHeaterInfo& hotend = temp_hotend[active_extruder];
+    MPC_t& constants = hotend.constants;
+
     // move to center of bed, just above bed height and cool with max fan
     SERIAL_ECHOLNPGM("Moving to tuning position");
     TERN_(HAS_FAN, zero_fan_speeds());
@@ -894,8 +898,10 @@ volatile bool Temperature::raw_temps_ready = false;
     TERN_(HAS_FAN, set_fan_speed(ANY(MPC_FAN_0_ALL_HOTENDS, MPC_FAN_0_ACTIVE_HOTEND) ? 0 : active_extruder, 0));
     TERN_(HAS_FAN, planner.sync_fan_speeds(fan_speed));
 
+    hotend.modeled_ambient_temp = ambient_temp;
+
     SERIAL_ECHOLNPGM("Heating to 200C");
-    temp_hotend[active_extruder].soft_pwm_amount = MPC_MAX >> 1;
+    hotend.soft_pwm_amount = MPC_MAX >> 1;
     const millis_t heat_start_time = ms;
     next_test_ms = ms;
     celsius_float_t temp_samples[16];
@@ -917,7 +923,7 @@ volatile bool Temperature::raw_temps_ready = false;
             sample_distance *= 2;
           }
 
-          if (sample_count == 0) t1_time = float(millis() - heat_start_time) / 1000.0f;
+          if (sample_count == 0) t1_time = float(ms - heat_start_time) / 1000.0f;
           temp_samples[sample_count++] = current_temp;
         }
 
@@ -926,7 +932,7 @@ volatile bool Temperature::raw_temps_ready = false;
         next_test_ms += 1000UL * sample_distance;
       }
     }
-    temp_hotend[active_extruder].soft_pwm_amount = 0;
+    hotend.soft_pwm_amount = 0;
 
     // calculate physical constants from three equally spaced samples
     sample_count = (sample_count + 1) / 2 * 2 - 1;
@@ -935,47 +941,73 @@ volatile bool Temperature::raw_temps_ready = false;
     const float t3 = temp_samples[sample_count - 1];
     const float asymp_temp = (t2 * t2 - t1 * t3) / (2 * t2 - t1 - t3);
     const float block_responsiveness = -log((t2 - asymp_temp) / (t1 - asymp_temp)) / (sample_distance * (sample_count >> 1));
-    const float ambient_xfer_coeff = temp_hotend[active_extruder].constants.heater_power * MPC_MAX / 255 / (asymp_temp - ambient_temp);
-    const float block_heat_capacity = ambient_xfer_coeff / block_responsiveness;
-    const float sensor_responsiveness = block_responsiveness / (1.0f - (ambient_temp - asymp_temp) * exp(-block_responsiveness * t1_time) / (t1 - asymp_temp));
+    constants.ambient_xfer_coeff_fan0 = constants.heater_power * MPC_MAX / 255 / (asymp_temp - ambient_temp);
+    constants.fan255_adjustment = 0.0f;
+    constants.block_heat_capacity = constants.ambient_xfer_coeff_fan0 / block_responsiveness;
+    constants.sensor_responsiveness = block_responsiveness / (1.0f - (ambient_temp - asymp_temp) * exp(-block_responsiveness * t1_time) / (t1 - asymp_temp));
+
+    hotend.modeled_block_temp = asymp_temp + (ambient_temp - asymp_temp) * exp(-block_responsiveness * (ms - heat_start_time) / 1000.0f);
+    hotend.modeled_sensor_temp = current_temp;
+
+    // let the system stabilise under MPC control then get a better measure of ambient loss without and with fan
+    SERIAL_ECHOLNPGM("Measuring ambient heatloss at target ", hotend.modeled_block_temp);
+    hotend.target = hotend.modeled_block_temp;
+    next_test_ms = ms + MPC_dT * 1000;
+    constexpr millis_t settle_time = 20000UL;
+    constexpr millis_t test_length = 20000UL;
+    millis_t settle_end_ms = ms + settle_time;
+    millis_t test_end_ms = settle_end_ms + test_length;
+    float total_energy_fan0 = 0.0f;
+    TERN_(HAS_FAN, bool fan0_done = false);
+    TERN_(HAS_FAN, float total_energy_fan255 = 0.0f);
+    float last_temp = current_temp;
+
+    while(wait_for_heatup) {
+      housekeeping(ms, current_temp, next_report_ms);
+
+      if (ELAPSED(ms, next_test_ms)) {
+        // use MPC to control the temperature, let it settle for 30s and then track power output for 10s
+        hotend.soft_pwm_amount = (int)get_pid_output_hotend(active_extruder) >> 1;
+
+        if (ELAPSED(ms, settle_end_ms) && !ELAPSED(ms, test_end_ms) && TERN1(HAS_FAN, !fan0_done))
+          total_energy_fan0 += constants.heater_power * hotend.soft_pwm_amount / 127 * MPC_dT + (last_temp - current_temp) * constants.block_heat_capacity;
+        #if HAS_FAN
+          else if (ELAPSED(ms, test_end_ms) && !fan0_done) {
+            SERIAL_ECHOLNPGM("Measuring ambient heatloss with full fan");
+            set_fan_speed(ANY(MPC_FAN_0_ALL_HOTENDS, MPC_FAN_0_ACTIVE_HOTEND) ? 0 : active_extruder, 255);
+            planner.sync_fan_speeds(fan_speed);
+            settle_end_ms = ms + settle_time;
+            test_end_ms = settle_end_ms + test_length;
+            fan0_done = true;
+          }
+          else if (ELAPSED(ms, settle_end_ms) && !ELAPSED(ms, test_end_ms))
+            total_energy_fan255 += constants.heater_power * hotend.soft_pwm_amount / 127 * MPC_dT + (last_temp - current_temp) * constants.block_heat_capacity;
+        #endif
+        else if (ELAPSED(ms, test_end_ms)) break;
+
+        last_temp = current_temp;
+        next_test_ms += MPC_dT * 1000;
+      }
+
+      if (!WITHIN(current_temp, hotend.target - 15.0f, hotend.target + 15.0f)) {
+        SERIAL_ECHOLNPGM("Temperature error while measuring ambient loss");
+        break;
+      }
+    }
+
+    const float power_fan0 = total_energy_fan0 * 1000 / test_length;
+    constants.ambient_xfer_coeff_fan0 = power_fan0 / (hotend.target - ambient_temp);
 
     #if HAS_FAN
-      SERIAL_ECHOLNPGM("Testing the fan");
-      temp_hotend[active_extruder].target = t3;
-      set_fan_speed(ANY(MPC_FAN_0_ALL_HOTENDS, MPC_FAN_0_ACTIVE_HOTEND) ? 0 : active_extruder, 255);
-      planner.sync_fan_speeds(fan_speed);
-      next_test_ms = ms + MPC_dT * 1000;
-      millis_t settle_end_ms = ms + 30000UL;
-      millis_t test_end_ms = settle_end_ms + 10000UL;
-      float total_energy = 0.0f;
-
-      while(wait_for_heatup) {
-        housekeeping(ms, current_temp, next_report_ms);
-
-        if (ELAPSED(ms, next_test_ms)) {
-          // use MPC to control the temperature, let it settle for 30s and then track power output for 10s
-          temp_hotend[active_extruder].soft_pwm_amount = (int)get_pid_output_hotend(active_extruder) >> 1;
-
-          if (ELAPSED(ms, test_end_ms)) break;
-          if (ELAPSED(ms, settle_end_ms))
-            total_energy += temp_hotend[active_extruder].constants.heater_power * temp_hotend[active_extruder].soft_pwm_amount / 127 * MPC_dT;
-
-          next_test_ms += MPC_dT * 1000;
-        }
-
-        if (!WITHIN(current_temp, t3 - 15.0f, t3 + 15.0f)) {
-          SERIAL_ECHOLNPGM("Temperature error while measuring fan loss");
-          break;
-        }
-      }
-      const float power_fan255 = total_energy * 1000 / (test_end_ms - settle_end_ms);
-      const float ambient_xfer_coeff_fan255 = power_fan255 / (t3 - ambient_temp);
-
-      temp_hotend[active_extruder].target = 0.0f;
-      temp_hotend[active_extruder].soft_pwm_amount = 0;
-      set_fan_speed(ANY(MPC_FAN_0_ALL_HOTENDS, MPC_FAN_0_ACTIVE_HOTEND) ? 0 : active_extruder, 0);
-      planner.sync_fan_speeds(fan_speed);
+      const float power_fan255 = total_energy_fan255 * 1000 / test_length;
+      const float ambient_xfer_coeff_fan255 = power_fan255 / (hotend.target - ambient_temp);
+      constants.fan255_adjustment = ambient_xfer_coeff_fan255 - constants.ambient_xfer_coeff_fan0;
     #endif
+
+    hotend.target = 0.0f;
+    hotend.soft_pwm_amount = 0;
+    TERN_(HAS_FAN, set_fan_speed(ANY(MPC_FAN_0_ALL_HOTENDS, MPC_FAN_0_ACTIVE_HOTEND) ? 0 : active_extruder, 0));
+    TERN_(HAS_FAN, planner.sync_fan_speeds(fan_speed));
 
     if (!wait_for_heatup)
       SERIAL_ECHOLNPGM("Test was interrupted");
@@ -992,21 +1024,12 @@ volatile bool Temperature::raw_temps_ready = false;
         SERIAL_ECHOLNPGM("sample ", i, " : ", temp_samples[i]);
       SERIAL_ECHOLNPGM("t1 ", t1, " t2 ", t2, " t3 ", t3);
       SERIAL_ECHOLNPGM("asymp_temp ", asymp_temp);
-      SERIAL_ECHOPGM("block_responsiveness ");
-      SERIAL_PRINT(block_responsiveness, 4);
-      SERIAL_EOL();
+      SERIAL_ECHOLNPAIR_F("block_responsiveness ", block_responsiveness, 4);
     //*/
-    SERIAL_ECHOLNPGM("MPC_AMBIENT ", ambient_temp);
-    SERIAL_ECHOLNPGM("MPC_BLOCK_HEAT_CAPACITY ", block_heat_capacity);
-    SERIAL_ECHOPGM("MPC_SENSOR_RESPONSIVENESS ");
-    SERIAL_PRINT(sensor_responsiveness, 4);
-    SERIAL_EOL();
-    SERIAL_ECHOPGM("MPC_AMBIENT_XFER_COEFF ");
-    SERIAL_PRINT(ambient_xfer_coeff, 4);
-    SERIAL_EOL();
-    TERN_(HAS_FAN, SERIAL_ECHOPGM("MPC_AMBIENT_XFER_COEFF_FAN255 "));
-    TERN_(HAS_FAN, SERIAL_PRINT(ambient_xfer_coeff_fan255, 4));
-    TERN_(HAS_FAN, SERIAL_EOL());
+    SERIAL_ECHOLNPGM("MPC_BLOCK_HEAT_CAPACITY ", constants.block_heat_capacity);
+    SERIAL_ECHOLNPAIR_F("MPC_SENSOR_RESPONSIVENESS ", constants.sensor_responsiveness, 4);
+    SERIAL_ECHOLNPAIR_F("MPC_AMBIENT_XFER_COEFF ", constants.ambient_xfer_coeff_fan0, 4);
+    TERN_(HAS_FAN, SERIAL_ECHOLNPAIR_F("MPC_AMBIENT_XFER_COEFF_FAN255 ", ambient_xfer_coeff_fan255, 4));
   }
 
 #endif // MPCTEMP
@@ -1348,7 +1371,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
 
       // At startup, initialize modeled temperatures
       if (isnan(hotend.modeled_block_temp)) {
-        hotend.modeled_ambient_temp = MPC_AMBIENT;   // a typical room temperature
+        hotend.modeled_ambient_temp = min(30.0f, hotend.celsius);   // cap initial value at reasonable max room temperature of 30C
         hotend.modeled_block_temp = hotend.modeled_sensor_temp = hotend.celsius;
       }
 
@@ -1393,9 +1416,9 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
       hotend.modeled_block_temp += delta_to_apply;
       hotend.modeled_sensor_temp += delta_to_apply;
 
-      // only correct ambient when close to steady state otherwise it can diverge wildly due to modelling errors
-      if (fabs(blocktempdelta + delta_to_apply) < (MPC_STEADYSTATE * MPC_dT))
-        hotend.modeled_ambient_temp += delta_to_apply;
+      // only correct ambient when close to steady state (output power is not clipped or asymptotic temperature is reached)
+      if (WITHIN(hotend.soft_pwm_amount, 1, 126) || fabs(blocktempdelta + delta_to_apply) < (MPC_STEADYSTATE * MPC_dT))
+        hotend.modeled_ambient_temp += delta_to_apply > 0.f ? max(delta_to_apply, MPC_MIN_AMBIENT_CHANGE * MPC_dT) : min(delta_to_apply, -MPC_MIN_AMBIENT_CHANGE * MPC_dT);
 
       float power = 0.0;
       if (hotend.target != 0 && TERN1(HEATER_IDLE_HANDLER, !heater_idle[ee].timed_out)) {
@@ -3887,7 +3910,7 @@ void Temperature::isr() {
   #endif
 
   #if HAS_HOTEND && HAS_STATUS_MESSAGE
-    void Temperature::set_heating_message(const uint8_t e) {
+    void Temperature::set_heating_message(const uint8_t e, const bool isM104/*=false*/) {
       const bool heating = isHeatingHotend(e);
       ui.status_printf(0,
         #if HAS_MULTI_HOTEND
@@ -3897,6 +3920,14 @@ void Temperature::isr() {
         #endif
         , heating ? GET_TEXT(MSG_HEATING) : GET_TEXT(MSG_COOLING)
       );
+
+      if (isM104) {
+        static uint8_t wait_e; wait_e = e;
+        ui.set_status_reset_fn([]{
+          const celsius_t c = degTargetHotend(wait_e);
+          return c < 30 || degHotendNear(wait_e, c);
+        });
+      }
     }
   #endif
 
