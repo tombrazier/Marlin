@@ -636,11 +636,11 @@
   #define MPC_INCLUDE_FAN                             // Model fan speed.
 
   // Measured physical constants from M306
-  #define MPC_BLOCK_HEAT_CAPACITY { 16.7f }           // Heat block heat capacities in J/K.
-  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }         // Rate of change of sensor temperature in K/s per K difference from heat block.
-  #define MPC_AMBIENT_XFER_COEFF { 0.068f }           // Heat transfer coefficients from heat block to room air with fan off in W/K.
+  #define MPC_BLOCK_HEAT_CAPACITY { 17.12f }          // Heat block heat capacities in J/K.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.2544f }       // Rate of change of sensor temperature in K/s per K difference from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.0635f }          // Heat transfer coefficients from heat block to room air with fan off in W/K.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }  // Heat transfer coefficients from heat block to room air with fan on full in W/K.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.0918f } // Heat transfer coefficients from heat block to room air with fan on full in W/K.
   #endif
 
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
@@ -653,7 +653,7 @@
 //  #define FILAMENT_HEAT_CAPACITY_PERMM 3.6e-3f        // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
 
   // Advanced options
-  #define MPC_SMOOTHING_FACTOR 0.5f                   // Max value 1.0. Noisy temperature sensors may need a lower value for stability.
+  #define MPC_SMOOTHING_FACTOR 0.25f                  // Max value 1.0. Noisy temperature sensors may need a lower value for stability.
   #define MPC_MIN_AMBIENT_CHANGE 1.0f                 // Modeled ambient temperature rate of change in K/S when correcting model inaccuracies.
   #define MPC_STEADYSTATE 0.5f                        // Temperature change rate in K/s for steady state logic to be enforced.
 
