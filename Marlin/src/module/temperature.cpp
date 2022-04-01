@@ -586,8 +586,8 @@ volatile bool Temperature::raw_temps_ready = false;
     PID_t tune_pid = { 0, 0, 0 };
     celsius_float_t maxT = 0, minT = 10000;
 
-    const bool isbed = (heater_id == H_BED);
-    const bool ischamber = (heater_id == H_CHAMBER);
+    const bool isbed = (heater_id == H_BED),
+           ischamber = (heater_id == H_CHAMBER);
 
     #if ENABLED(PIDTEMPCHAMBER)
       #define C_TERN(T,A,B) ((T) ? (A) : (B))
