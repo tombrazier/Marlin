@@ -2909,7 +2909,7 @@
   #endif
 
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT       600
+    #define E0_CURRENT       TERN(VDE_100, 300, 600)
     #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) || ENABLED(VDE_100) ? 2 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
@@ -3154,7 +3154,7 @@
   #define U_HYBRID_THRESHOLD       3  // [mm/s]
   #define V_HYBRID_THRESHOLD       3
   #define W_HYBRID_THRESHOLD       3
-  #define E0_HYBRID_THRESHOLD     30
+  #define E0_HYBRID_THRESHOLD      TERN(VDE_100, 3, 30)
   #define E1_HYBRID_THRESHOLD     30
   #define E2_HYBRID_THRESHOLD     30
   #define E3_HYBRID_THRESHOLD     30
