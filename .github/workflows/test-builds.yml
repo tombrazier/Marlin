@@ -76,6 +76,7 @@ jobs:
         - STM32F103RE_btt
         - STM32F103RE_btt_USB
         - STM32F103RE_creality
+        - STM32F401RC_creality
         - STM32F103VE_longer
         - STM32F407VE_black
         - STM32F401VE_STEVAL
@@ -137,7 +138,7 @@ jobs:
 
     - name: Install PlatformIO
       run: |
-        pip install -U https://github.com/platformio/platformio-core/archive/develop.zip
+        pip install -U https://github.com/platformio/platformio-core/archive/v5.2.5.zip
         platformio update
 
     - name: Run ${{ matrix.test-platform }} Tests
