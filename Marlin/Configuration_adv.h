@@ -2190,7 +2190,7 @@
 //
 // G2/G3 Arc Support
 //
-//#define ARC_SUPPORT                   // Requires ~3226 bytes
+#define ARC_SUPPORT                   // Requires ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
   #define MIN_ARC_SEGMENT_MM      0.1 // (mm) Minimum length of each arc segment
   #define MAX_ARC_SEGMENT_MM      1.0 // (mm) Maximum length of each arc segment
@@ -2901,7 +2901,7 @@
 
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT       TERN(VDE_100, 300, 600)
-    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) || ENABLED(VDE_100) ? 2 : 16)
+    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) || ENABLED(VDE_100) ? 8 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
@@ -3061,7 +3061,9 @@
   #define STEALTHCHOP_U
   #define STEALTHCHOP_V
   #define STEALTHCHOP_W
+#if DISABLED(VDE_100)
   #define STEALTHCHOP_E
+#endif
 
   /**
    * Optimize spreadCycle chopper parameters by using predefined parameter sets
@@ -3145,7 +3147,7 @@
   #define U_HYBRID_THRESHOLD       3  // [mm/s]
   #define V_HYBRID_THRESHOLD       3
   #define W_HYBRID_THRESHOLD       3
-  #define E0_HYBRID_THRESHOLD      TERN(VDE_100, 3, 30)
+  #define E0_HYBRID_THRESHOLD     30
   #define E1_HYBRID_THRESHOLD     30
   #define E2_HYBRID_THRESHOLD     30
   #define E3_HYBRID_THRESHOLD     30
