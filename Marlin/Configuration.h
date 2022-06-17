@@ -120,7 +120,7 @@
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 115200
+#define BAUDRATE 250000
 //#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
@@ -167,10 +167,10 @@
  */
 #define X_DRIVER_TYPE  TMC2209
 #define Y_DRIVER_TYPE  TMC2209
-#define Z_DRIVER_TYPE  TMC2209
+#define Z_DRIVER_TYPE  A4988
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
-#define Z2_DRIVER_TYPE TMC2209
+#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
 //#define I_DRIVER_TYPE  A4988
@@ -1018,8 +1018,8 @@
 #if ENABLED(GEARED_EXTRUDER)
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 8 }
 #elif ENABLED(VDE_100)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.21 * 8 }
-//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.82 * 8 }
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.21 * 8 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.45 * 8 }
 #else
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/25.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/22.5 * 16 }
 #endif
@@ -1051,7 +1051,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 1000, 750, 100, 1000 }
+#define DEFAULT_MAX_ACCELERATION      { 1000, 750, 100, 50 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1297,7 +1297,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.99 }
+#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.95 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1456,7 +1456,7 @@
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR true
 #define INVERT_Y_DIR false
-#define INVERT_Z_DIR true
+#define INVERT_Z_DIR false
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
 //#define INVERT_K_DIR false
@@ -1880,7 +1880,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 0.25
+#define MANUAL_Z_HOME_POS 0.79
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
@@ -1942,9 +1942,9 @@
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
-  #define XY_DIAG_AC 56.48
-  #define XY_DIAG_BD 56.64
-  #define XY_SIDE_AD 40.06
+  #define XY_DIAG_AC 56.61
+  #define XY_DIAG_BD 56.47
+  #define XY_SIDE_AD 40.03
 
   // Or, set the default skew factors directly here
   // to override the above measurements:
@@ -1952,11 +1952,11 @@
 
   #define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
-    #define XZ_DIAG_AC 56.67
-    #define XZ_DIAG_BD 56.50
-    #define YZ_DIAG_AC 56.67
-    #define YZ_DIAG_BD 56.32
-    #define YZ_SIDE_AD 39.79
+    #define XZ_DIAG_AC 56.41
+    #define XZ_DIAG_BD 56.86
+    #define YZ_DIAG_AC 56.71
+    #define YZ_DIAG_BD 56.24
+    #define YZ_SIDE_AD 39.9
     //#define XZ_SKEW_FACTOR 0.0
     //#define YZ_SKEW_FACTOR 0.0
   #endif

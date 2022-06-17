@@ -990,7 +990,7 @@
 #if ENABLED(ASSISTED_TRAMMING)
 
   // Define positions for probe points.
-  #define TRAMMING_POINT_XY { {100, 100}, {  25, 25 }, { 175,  25 }, { 175, 140 }, { 25, 140 } }
+  #define TRAMMING_POINT_XY { {100, 110}, {  25, 25 }, { 175,  25 }, { 175, 170 }, { 25, 170 } }
 
   // Define position names for probe points.
   #define TRAMMING_POINT_NAME_1 "Centre"
@@ -1324,7 +1324,7 @@
       #define XATC_START_Z 1.0
       #define XATC_MAX_POINTS 3                       // Number of points to probe in the wizard
       #define XATC_Y_POSITION (Y_CENTER - 20.0f)      // (mm) Y position to probe
-      #define XATC_Z_OFFSETS { 0.033, -0.017, 0.017 } // Z offsets for X axis sample points
+      #define XATC_Z_OFFSETS { 0.03f, -0.03f, 0.0f }  // Z offsets for X axis sample points
     #endif
   #endif
 
