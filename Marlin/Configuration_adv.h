@@ -2761,7 +2761,7 @@
 
   #if AXIS_IS_TMC(X)
     #define X_CURRENT       500        // (mA) RMS current. Multiply by 1.414 for peak current.
-    #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
+    #define X_CURRENT_HOME  (X_CURRENT / 2)  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     16        // 0..256
     #define X_RSENSE          0.11
     #define X_CHAIN_POS      -1        // -1..0: Not chained. 1: MCU MOSI connected. 2: Next in chain, ...
@@ -2781,7 +2781,7 @@
 
   #if AXIS_IS_TMC(Y)
     #define Y_CURRENT       500
-    #define Y_CURRENT_HOME  Y_CURRENT
+    #define Y_CURRENT_HOME  (Y_CURRENT / 2)
     #define Y_MICROSTEPS     8
     #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
@@ -4284,18 +4284,18 @@
  * Add support for a low-cost 8x8 LED Matrix based on the Max7219 chip as a realtime status display.
  * Requires 3 signal wires. Some useful debug options are included to demonstrate its usage.
  */
-//#define MAX7219_DEBUG
+#define MAX7219_DEBUG
 #if ENABLED(MAX7219_DEBUG)
-  #define MAX7219_CLK_PIN   64
-  #define MAX7219_DIN_PIN   57
-  #define MAX7219_LOAD_PIN  44
+  #define MAX7219_CLK_PIN   43
+  #define MAX7219_DIN_PIN   32
+  #define MAX7219_LOAD_PIN  47
 
   //#define MAX7219_GCODE          // Add the M7219 G-code to control the LED matrix
-  #define MAX7219_INIT_TEST    2   // Test pattern at startup: 0=none, 1=sweep, 2=spiral
-  #define MAX7219_NUMBER_UNITS 1   // Number of Max7219 units in chain.
-  #define MAX7219_ROTATE       0   // Rotate the display clockwise (in multiples of +/- 90°)
+  #define MAX7219_INIT_TEST    0   // Test pattern at startup: 0=none, 1=sweep, 2=spiral
+  #define MAX7219_NUMBER_UNITS 4   // Number of Max7219 units in chain.
+  #define MAX7219_ROTATE     180   // Rotate the display clockwise (in multiples of +/- 90°)
                                    // connector at:  right=0   bottom=-90  top=90  left=180
-  //#define MAX7219_REVERSE_ORDER  // The individual LED matrix units may be in reversed order
+  #define MAX7219_REVERSE_ORDER    // The individual LED matrix units may be in reversed order
   //#define MAX7219_SIDE_BY_SIDE   // Big chip+matrix boards can be chained side-by-side
 
   /**
