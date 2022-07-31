@@ -1909,9 +1909,9 @@ bool Planner::_populate_block(
       #endif
       #if HAS_V_AXIS
         " " STR_V ":", target.v, " (", dv, " steps)"
-      #endif
       #if HAS_W_AXIS
         " " STR_W ":", target.w, " (", dw, " steps)"
+      #endif
       #if HAS_EXTRUDERS
         " E:", target.e, " (", de, " steps)"
       #endif
@@ -2696,8 +2696,8 @@ bool Planner::_populate_block(
 
         const float junction_acceleration = limit_value_by_axis_maximum(block->acceleration, junction_unit_vec);
 
-        if (TERN0(HINTS_CURVE_RADIUS, hints.curve_radius)) {
-          TERN_(HINTS_CURVE_RADIUS, vmax_junction_sqr = junction_acceleration * hints.curve_radius);
+        if (hints.curve_radius) {
+          vmax_junction_sqr = junction_acceleration * hints.curve_radius;
         }
         else {
           NOLESS(junction_cos_theta, -0.999999f); // Check for numerical round-off to avoid divide by zero.
