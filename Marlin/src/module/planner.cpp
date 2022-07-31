@@ -1909,6 +1909,7 @@ bool Planner::_populate_block(
       #endif
       #if HAS_V_AXIS
         " " STR_V ":", target.v, " (", dv, " steps)"
+      #endif
       #if HAS_W_AXIS
         " " STR_W ":", target.w, " (", dw, " steps)"
       #endif
