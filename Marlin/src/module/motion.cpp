@@ -1180,6 +1180,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
 
       // Add hints to help optimize the move
       PlannerHints hints(cartesian_mm * inv_segments);
+      hints.curve_radius = 1.0e6f;    // a straight line is like a very big circle
       TERN_(SCARA_FEEDRATE_SCALING, hints.inv_duration = scaled_fr_mm_s / hints.millimeters);
 
       //SERIAL_ECHOPGM("mm=", cartesian_mm);

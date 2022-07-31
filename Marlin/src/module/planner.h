@@ -350,8 +350,11 @@ typedef struct {
   typedef IF<(BLOCK_BUFFER_SIZE > 64), uint16_t, uint8_t>::type last_move_t;
 #endif
 
-#if ENABLED(ARC_SUPPORT)
+#if EITHER(ARC_SUPPORT, SEGMENT_LEVELED_MOVES)
   #define HINTS_CURVE_RADIUS
+#endif
+
+#if ENABLED(ARC_SUPPORT)
   #define HINTS_SAFE_EXIT_SPEED
 #endif
 
