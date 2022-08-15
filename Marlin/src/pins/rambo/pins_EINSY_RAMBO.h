@@ -84,8 +84,8 @@
 //
 // Filament Runout Sensor
 //
-#ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN                      62
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+  #define FIL_RUNOUT_PIN                      12 //X-
 #endif
 
 //
