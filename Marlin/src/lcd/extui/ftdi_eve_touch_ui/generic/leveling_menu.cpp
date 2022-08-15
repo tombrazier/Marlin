@@ -39,13 +39,15 @@ using namespace Theme;
   #define LEVELING_TITLE_POS BTN_POS(1,1), BTN_SIZE(2,1)
   #define LEVEL_AXIS_POS     BTN_POS(1,2), BTN_SIZE(2,1)
   #define BED_MESH_TITLE_POS BTN_POS(1,3), BTN_SIZE(2,1)
-  #define PROBE_BED_POS      BTN_POS(1,4), BTN_SIZE(1,1)
+  #define PROBE_BED_POS      BTN_POS(1,4), BTN_SIZE(2,1)
   #define TEST_MESH_POS      BTN_POS(2,4), BTN_SIZE(1,1)
   #define SHOW_MESH_POS      BTN_POS(1,5), BTN_SIZE(1,1)
-  #define EDIT_MESH_POS      BTN_POS(2,5), BTN_SIZE(1,1)
-  #define BLTOUCH_TITLE_POS  BTN_POS(1,6), BTN_SIZE(2,1)
-  #define BLTOUCH_RESET_POS  BTN_POS(1,7), BTN_SIZE(1,1)
-  #define BLTOUCH_TEST_POS   BTN_POS(2,7), BTN_SIZE(1,1)
+  #define EDIT_MESH_POS      BTN_POS(2,4), BTN_SIZE(1,1)
+  #define BLTOUCH_TITLE_POS  BTN_POS(1,5), BTN_SIZE(2,1)
+  #define BLTOUCH_RESET_POS  BTN_POS(1,6), BTN_SIZE(1,1)
+  #define BLTOUCH_TEST_POS   BTN_POS(2,6), BTN_SIZE(1,1)
+  #define BLTOUCH_DEPLOY_POS BTN_POS(1,7), BTN_SIZE(1,1)
+  #define BLTOUCH_STOW_POS   BTN_POS(2,7), BTN_SIZE(1,1)
   #define BACK_POS           BTN_POS(1,8), BTN_SIZE(2,1)
 #else
   #define GRID_COLS 3
@@ -85,15 +87,19 @@ void LevelingMenu::onRedraw(draw_mode_t what) {
        .tag(2).button(LEVEL_AXIS_POS, GET_TEXT_F(MSG_LEVEL_X_AXIS))
        .enabled(ENABLED(HAS_BED_PROBE))
        .tag(3).button(PROBE_BED_POS, GET_TEXT_F(MSG_PROBE_BED))
+    #if DISABLED (AUTO_BED_LEVELING_BILINEAR)       
        .enabled(ENABLED(HAS_MESH))
        .tag(4).button(SHOW_MESH_POS, GET_TEXT_F(MSG_MESH_VIEW))
        .enabled(ENABLED(HAS_MESH))
        .tag(5).button(EDIT_MESH_POS, GET_TEXT_F(MSG_EDIT_MESH))
        .enabled(ENABLED(G26_MESH_VALIDATION))
        .tag(6).button(TEST_MESH_POS, GET_TEXT_F(MSG_PRINT_TEST))
+    #endif
     #if ENABLED(BLTOUCH)
        .tag(7).button(BLTOUCH_RESET_POS, GET_TEXT_F(MSG_BLTOUCH_RESET))
        .tag(8).button(BLTOUCH_TEST_POS,  GET_TEXT_F(MSG_BLTOUCH_SELFTEST))
+       .tag(9).button(BLTOUCH_DEPLOY_POS, GET_TEXT_F(MSG_BLTOUCH_DEPLOY))
+       .tag(10).button(BLTOUCH_STOW_POS,  GET_TEXT_F(MSG_BLTOUCH_STOW))
     #endif
        .colors(action_btn)
        .tag(1).button(BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
@@ -109,7 +115,7 @@ bool LevelingMenu::onTouchEnd(uint8_t tag) {
     #if HAS_BED_PROBE
       case 3:
         #ifndef BED_LEVELING_COMMANDS
-          #define BED_LEVELING_COMMANDS "G29"
+          #define BED_LEVELING_COMMANDS "G28 \nG29"
         #endif
         #if ENABLED(AUTO_BED_LEVELING_UBL)
           BedMeshViewScreen::doProbe();
@@ -131,6 +137,8 @@ bool LevelingMenu::onTouchEnd(uint8_t tag) {
     #if ENABLED(BLTOUCH)
       case 7: injectCommands(F("M280 P0 S60")); break;
       case 8: SpinnerDialogBox::enqueueAndWait(F("M280 P0 S90\nG4 P100\nM280 P0 S120")); break;
+      case 9: injectCommands(F("M401\nM140 S0")); break;
+      case 10: injectCommands(F("M402")); break;
     #endif
     default: return false;
   }
