@@ -333,6 +333,13 @@ void menu_motion() {
   #endif
 
   //
+  // Park Nozzle
+  //
+  #if ENABLED(PARK_NOZZLE_MENU_OPTION)
+    GCODES_ITEM(MSG_IDEX_MODE_AUTOPARK, F("G28 O\nG27"));
+  #endif
+
+  //
   // Auto-calibration
   //
   #if ENABLED(CALIBRATION_GCODE)
