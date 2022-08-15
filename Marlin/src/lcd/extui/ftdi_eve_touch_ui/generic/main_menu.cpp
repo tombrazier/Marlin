@@ -93,6 +93,11 @@ void MainMenu::onRedraw(draw_mode_t what) {
        .tag(10).button(ABOUT_PRINTER_POS,   GET_TEXT_F(MSG_INFO_MENU))
        #if ENABLED(CUSTOM_MENU_MAIN)
         .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_COMMANDS))
+        #ifndef CUSTOM_MENU_MAIN_TITLE
+          .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_COMMANDS))
+        #else
+          .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
+        #endif
        #endif
        .colors(action_btn)
        .tag(1).button(BACK_POS,             GET_TEXT_F(MSG_BUTTON_DONE));
