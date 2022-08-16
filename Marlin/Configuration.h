@@ -1716,6 +1716,8 @@
  */
 #if DISABLED(LULZBOT_BLTouch)
   #define NOZZLE_AS_PROBE
+  #define LULZBOT_PROBE_TYPE "Conductive Washers"
+  #define LULZBOT_SHORT_PROBE_TYPE
 #endif
 
 /**
@@ -1729,6 +1731,8 @@
  */
 #if ENABLED(LULZBOT_BLTouch)
   #define BLTOUCH
+  #define LULZBOT_PROBE_TYPE "BLTouch"
+  #define LULZBOT_SHORT_PROBE_TYPE " BT"
 #endif
 
 /**
