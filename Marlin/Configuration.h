@@ -10,7 +10,7 @@
 //#define TazDualZ
 #define LULZBOT_FILAMENT_RUNOUT
 #define LULZBOT_BLTouch
-//#define LULZBOT_LongBed
+#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
 #define LULZBOT_UNIVERSAL_TOOLHEAD
 //#define TOOLHEAD_SL_SE_HE
@@ -214,6 +214,11 @@
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
 #endif
 
+#if defined LULZBOT_LongBed
+  #define LULZBOT_BED_TYPE " LONGBED"
+#else
+  #define LULZBOT_BED_TYPE " STANDARD"
+#endif
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
@@ -1537,7 +1542,11 @@
 #elif ENABLED(TAZ6)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 1600, 833 }
 #elif ANY(Workhorse, TAZPro, TAZProXT)
+  #if defined(LULZBOT_LongBed)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 160, 500, 420 }
+  #else
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 500, 420 }
+  #endif
 #endif
 
 /**
@@ -2147,6 +2156,16 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed 
+  #elif defined(LULZBOT_LONG_BED)
+    #define X_BED_SIZE        280
+    #define Y_BED_SIZE        570 
+    // Travel limits (mm) after homing, corresponding to endstop positions.
+    #define LULZBOT_X_MAX_POS 318
+    #define LULZBOT_X_MIN_POS -6
+    #define LULZBOT_Y_MAX_POS 613
+    #define LULZBOT_Y_MIN_POS -18.2//-15
+    #define LULZBOT_Z_MIN_POS -9
+    #define LULZBOT_Z_MAX_POS 299 
   #else
     #define X_BED_SIZE 284
     #define Y_BED_SIZE 286
@@ -2169,6 +2188,16 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 599 // <-- changed 
+  #elif defined(LULZBOT_LONG_BED)
+    #define X_BED_SIZE        280
+    #define Y_BED_SIZE        570 
+    // Travel limits (mm) after homing, corresponding to endstop positions.
+    #define LULZBOT_X_MAX_POS 318
+    #define LULZBOT_X_MIN_POS -6
+    #define LULZBOT_Y_MAX_POS 613
+    #define LULZBOT_Y_MIN_POS -18.2//-15
+    #define LULZBOT_Z_MIN_POS -9
+    #define LULZBOT_Z_MAX_POS 599 
   #else
     #define X_BED_SIZE 284
     #define Y_BED_SIZE 286
@@ -3936,3 +3965,9 @@
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
+
+#if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
+  #error The Longbed requires a BLTouch to probe the bed surface
+#elif BOTH(LULZBOT_BLTouch, SWITCHING_NOZZLE)
+  #error The BLTouch and dual servo motors are not capatible
+#endif
