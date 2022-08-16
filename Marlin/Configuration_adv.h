@@ -3911,14 +3911,10 @@
  */
 #if ANY(Sidekick_289, Sidekick_747)
   #if ENABLED(TOOLHEAD_M175)
-    #define STARTUP_COMMANDS "M906 Z450\nG91\nG0 Z20\nG90\nG28 X\nM906 Z975\nM206X-6Y-8\nM500\nM117 SideKick Ready"
+    #define STARTUP_COMMANDS "M17 Z\nM117 SideKick Ready" //"M906 Z450\nG91\nG0 Z20\nG90\nG28 X\nM906 Z975\nM206X-6Y-8\nM500\nM117 SideKick Ready"
   #else
-    #define STARTUP_COMMANDS "M906 Z450\nG91\nG0 Z20\nG90\nG28 X\nM906 Z975"
+    #define STARTUP_COMMANDS "M17 Z\nM117 SideKick Ready" //"M906 Z450\nG91\nG0 Z20\nG90\nG28 X\nM906 Z975"
   #endif
-#elif ENABLED(TAZ6)
-  #define STARTUP_COMMANDS "G28 X"
-#else
-  #define STARTUP_COMMANDS "G28 Z"
 #endif
 
 /**
