@@ -2156,7 +2156,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed 
-  #elif defined(LULZBOT_LONG_BED)
+  #elif defined(LULZBOT_LongBed)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570 
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -2165,7 +2165,7 @@
     #define LULZBOT_Y_MAX_POS 613
     #define LULZBOT_Y_MIN_POS -18.2//-15
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 299 
+    #define LULZBOT_Z_MAX_POS 292 
   #else
     #define X_BED_SIZE 284
     #define Y_BED_SIZE 286
@@ -2188,7 +2188,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 599 // <-- changed 
-  #elif defined(LULZBOT_LONG_BED)
+  #elif defined(LULZBOT_LongBed)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570 
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -2197,7 +2197,7 @@
     #define LULZBOT_Y_MAX_POS 613
     #define LULZBOT_Y_MIN_POS -18.2//-15
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 599 
+    #define LULZBOT_Z_MAX_POS 592 
   #else
     #define X_BED_SIZE 284
     #define Y_BED_SIZE 286
