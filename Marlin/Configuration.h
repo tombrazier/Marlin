@@ -10,7 +10,7 @@
 //#define TazDualZ
 #define LULZBOT_FILAMENT_RUNOUT
 #define LULZBOT_BLTouch
-#define LULZBOT_LongBed
+//#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
 #define LULZBOT_UNIVERSAL_TOOLHEAD
 //#define TOOLHEAD_SL_SE_HE
@@ -182,24 +182,29 @@
   #define CUSTOM_MACHINE_NAME "LulzBot Mini 2"
   #define LULZBOT_LCD_MACHINE_NAME "Mini 2"
   #define MACHINE_UUID "e5502411-d46d-421d-ba3a-a20126d7930f" // <-- changed
+  #define LULZBOT_WIPE
 #elif ENABLED(TAZ6)
   #define CUSTOM_MACHINE_NAME "LulzBot Taz 6"
   #define LULZBOT_LCD_MACHINE_NAME "TAZ 6"
   #define MACHINE_UUID "845f003c-aebd-4e53-a6b9-7d0984fde609" // <-- changed
+  #define LULZBOT_WIPE
 #elif ENABLED(Workhorse)
   #define CUSTOM_MACHINE_NAME "LulzBot Taz Workhorse"
   #define LULZBOT_LCD_MACHINE_NAME "TAZ Workhorse"
   #define MACHINE_UUID "5ee798fb-4062-4d35-8224-5e846ffb45a5" // <-- changed
+  #define LULZBOT_WIPE
 #elif ENABLED(TAZPro)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ Pro"
   #define LULZBOT_LCD_MACHINE_NAME "TAZ Pro"
   #define MACHINE_UUID "a952577d-8722-483a-999d-acdc9e772b7b" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
+  #define LULZBOT_WIPE
 #elif ENABLED(TAZProXT)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ ProXT"
   #define LULZBOT_LCD_MACHINE_NAME "TAZ ProXT"
   #define MACHINE_UUID "28ac1ce7-ca05-4f8e-8f1f-1d2f4496a1eb" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
+  #define LULZBOT_WIPE
 #elif ENABLED(Sidekick_289)
   #define CUSTOM_MACHINE_NAME "Taz SideKick 289"
   #define LULZBOT_LCD_MACHINE_NAME "SideKick 289"
@@ -1953,7 +1958,11 @@
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
+#if defined(LULZBOT_BLTouch)
+  #define Z_PROBE_LOW_POINT          -9 // Farthest distance below the trigger-point to go before stopping
+#else
+  #define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
+#endif
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -3
@@ -2165,7 +2174,7 @@
     #define LULZBOT_Y_MAX_POS 613
     #define LULZBOT_Y_MIN_POS -18.2//-15
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 292 
+    #define LULZBOT_Z_MAX_POS 289 
   #else
     #define X_BED_SIZE 284
     #define Y_BED_SIZE 286
@@ -2866,7 +2875,7 @@
  * Attention: EXPERIMENTAL. G-code arguments may change.
  *
  */
-#if DISABLED(LULZBOT_BLTouch)
+#if ENABLED(LULZBOT_WIPE)
   #define NOZZLE_CLEAN_FEATURE
 #endif
 
@@ -2885,8 +2894,8 @@
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
   #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_UNIVERSAL_TOOLHEAD)
-    #define NOZZLE_CLEAN_START_POINT { 300, 95, 1 }
-    #define NOZZLE_CLEAN_END_POINT   { 300, 25, 1 }
+    #define NOZZLE_CLEAN_START_POINT { 295, 95, 1 }
+    #define NOZZLE_CLEAN_END_POINT   { 295, 25, 1 }
   #elif ANY(TAZPro, TAZProXT) && ENABLED(TOOLHEAD_Quiver_DualExtruder) 
     #define NOZZLE_CLEAN_START_POINT {{ -17, 95, 1 }, { 297, 95, 1 }}
     #define NOZZLE_CLEAN_END_POINT   {{ -17, 25, 1 }, { 297, 25, 1 }}
@@ -2923,7 +2932,7 @@
   #elif ENABLED(Workhorse)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_UNIVERSAL_TOOLHEAD)
-    #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z-1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
+    #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X295 Y25 Z10 F4000\nG1 Z-1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
   #elif ANY(TAZPro, TAZProXT) && ENABLED(TOOLHEAD_Quiver_DualExtruder) 
     #define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nT0\nG1 Z-1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
   #endif

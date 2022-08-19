@@ -1264,8 +1264,11 @@
       #define CALIBRATION_OBJECT_CENTER     {261.5, -18, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
+    #elif defined(LULZBOT_LongBed)
+      #define CALIBRATION_OBJECT_CENTER     {260,-18,-2.0} //  mm
+      #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  10.0, 10.0} //  mm
     #else
-      #define CALIBRATION_OBJECT_CENTER     {267.5,-9.5,-2.0} //  mm
+      #define CALIBRATION_OBJECT_CENTER     {260,-9.5,-2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  1.0, 10.0} //  mm
     #endif
     // Comment out any sides which are unreachable by the probe. For best
