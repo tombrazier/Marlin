@@ -1260,7 +1260,7 @@
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
   #elif ANY(TAZPro, TAZProXT)
-    #if defined(TOOLHEAD_Quiver_DualExtruder)
+    #if ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula)
       #define CALIBRATION_OBJECT_CENTER     {261.5, -18, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
@@ -3048,7 +3048,7 @@
   #endif
 
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT      960
+    #define E0_CURRENT      LULZBOT_MOTOR_CURRENT_E0
     #define E0_MICROSTEPS    16
     #define E0_RSENSE         0.12
     #define E0_CHAIN_POS     -1
@@ -3057,7 +3057,7 @@
   #endif
 
   #if AXIS_IS_TMC(E1)
-    #define E1_CURRENT      960
+    #define E1_CURRENT      LULZBOT_MOTOR_CURRENT_E1
     #define E1_MICROSTEPS    16
     #define E1_RSENSE         0.12
     #define E1_CHAIN_POS     -1
@@ -3939,9 +3939,9 @@
 #if defined(LULZBOT_UNIVERSAL_TOOLHEAD)
   #define CUSTOM_MENU_MAIN
 #endif
-
+ #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
 #if ENABLED(CUSTOM_MENU_MAIN)
-  #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
+ 
   //#define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 Toolhead Changed"
   #define CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK
   #define CUSTOM_MENU_MAIN_SCRIPT_RETURN   // Return to status screen after a script
