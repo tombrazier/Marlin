@@ -12,7 +12,7 @@
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
-//#define LULZBOT_UNIVERSAL_TOOLHEAD
+#define LULZBOT_UNIVERSAL_TOOLHEAD
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
@@ -20,7 +20,7 @@
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
 //#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
-#define TOOLHEAD_Twin_Nebula_175                    // TAZ Pro Dual Extruder
+//#define TOOLHEAD_Twin_Nebula_175                    // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Albatross_Flexystruder         // TAZ Legacy Flexystruder
 //#define TOOLHEAD_Finch_Aerostruder              // TAZ Legacy Titan Aerostruder v1 0.50 mm
 //#define TOOLHEAD_Tilapia_SingleExtruder         // TAZ Legacy Standard Single Extruder 
@@ -920,8 +920,9 @@
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
-#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
-                                  // Set/get with G-code: M301 E[extruder number, 0-2]
+  #if LULZBOT_EXTRUDERS > 1
+    #define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
+  #endif                                  // Set/get with G-code: M301 E[extruder number, 0-2]
 //TAZ 6 Single Extruder (W)
     #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. NOTE: if values are changed, both sets need to be changed.
     #define TAZ6_STD_DEFAULT_Ki 1.91         //NOTE: if values are changed, both sets need to be changed.
