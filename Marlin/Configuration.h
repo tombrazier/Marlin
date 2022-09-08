@@ -12,7 +12,7 @@
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
-#define LULZBOT_UNIVERSAL_TOOLHEAD
+//#define LULZBOT_UNIVERSAL_TOOLHEAD
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
@@ -20,7 +20,7 @@
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
 //#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
-//#define TOOLHEAD_Twin_Nebula_175                    // TAZ Pro Dual Extruder
+#define TOOLHEAD_Twin_Nebula_175                    // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Albatross_Flexystruder         // TAZ Legacy Flexystruder
 //#define TOOLHEAD_Finch_Aerostruder              // TAZ Legacy Titan Aerostruder v1 0.50 mm
 //#define TOOLHEAD_Tilapia_SingleExtruder         // TAZ Legacy Standard Single Extruder 
@@ -467,21 +467,21 @@
     #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -21
     #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -21
     #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -21
-    #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -7
-    #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -7
+    #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -23.7
+    #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -23.7
     #define LULZBOT_EXTRUDERS                       2
     #define LULZBOT_TOOLCHANGE_ZRAISE               0
     #define LULZBOT_NUM_SERVOS                      2
-    #define LULZBOT_SERVO_DELAY                    {1000, 1000}
+    #define LULZBOT_SERVO_DELAY                    {500, 500}
     #define LULZBOT_SWITCHING_NOZZLE
     #define LULZBOT_SWITCHING_NOZZLE_E1_SERVO_NR   1
-    #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 85,   125}
+    #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 75,   125}
     #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
     #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44}
-    #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}
+    #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
     #define LULZBOT_E_STEPS                        410
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
-    #define LULZBOT_E3D_Titan_Aero_V6
+    #define LULZBOT_SLICE_MOS_PID
     #define LULZBOT_TEMP_SENSOR_1                  5
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
@@ -553,7 +553,7 @@
   #define SWITCHING_NOZZLE_SERVO_NR 0
   #define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
   #define SWITCHING_NOZZLE_SERVO_ANGLES LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
-  #define SWITCHING_NOZZLE_SERVO_DWELL 2500
+  #define SWITCHING_NOZZLE_SERVO_DWELL 300
 #endif
 
 /**
@@ -920,7 +920,7 @@
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
-  //#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
+#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with G-code: M301 E[extruder number, 0-2]
 //TAZ 6 Single Extruder (W)
     #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. NOTE: if values are changed, both sets need to be changed.
@@ -1011,12 +1011,12 @@
       #define DEFAULT_Ki H175_DEFAULT_Ki
       #define DEFAULT_Kd H175_DEFAULT_Kd
     
-    #elif ENABLED(TOOLHEAD_M175)
+    #elif ANY(TOOLHEAD_M175, LULZBOT_SLICE_MOS_PID)
       #define DEFAULT_Kp M175_DEFAULT_Kp
       #define DEFAULT_Ki M175_DEFAULT_Ki
       #define DEFAULT_Kd M175_DEFAULT_Kd
 
-    #elif ANY(TOOLHEAD_HS_HSPLUS)
+    #elif ENABLED(TOOLHEAD_HS_HSPLUS)
       #define DEFAULT_Kp HSHSPLUS_DEFAULT_Kp 
       #define DEFAULT_Ki HSHSPLUS_DEFAULT_Ki 
       #define DEFAULT_Kd HSHSPLUS_DEFAULT_Kd 
