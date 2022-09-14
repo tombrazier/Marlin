@@ -463,10 +463,10 @@
     #define LULZBOT_LCD_TOOLHEAD_NAME              "Twin Nebula"
 //          16 chars max                            ^^^^^^^^^^^^^^^
     #define LULZBOT_M115_EXTRUDER_TYPE             "DualExtruder"
-    #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -21
-    #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -21
-    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -21
-    #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -21
+    #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -12
+    #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -12
+    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -17
+    #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -17
     #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -23.7
     #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -23.7
     #define LULZBOT_EXTRUDERS                       2
