@@ -1277,6 +1277,19 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
+  
+    #define LULZBOT_CALIBRATION_SCRIPT \
+      "M117 Starting Auto-Calibration\n"   /* Status message */ \
+      "T0\n"                               /* Switch to first nozzle */ \
+      "M218 T1 X43 Y0 Z0\n"                /* Restore default nozzle offset */ \
+      "G28\n"                              /* Auto-Home */ \
+      LULZBOT_MENU_AXIS_LEVELING_COMMANDS  /* Level X-Axis */ \
+      "G12\n"                              /* Wipe the Nozzles */ \
+      "M117 Calibrating...\n"              /* Status message */ \
+      "G425\n"                             /* Calibrate Nozzles */ \
+      "M500\n"                             /* Save settings */ \
+      "M117 Calibration data saved"        /* Status message */
+      
   #endif
 
   //#define CALIBRATION_MEASURE_IMIN
