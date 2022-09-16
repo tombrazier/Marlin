@@ -39,20 +39,20 @@ void MainMenu::onRedraw(draw_mode_t what) {
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define GRID_COLS 2
     #define GRID_ROWS 8
-    #define ABOUT_PRINTER_POS     BTN_POS(1,1), BTN_SIZE(2,1)
-    #define ADVANCED_SETTINGS_POS BTN_POS(1,2), BTN_SIZE(2,1)
+    #define ABOUT_PRINTER_POS     BTN_POS(1,7), BTN_SIZE(2,1)
+    #define ADVANCED_SETTINGS_POS BTN_POS(1,6), BTN_SIZE(2,1)
     #if ENABLED(CUSTOM_MENU_MAIN)
-      #define FILAMENTCHANGE_POS  BTN_POS(1,3), BTN_SIZE(1,1)
-      #define CUSTOM_MENU_POS BTN_POS(2,3), BTN_SIZE(1,1)
+      #define LEVELING_POS        BTN_POS(1,3), BTN_SIZE(1,1)
+      #define CUSTOM_MENU_POS     BTN_POS(2,3), BTN_SIZE(1,1)
     #else
-      #define FILAMENTCHANGE_POS  BTN_POS(1,3), BTN_SIZE(2,1)
+      #define LEVELING_POS        BTN_POS(1,3), BTN_SIZE(2,1)
     #endif
     #define TEMPERATURE_POS       BTN_POS(1,4), BTN_SIZE(2,1)
-    #define DISABLE_STEPPERS_POS  BTN_POS(1,5), BTN_SIZE(2,1)
-    #define MOVE_AXIS_POS         BTN_POS(1,6), BTN_SIZE(1,1)
-    #define LEVELING_POS          BTN_POS(2,6), BTN_SIZE(1,1)
-    #define AUTO_HOME_POS         BTN_POS(1,7), BTN_SIZE(1,1)
-    #define CLEAN_NOZZLE_POS      BTN_POS(2,7), BTN_SIZE(1,1)
+    #define DISABLE_STEPPERS_POS  BTN_POS(2,2), BTN_SIZE(1,1)
+    #define MOVE_AXIS_POS         BTN_POS(1,2), BTN_SIZE(1,1)
+    #define FILAMENTCHANGE_POS    BTN_POS(1,5), BTN_SIZE(2,1)
+    #define AUTO_HOME_POS         BTN_POS(1,1), BTN_SIZE(1,1)
+    #define CLEAN_NOZZLE_POS      BTN_POS(2,1), BTN_SIZE(1,1)
     #define BACK_POS              BTN_POS(1,8), BTN_SIZE(2,1)
   #else
     #define GRID_COLS 6
