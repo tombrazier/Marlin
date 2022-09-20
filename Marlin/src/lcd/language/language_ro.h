@@ -114,7 +114,7 @@ namespace Language_ro {
   LSTR MSG_M48_POINT                      = _UxGT("M48 Point");
   LSTR MSG_M48_DEVIATION                  = _UxGT("Deviation");
   LSTR MSG_IDEX_MENU                      = _UxGT("IDEX Mode");
-  LSTR MSG_OFFSETS_MENU                   = _UxGT("Tool Offsets");
+  LSTR MSG_OFFSETS_MENU                   = _UxGT("Nozzle Offsets");
   LSTR MSG_IDEX_MODE_AUTOPARK             = _UxGT("Auto-Park");
   LSTR MSG_IDEX_MODE_DUPLICATE            = _UxGT("Duplication");
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Mirrored Copy");
@@ -424,7 +424,7 @@ namespace Language_ro {
   LSTR MSG_ZPROBE_OFFSETS                 = _UxGT("Probe Offsets");
   LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Probe X Offset");
   LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Probe Y Offset");
-  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Probe Z Offset");
+  LSTR MSG_ZPROBE_ZOFFSET                 = _UxGT("Z Offset");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Babystep X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Babystep Y");
   LSTR MSG_BABYSTEP_Z                     = _UxGT("Babystep Z");
