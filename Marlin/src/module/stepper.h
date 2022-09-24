@@ -312,6 +312,41 @@ constexpr ena_mask_t enable_overlap[] = {
 
 //static_assert(!any_enable_overlap(), "There is some overlap.");
 
+#if ENABLED(INPUT_SHAPING)
+  template <int queue_length> class DelayQueue {
+    private:
+      uint32_t now = 0;
+      uint32_t times[queue_length];
+      uint16_t head = 0;
+      uint16_t length = 0;
+
+    public:
+      void decrement_delays(uint32_t interval) {
+        now += interval;
+      }
+      void enqueue(uint32_t delay) {
+        times[head + length] = delay + now;
+        length++;
+      }
+      uint32_t peek() {
+        return times[head] - now;
+      }
+      uint32_t peek_tail() {
+        return times[head + length - 1] - now;
+      }
+      void dequeue() {
+        head = (head + 1) % queue_length;
+        length--;
+      }
+      void purge() {
+        length = 0;
+      }
+      bool empty() {
+        return !length;
+      }
+  };
+#endif
+
 //
 // Stepper class definition
 //
@@ -415,6 +450,13 @@ class Stepper {
       static bool bezier_2nd_half; // If Bézier curve has been initialized or not
     #endif
 
+    #if ENABLED(INPUT_SHAPING_X)
+      static DelayQueue<IS_QUEUE_LENGTH_X> is_queue_x;
+    #endif
+    #if ENABLED(INPUT_SHAPING_Y)
+      static DelayQueue<IS_QUEUE_LENGTH_Y> is_queue_y;
+    #endif
+
     #if ENABLED(LIN_ADVANCE)
       static constexpr uint32_t LA_ADV_NEVER = 0xFFFFFFFF;
       static uint32_t nextAdvanceISR,
@@ -474,6 +516,13 @@ class Stepper {
     // The stepper block processing ISR phase
     static uint32_t block_phase_isr();
 
+    #if ENABLED(INPUT_SHAPING_X)
+      static void is_x_isr();
+    #endif
+    #if ENABLED(INPUT_SHAPING_Y)
+      static void is_y_isr();
+    #endif
+
     #if ENABLED(LIN_ADVANCE)
       // The Linear advance ISR phase
       static void advance_isr();
@@ -513,6 +562,8 @@ class Stepper {
       axis_did_move = 0;
       planner.release_current_block();
       TERN_(LIN_ADVANCE, la_interval = nextAdvanceISR = LA_ADV_NEVER);
+      TERN_(INPUT_SHAPING_X, is_queue_x.purge());
+      TERN_(INPUT_SHAPING_Y, is_queue_y.purge());
     }
 
     // Quickly stop all steppers

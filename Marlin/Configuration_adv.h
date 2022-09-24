@@ -1035,6 +1035,20 @@
 
 // @section motion
 
+//
+// Apply zero vibration (ZV) input shaping to X and/or Y movements.
+//
+// Do not use with lasers!
+// Do not use with direct stepping!
+//
+#define INPUT_SHAPING
+#if ENABLED(INPUT_SHAPING)
+  #define IS_FREQ_X 40            // (Hz) Resonant frequency.
+  #define IS_FREQ_Y 30            // (Hz) Resonant frequency.
+  #define IS_QUEUE_LENGTH_X 301   // Must be > steps/mm * maximum speed / IS_FREQ_X / 2.
+  #define IS_QUEUE_LENGTH_Y 401   // Must be > steps/mm * maximum speed / IS_FREQ_Y / 2.
+#endif
+
 #define AXIS_RELATIVE_MODES { false, false, false, false }
 
 // Add a Duplicate option for well-separated conjoined nozzles
