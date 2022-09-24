@@ -318,31 +318,34 @@ constexpr ena_mask_t enable_overlap[] = {
       uint32_t now = 0;
       uint32_t times[queue_length];
       uint16_t head = 0;
-      uint16_t length = 0;
+      uint16_t tail = 0;
 
     public:
       void decrement_delays(uint32_t interval) {
         now += interval;
       }
       void enqueue(uint32_t delay) {
-        times[head + length] = delay + now;
-        length++;
+        times[tail] = delay + now;
+        tail++;
+        if (tail == queue_length) tail = 0;
       }
       uint32_t peek() {
-        return times[head] - now;
+        if (head != tail) return times[head] - now;
+        else return 0xFFFFFFFF;
       }
       uint32_t peek_tail() {
-        return times[head + length - 1] - now;
+        if (head != tail) return times[(tail + queue_length - 1) % queue_length] - now;
+        else return 0xFFFFFFFF;
       }
       void dequeue() {
-        head = (head + 1) % queue_length;
-        length--;
+        head++;
+        if (head == queue_length) head = 0;
       }
       void purge() {
-        length = 0;
+        tail = head;
       }
       bool empty() {
-        return !length;
+        return head == tail;
       }
   };
 #endif
