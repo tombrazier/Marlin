@@ -494,10 +494,10 @@ struct XYZval {
     FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; }
   #endif
   #if HAS_V_AXIS
-    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pm) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; }
+    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pu) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; }
   #endif
   #if HAS_W_AXIS
-    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pm, const T po) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; v = pv; }
+    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pu, const T pv) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; v = pv; }
   #endif
 
   // Length reduced to one dimension
@@ -634,10 +634,10 @@ struct XYZEval {
     FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk)                         { x = px; y = py; z = pz; i = pi; j = pj; k = pk; }
   #endif
   #if HAS_V_AXIS
-    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pm)             { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; }
+    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pu)             { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; }
   #endif
   #if HAS_W_AXIS
-    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pm, const T po) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pm; v = pv; }
+    FI void set(const T px, const T py, const T pz, const T pi, const T pj, const T pk, const T pu, const T pv) { x = px; y = py; z = pz; i = pi; j = pj; k = pk; u = pu; v = pv; }
   #endif
 
   // Setters taking struct types and arrays
@@ -688,7 +688,7 @@ struct XYZEval {
   FI const T&    operator[](const int n)            const { return pos[n]; }
 
   // Assignment operator overrides do the expected thing
-  FI XYZEval<T>& operator= (const T v)                    { set(LIST_N_1(NUM_AXES, v)); return *this; }
+  FI XYZEval<T>& operator= (const T v)                    { set(LOGICAL_AXIS_LIST_1(v)); return *this; }
   FI XYZEval<T>& operator= (const XYval<T>   &rs)         { set(rs.x, rs.y); return *this; }
   FI XYZEval<T>& operator= (const XYZval<T>  &rs)         { set(NUM_AXIS_ELEM(rs)); return *this; }
 
@@ -752,8 +752,12 @@ struct XYZEval {
   // Exact comparisons. For floats a "NEAR" operation may be better.
   FI bool        operator==(const XYZval<T>  &rs)         { return true NUM_AXIS_GANG(&& x == rs.x, && y == rs.y, && z == rs.z, && i == rs.i, && j == rs.j, && k == rs.k, && u == rs.u, && v == rs.v, && w == rs.w); }
   FI bool        operator==(const XYZval<T>  &rs)   const { return true NUM_AXIS_GANG(&& x == rs.x, && y == rs.y, && z == rs.z, && i == rs.i, && j == rs.j, && k == rs.k, && u == rs.u, && v == rs.v, && w == rs.w); }
+  FI bool        operator==(const XYZEval<T> &rs)         { return true LOGICAL_AXIS_GANG(&& e == rs.e, && x == rs.x, && y == rs.y, && z == rs.z, && i == rs.i, && j == rs.j, && k == rs.k, && u == rs.u, && v == rs.v, && w == rs.w); }
+  FI bool        operator==(const XYZEval<T> &rs)   const { return true LOGICAL_AXIS_GANG(&& e == rs.e, && x == rs.x, && y == rs.y, && z == rs.z, && i == rs.i, && j == rs.j, && k == rs.k, && u == rs.u, && v == rs.v, && w == rs.w); }
   FI bool        operator!=(const XYZval<T>  &rs)         { return !operator==(rs); }
   FI bool        operator!=(const XYZval<T>  &rs)   const { return !operator==(rs); }
+  FI bool        operator!=(const XYZEval<T> &rs)         { return !operator==(rs); }
+  FI bool        operator!=(const XYZEval<T> &rs)   const { return !operator==(rs); }
 };
 
 #undef _RECIP
