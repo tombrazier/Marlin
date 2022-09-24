@@ -232,6 +232,13 @@ uint32_t Stepper::advance_divisor = 0,
            Stepper::la_advance_steps = 0;
 #endif
 
+#if ENABLED(INPUT_SHAPING_X)
+    DelayQueue<IS_QUEUE_LENGTH_X> Stepper::is_queue_x;
+#endif
+#if ENABLED(INPUT_SHAPING_Y)
+  DelayQueue<IS_QUEUE_LENGTH_Y> Stepper::is_queue_y;
+#endif
+
 #if ENABLED(INTEGRATED_BABYSTEPPING)
   uint32_t Stepper::nextBabystepISR = BABYSTEP_NEVER;
 #endif
@@ -1469,6 +1476,9 @@ void Stepper::isr() {
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
+    TERN_(INPUT_SHAPING_X, if (!is_queue_x.peek()) is_x_isr());
+    TERN_(INPUT_SHAPING_Y, if (!is_queue_y.peek()) is_y_isr());
+
     #if ENABLED(LIN_ADVANCE)
       if (!nextAdvanceISR) {                            // 0 = Do Linear Advance E Stepper pulses
         advance_isr();
@@ -1499,6 +1509,8 @@ void Stepper::isr() {
     const uint32_t interval = _MIN(
       uint32_t(HAL_TIMER_TYPE_MAX),                     // Come back in a very long time
       nextMainISR                                       // Time until the next Pulse / Block phase
+      OPTARG(INPUT_SHAPING_X, is_queue_x.peek())        // Time until next input shaping echo for X
+      OPTARG(INPUT_SHAPING_Y, is_queue_y.peek())        // Time until next input shaping echo for Y
       OPTARG(LIN_ADVANCE, nextAdvanceISR)               // Come back early for Linear Advance?
       OPTARG(INTEGRATED_BABYSTEPPING, nextBabystepISR)  // Come back early for Babystepping?
     );
@@ -1511,6 +1523,8 @@ void Stepper::isr() {
     //
 
     nextMainISR -= interval;
+    TERN_(INPUT_SHAPING_X, is_queue_x.decrement_delays(interval));
+    TERN_(INPUT_SHAPING_Y, is_queue_y.decrement_delays(interval));
 
     #if ENABLED(LIN_ADVANCE)
       if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval;
@@ -1765,6 +1779,11 @@ void Stepper::pulse_phase_isr() {
     #endif // DIRECT_STEPPING
 
     if (!is_page) {
+      #if ENABLED(INPUT_SHAPING)
+        TERN_(INPUT_SHAPING_X, is_queue_x.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_X) / 2));
+        TERN_(INPUT_SHAPING_Y, is_queue_y.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_Y) / 2));
+      #endif
+
       // Determine if pulses are needed
       #if HAS_X_STEP
         PULSE_PREP(X);
@@ -1901,6 +1920,48 @@ void Stepper::pulse_phase_isr() {
   } while (--events_to_do);
 }
 
+#if ENABLED(INPUT_SHAPING_X)
+  void Stepper::is_x_isr() {
+    is_queue_x.dequeue();
+
+    // echo step behaviour
+    xyze_bool_t step_needed{0};
+    PULSE_PREP(X);
+    PULSE_START(X);
+
+    TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
+
+    #if ISR_MULTI_STEPS
+      USING_TIMED_PULSE();
+      START_HIGH_PULSE();
+      AWAIT_HIGH_PULSE();
+    #endif
+
+    PULSE_STOP(X);
+  }
+#endif
+
+#if ENABLED(INPUT_SHAPING_Y)
+  void Stepper::is_y_isr() {
+    is_queue_y.dequeue();
+
+    // echo step behaviour
+    xyze_bool_t step_needed{0};
+    PULSE_PREP(Y);
+    PULSE_START(Y);
+
+    TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
+
+    #if ISR_MULTI_STEPS
+      USING_TIMED_PULSE();
+      START_HIGH_PULSE();
+      AWAIT_HIGH_PULSE();
+    #endif
+
+    PULSE_STOP(Y);
+  }
+#endif
+
 // Calculate timer interval, with all limits applied.
 uint32_t Stepper::calc_timer_interval(uint32_t step_rate) {
   #ifdef CPU_32_BIT
@@ -1977,25 +2038,33 @@ uint32_t Stepper::block_phase_isr() {
   if (current_block) {
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
-      #if ENABLED(DIRECT_STEPPING)
-        // Direct stepping is currently not ready for HAS_I_AXIS
-        #if STEPPER_PAGE_FORMAT == SP_4x4D_128
-          #define PAGE_SEGMENT_UPDATE_POS(AXIS) \
-            count_position[_AXIS(AXIS)] += page_step_state.bd[_AXIS(AXIS)] - 128 * 7;
-        #elif STEPPER_PAGE_FORMAT == SP_4x1_512 || STEPPER_PAGE_FORMAT == SP_4x2_256
-          #define PAGE_SEGMENT_UPDATE_POS(AXIS) \
-            count_position[_AXIS(AXIS)] += page_step_state.bd[_AXIS(AXIS)] * count_direction[_AXIS(AXIS)];
-        #endif
+      // Only end block when input shaping echoes are complete and idle in the meantime
+      if (!TERN1(INPUT_SHAPING_X, is_queue_x.empty()) || !TERN1(INPUT_SHAPING_Y, is_queue_y.empty())) {
+        interval = 0;
+        TERN_(INPUT_SHAPING_X, interval = _MAX(interval, is_queue_x.peek_tail() + 1));
+        TERN_(INPUT_SHAPING_Y, interval = _MAX(interval, is_queue_y.peek_tail() + 1));
+      }
+      else {
+        #if ENABLED(DIRECT_STEPPING)
+          // Direct stepping is currently not ready for HAS_I_AXIS
+          #if STEPPER_PAGE_FORMAT == SP_4x4D_128
+            #define PAGE_SEGMENT_UPDATE_POS(AXIS) \
+              count_position[_AXIS(AXIS)] += page_step_state.bd[_AXIS(AXIS)] - 128 * 7;
+          #elif STEPPER_PAGE_FORMAT == SP_4x1_512 || STEPPER_PAGE_FORMAT == SP_4x2_256
+            #define PAGE_SEGMENT_UPDATE_POS(AXIS) \
+              count_position[_AXIS(AXIS)] += page_step_state.bd[_AXIS(AXIS)] * count_direction[_AXIS(AXIS)];
+          #endif
 
-        if (current_block->is_page()) {
-          PAGE_SEGMENT_UPDATE_POS(X);
-          PAGE_SEGMENT_UPDATE_POS(Y);
-          PAGE_SEGMENT_UPDATE_POS(Z);
-          PAGE_SEGMENT_UPDATE_POS(E);
-        }
-      #endif
-      TERN_(HAS_FILAMENT_RUNOUT_DISTANCE, runout.block_completed(current_block));
-      discard_current_block();
+          if (current_block->is_page()) {
+            PAGE_SEGMENT_UPDATE_POS(X);
+            PAGE_SEGMENT_UPDATE_POS(Y);
+            PAGE_SEGMENT_UPDATE_POS(Z);
+            PAGE_SEGMENT_UPDATE_POS(E);
+          }
+        #endif
+        TERN_(HAS_FILAMENT_RUNOUT_DISTANCE, runout.block_completed(current_block));
+        discard_current_block();
+      }
     }
     else {
       // Step events not completed yet...
@@ -2370,6 +2439,10 @@ uint32_t Stepper::block_phase_isr() {
       // Calculate Bresenham dividends and divisors
       advance_dividend = current_block->steps << 1;
       advance_divisor = step_event_count << 1;
+
+      // For input shaping every step is always a half step now and a half step later
+      TERN_(INPUT_SHAPING_X, advance_dividend.x >>= 1);
+      TERN_(INPUT_SHAPING_Y, advance_dividend.y >>= 1);
 
       // No step events completed so far
       step_events_completed = 0;
