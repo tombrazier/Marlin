@@ -444,10 +444,10 @@ class Stepper {
     #endif
 
     #if ENABLED(INPUT_SHAPING_X)
-      static DelayQueue<IS_QUEUE_LENGTH_X> is_queue_x;
+      static DelayQueue<IS_QUEUE_LENGTH_X> inputshaping_queue_x;
     #endif
     #if ENABLED(INPUT_SHAPING_Y)
-      static DelayQueue<IS_QUEUE_LENGTH_Y> is_queue_y;
+      static DelayQueue<IS_QUEUE_LENGTH_Y> inputshaping_queue_y;
     #endif
 
     #if ENABLED(LIN_ADVANCE)
@@ -510,10 +510,10 @@ class Stepper {
     static uint32_t block_phase_isr();
 
     #if ENABLED(INPUT_SHAPING_X)
-      static void is_isr_x();
+      static void inputshaping_isr_x();
     #endif
     #if ENABLED(INPUT_SHAPING_Y)
-      static void is_isr_y();
+      static void inputshaping_isr_y();
     #endif
 
     #if ENABLED(LIN_ADVANCE)
@@ -555,8 +555,8 @@ class Stepper {
       axis_did_move = 0;
       planner.release_current_block();
       TERN_(LIN_ADVANCE, la_interval = nextAdvanceISR = LA_ADV_NEVER);
-      TERN_(INPUT_SHAPING_X, is_queue_x.purge());
-      TERN_(INPUT_SHAPING_Y, is_queue_y.purge());
+      TERN_(INPUT_SHAPING_X, inputshaping_queue_x.purge());
+      TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.purge());
     }
 
     // Quickly stop all steppers

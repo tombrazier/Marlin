@@ -225,10 +225,10 @@ uint32_t Stepper::advance_divisor = 0,
 #endif
 
 #if ENABLED(INPUT_SHAPING_X)
-  DelayQueue<IS_QUEUE_LENGTH_X> Stepper::is_queue_x;
+  DelayQueue<IS_QUEUE_LENGTH_X> Stepper::inputshaping_queue_x;
 #endif
 #if ENABLED(INPUT_SHAPING_Y)
-  DelayQueue<IS_QUEUE_LENGTH_Y> Stepper::is_queue_y;
+  DelayQueue<IS_QUEUE_LENGTH_Y> Stepper::inputshaping_queue_y;
 #endif
 
 #if ENABLED(INTEGRATED_BABYSTEPPING)
@@ -1468,8 +1468,8 @@ void Stepper::isr() {
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
-    TERN_(INPUT_SHAPING_X, if (!is_queue_x.peek()) is_isr_x());
-    TERN_(INPUT_SHAPING_Y, if (!is_queue_y.peek()) is_isr_y());
+    TERN_(INPUT_SHAPING_X, if (!inputshaping_queue_x.peek()) inputshaping_isr_x());
+    TERN_(INPUT_SHAPING_Y, if (!inputshaping_queue_y.peek()) inputshaping_isr_y());
 
     #if ENABLED(LIN_ADVANCE)
       if (!nextAdvanceISR) {                            // 0 = Do Linear Advance E Stepper pulses
@@ -1499,12 +1499,12 @@ void Stepper::isr() {
 
     // Get the interval to the next ISR call
     const uint32_t interval = _MIN(
-      uint32_t(HAL_TIMER_TYPE_MAX),                     // Come back in a very long time
-      nextMainISR                                       // Time until the next Pulse / Block phase
-      OPTARG(INPUT_SHAPING_X, is_queue_x.peek())        // Time until next input shaping echo for X
-      OPTARG(INPUT_SHAPING_Y, is_queue_y.peek())        // Time until next input shaping echo for Y
-      OPTARG(LIN_ADVANCE, nextAdvanceISR)               // Come back early for Linear Advance?
-      OPTARG(INTEGRATED_BABYSTEPPING, nextBabystepISR)  // Come back early for Babystepping?
+      uint32_t(HAL_TIMER_TYPE_MAX),                         // Come back in a very long time
+      nextMainISR                                           // Time until the next Pulse / Block phase
+      OPTARG(INPUT_SHAPING_X, inputshaping_queue_x.peek())  // Time until next input shaping echo for X
+      OPTARG(INPUT_SHAPING_Y, inputshaping_queue_y.peek())  // Time until next input shaping echo for Y
+      OPTARG(LIN_ADVANCE, nextAdvanceISR)                   // Come back early for Linear Advance?
+      OPTARG(INTEGRATED_BABYSTEPPING, nextBabystepISR)      // Come back early for Babystepping?
     );
 
     //
@@ -1515,8 +1515,8 @@ void Stepper::isr() {
     //
 
     nextMainISR -= interval;
-    TERN_(INPUT_SHAPING_X, is_queue_x.decrement_delays(interval));
-    TERN_(INPUT_SHAPING_Y, is_queue_y.decrement_delays(interval));
+    TERN_(INPUT_SHAPING_X, inputshaping_queue_x.decrement_delays(interval));
+    TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.decrement_delays(interval));
 
     #if ENABLED(LIN_ADVANCE)
       if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval;
@@ -1778,8 +1778,8 @@ void Stepper::pulse_phase_isr() {
     #endif // DIRECT_STEPPING
 
     if (!is_page) {
-      TERN_(INPUT_SHAPING_X, is_queue_x.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_X) / 2));
-      TERN_(INPUT_SHAPING_Y, is_queue_y.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_Y) / 2));
+      TERN_(INPUT_SHAPING_X, inputshaping_queue_x.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_X) / 2));
+      TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_Y) / 2));
 
       // Determine if pulses are needed
       #if HAS_X_STEP
@@ -1918,8 +1918,8 @@ void Stepper::pulse_phase_isr() {
 }
 
 #if ENABLED(INPUT_SHAPING_X)
-  void Stepper::is_isr_x() {
-    is_queue_x.dequeue();
+  void Stepper::inputshaping_isr_x() {
+    inputshaping_queue_x.dequeue();
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
@@ -1939,8 +1939,8 @@ void Stepper::pulse_phase_isr() {
 #endif
 
 #if ENABLED(INPUT_SHAPING_Y)
-  void Stepper::is_isr_y() {
-    is_queue_y.dequeue();
+  void Stepper::inputshaping_isr_y() {
+    inputshaping_queue_y.dequeue();
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
@@ -2036,10 +2036,10 @@ uint32_t Stepper::block_phase_isr() {
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
       // Only end block when input shaping echoes are complete and idle in the meantime
-      if (TERN0(INPUT_SHAPING_X, !is_queue_x.empty()) || TERN0(INPUT_SHAPING_Y, !is_queue_y.empty())) {
+      if (TERN0(INPUT_SHAPING_X, !inputshaping_queue_x.empty()) || TERN0(INPUT_SHAPING_Y, !inputshaping_queue_y.empty())) {
         interval = 0;
-        TERN_(INPUT_SHAPING_X, NOLESS(interval, is_queue_x.peek_tail() + 1));
-        TERN_(INPUT_SHAPING_Y, NOLESS(interval, is_queue_y.peek_tail() + 1));
+        TERN_(INPUT_SHAPING_X, NOLESS(interval, inputshaping_queue_x.peek_tail() + 1));
+        TERN_(INPUT_SHAPING_Y, NOLESS(interval, inputshaping_queue_y.peek_tail() + 1));
       }
       else {
         #if ENABLED(DIRECT_STEPPING)
