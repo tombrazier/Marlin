@@ -233,7 +233,7 @@ uint32_t Stepper::advance_divisor = 0,
 #endif
 
 #if ENABLED(INPUT_SHAPING_X)
-    DelayQueue<IS_QUEUE_LENGTH_X> Stepper::is_queue_x;
+  DelayQueue<IS_QUEUE_LENGTH_X> Stepper::is_queue_x;
 #endif
 #if ENABLED(INPUT_SHAPING_Y)
   DelayQueue<IS_QUEUE_LENGTH_Y> Stepper::is_queue_y;
@@ -1476,8 +1476,8 @@ void Stepper::isr() {
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
-    TERN_(INPUT_SHAPING_X, if (!is_queue_x.peek()) is_x_isr());
-    TERN_(INPUT_SHAPING_Y, if (!is_queue_y.peek()) is_y_isr());
+    TERN_(INPUT_SHAPING_X, if (!is_queue_x.peek()) is_isr_x());
+    TERN_(INPUT_SHAPING_Y, if (!is_queue_y.peek()) is_isr_y());
 
     #if ENABLED(LIN_ADVANCE)
       if (!nextAdvanceISR) {                            // 0 = Do Linear Advance E Stepper pulses
@@ -1919,7 +1919,7 @@ void Stepper::pulse_phase_isr() {
 }
 
 #if ENABLED(INPUT_SHAPING_X)
-  void Stepper::is_x_isr() {
+  void Stepper::is_isr_x() {
     is_queue_x.dequeue();
 
     // echo step behaviour
@@ -1940,7 +1940,7 @@ void Stepper::pulse_phase_isr() {
 #endif
 
 #if ENABLED(INPUT_SHAPING_Y)
-  void Stepper::is_y_isr() {
+  void Stepper::is_isr_y() {
     is_queue_y.dequeue();
 
     // echo step behaviour
@@ -2037,10 +2037,10 @@ uint32_t Stepper::block_phase_isr() {
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
       // Only end block when input shaping echoes are complete and idle in the meantime
-      if (!TERN1(INPUT_SHAPING_X, is_queue_x.empty()) || !TERN1(INPUT_SHAPING_Y, is_queue_y.empty())) {
+      if (TERN0(INPUT_SHAPING_X, !is_queue_x.empty()) || TERN0(INPUT_SHAPING_Y, !is_queue_y.empty())) {
         interval = 0;
-        TERN_(INPUT_SHAPING_X, interval = _MAX(interval, is_queue_x.peek_tail() + 1));
-        TERN_(INPUT_SHAPING_Y, interval = _MAX(interval, is_queue_y.peek_tail() + 1));
+        TERN_(INPUT_SHAPING_X, NOLESS(interval, is_queue_x.peek_tail() + 1));
+        TERN_(INPUT_SHAPING_Y, NOLESS(interval, is_queue_y.peek_tail() + 1));
       }
       else {
         #if ENABLED(DIRECT_STEPPING)

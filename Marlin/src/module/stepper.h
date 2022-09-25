@@ -313,21 +313,17 @@ constexpr ena_mask_t enable_overlap[] = {
 //static_assert(!any_enable_overlap(), "There is some overlap.");
 
 #if ENABLED(INPUT_SHAPING)
+
   template <int queue_length> class DelayQueue {
     private:
-      uint32_t now = 0;
-      uint32_t times[queue_length];
-      uint16_t head = 0;
-      uint16_t tail = 0;
+      uint32_t now = 0, times[queue_length];
+      uint16_t head = 0, tail = 0;
 
     public:
-      void decrement_delays(uint32_t interval) {
-        now += interval;
-      }
-      void enqueue(uint32_t delay) {
-        times[tail] = delay + now;
-        tail++;
-        if (tail == queue_length) tail = 0;
+      void decrement_delays(const uint32_t interval) { now += interval; }
+      void enqueue(const uint32_t delay) {
+        times[tail] = now + delay;
+        if (++tail == queue_length) tail = 0;
       }
       uint32_t peek() {
         if (head != tail) return times[head] - now;
@@ -337,18 +333,12 @@ constexpr ena_mask_t enable_overlap[] = {
         if (head != tail) return times[(tail + queue_length - 1) % queue_length] - now;
         else return 0xFFFFFFFF;
       }
-      void dequeue() {
-        head++;
-        if (head == queue_length) head = 0;
-      }
-      void purge() {
-        tail = head;
-      }
-      bool empty() {
-        return head == tail;
-      }
+      void dequeue() { if (++head == queue_length) head = 0; }
+      void purge() { tail = head; }
+      bool empty() { return head == tail; }
   };
-#endif
+
+#endif // INPUT_SHAPING
 
 //
 // Stepper class definition
@@ -521,10 +511,10 @@ class Stepper {
     static uint32_t block_phase_isr();
 
     #if ENABLED(INPUT_SHAPING_X)
-      static void is_x_isr();
+      static void is_isr_x();
     #endif
     #if ENABLED(INPUT_SHAPING_Y)
-      static void is_y_isr();
+      static void is_isr_y();
     #endif
 
     #if ENABLED(LIN_ADVANCE)
