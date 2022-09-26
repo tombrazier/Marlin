@@ -1778,8 +1778,8 @@ void Stepper::pulse_phase_isr() {
     #endif // DIRECT_STEPPING
 
     if (!is_page) {
-      TERN_(INPUT_SHAPING_X, inputshaping_queue_x.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_X) / 2));
-      TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.enqueue(uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_Y) / 2));
+      TERN_(INPUT_SHAPING_X, inputshaping_queue_x.enqueue(inputshaping_delay_x));
+      TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.enqueue(inputshaping_delay_y));
 
       // Determine if pulses are needed
       #if HAS_X_STEP

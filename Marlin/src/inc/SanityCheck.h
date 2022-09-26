@@ -4189,3 +4189,10 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
 #if ENABLED(XFER_BUILD) && !BOTH(BINARY_FILE_TRANSFER, CUSTOM_FIRMWARE_UPLOAD)
   #error "BINARY_FILE_TRANSFER and CUSTOM_FIRMWARE_UPLOAD are required for custom upload."
 #endif
+
+#if ENABLED(INPUT_SHAPING)
+  #if __AVR__ && (ENABLED(INPUT_SHAPING_X) && ((STEPPER_TIMER_RATE) > (IS_FREQ_X) * 2 * 65536) || \
+                  ENABLED(INPUT_SHAPING_Y) && ((STEPPER_TIMER_RATE) > (IS_FREQ_Y) * 2 * 65536))
+    #error "Resonant frequency is below the minimum for AVR"
+  #endif
+#endif
