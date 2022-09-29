@@ -315,29 +315,29 @@ constexpr ena_mask_t enable_overlap[] = {
 #if ENABLED(INPUT_SHAPING)
 
   #ifdef __AVR__
-    typedef uint16_t inputshaping_time_t;
+    typedef uint16_t ishaping_time_t;
   #else
-    typedef uint32_t inputshaping_time_t;
+    typedef uint32_t ishaping_time_t;
   #endif
 
   template <int queue_length> class DelayQueue {
     private:
-      inputshaping_time_t now = 0, times[queue_length];
-      uint16_t            head = 0, tail = 0;
+      ishaping_time_t now = 0, times[queue_length];
+      uint16_t        head = 0, tail = 0;
 
     public:
-      void decrement_delays(const inputshaping_time_t interval) { now += interval; }
-      void enqueue(const inputshaping_time_t delay) {
+      void decrement_delays(const ishaping_time_t interval) { now += interval; }
+      void enqueue(const ishaping_time_t delay) {
         times[tail] = now + delay;
         if (++tail == queue_length) tail = 0;
       }
-      inputshaping_time_t peek() {
+      ishaping_time_t peek() {
         if (head != tail) return times[head] - now;
-        else return inputshaping_time_t(-1);
+        else return ishaping_time_t(-1);
       }
-      inputshaping_time_t peek_tail() {
+      ishaping_time_t peek_tail() {
         if (head != tail) return times[(tail + queue_length - 1) % queue_length] - now;
-        else return inputshaping_time_t(-1);
+        else return ishaping_time_t(-1);
       }
       void dequeue() { if (++head == queue_length) head = 0; }
       void purge() { tail = head; }
@@ -451,12 +451,12 @@ class Stepper {
     #endif
 
     #if ENABLED(INPUT_SHAPING_X)
-      static DelayQueue<IS_QUEUE_LENGTH_X>  inputshaping_queue_x;
-      static constexpr inputshaping_time_t  inputshaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_X) / 2;
+      static DelayQueue<ISHAPING_QUEUE_LENGTH_X>  ishaping_queue_x;
+      static constexpr ishaping_time_t            ishaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (ISHAPING_FREQ_X) / 2;
     #endif
     #if ENABLED(INPUT_SHAPING_Y)
-      static DelayQueue<IS_QUEUE_LENGTH_Y>  inputshaping_queue_y;
-      static constexpr inputshaping_time_t  inputshaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (IS_FREQ_Y) / 2;
+      static DelayQueue<ISHAPING_QUEUE_LENGTH_Y>  ishaping_queue_y;
+      static constexpr ishaping_time_t            ishaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (ISHAPING_FREQ_Y) / 2;
     #endif
 
     #if ENABLED(LIN_ADVANCE)
@@ -519,10 +519,10 @@ class Stepper {
     static uint32_t block_phase_isr();
 
     #if ENABLED(INPUT_SHAPING_X)
-      static void inputshaping_isr_x();
+      static void ishaping_isr_x();
     #endif
     #if ENABLED(INPUT_SHAPING_Y)
-      static void inputshaping_isr_y();
+      static void ishaping_isr_y();
     #endif
 
     #if ENABLED(LIN_ADVANCE)
@@ -564,8 +564,8 @@ class Stepper {
       axis_did_move = 0;
       planner.release_current_block();
       TERN_(LIN_ADVANCE, la_interval = nextAdvanceISR = LA_ADV_NEVER);
-      TERN_(INPUT_SHAPING_X, inputshaping_queue_x.purge());
-      TERN_(INPUT_SHAPING_Y, inputshaping_queue_y.purge());
+      TERN_(INPUT_SHAPING_X, ishaping_queue_x.purge());
+      TERN_(INPUT_SHAPING_Y, ishaping_queue_y.purge());
     }
 
     // Quickly stop all steppers

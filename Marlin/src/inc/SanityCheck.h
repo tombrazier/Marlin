@@ -4209,8 +4209,8 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
 #endif
 
 #if ENABLED(INPUT_SHAPING)
-  #if __AVR__ && (ENABLED(INPUT_SHAPING_X) && ((STEPPER_TIMER_RATE) > (IS_FREQ_X) * 2 * 65536) || \
-                  ENABLED(INPUT_SHAPING_Y) && ((STEPPER_TIMER_RATE) > (IS_FREQ_Y) * 2 * 65536))
+  #if __AVR__ && (ENABLED(INPUT_SHAPING_X) && ((STEPPER_TIMER_RATE) > (ISHAPING_FREQ_X) * 2 * 65536) || \
+                  ENABLED(INPUT_SHAPING_Y) && ((STEPPER_TIMER_RATE) > (ISHAPING_FREQ_Y) * 2 * 65536))
     #error "Resonant frequency is below the minimum for AVR"
   #endif
 #endif
