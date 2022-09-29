@@ -1057,12 +1057,12 @@
 // Do not use with lasers!
 // Do not use with direct stepping!
 //
-#define INPUT_SHAPING
+//#define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
-  #define ISHAPING_FREQ_X 40            // (Hz) Resonant frequency.
-  #define ISHAPING_FREQ_Y 40            // (Hz) Resonant frequency.
-  #define ISHAPING_QUEUE_LENGTH_X 301   // Must be > steps/mm * maximum speed / ISHAPING_FREQ_X / 2.
-  #define ISHAPING_QUEUE_LENGTH_Y 301   // Must be > steps/mm * maximum speed / ISHAPING_FREQ_Y / 2.
+  #define SHAPING_FREQ_X    40  // (Hz) The dominant resonant frequency of the X axis.
+  #define SHAPING_FREQ_Y    40  // (Hz) The dominant resonant frequency of the Y axis.
+  #define SHAPING_BUFFER_X 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_X * 2).
+  #define SHAPING_BUFFER_Y 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_Y * 2).
 #endif
 
 #define AXIS_RELATIVE_MODES { false, false, false, false }
