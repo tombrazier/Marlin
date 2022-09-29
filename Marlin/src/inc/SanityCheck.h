@@ -4173,11 +4173,6 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
   #endif
 #endif
 
-// Misc. Cleanup
-#undef _TEST_PWM
-#undef _NUM_AXES_STR
-#undef _LOGICAL_AXES_STR
-
 // JTAG support in the HAL
 #if ENABLED(DISABLE_DEBUG) && !defined(JTAGSWD_DISABLE)
   #error "DISABLE_DEBUG is not supported for the selected MCU/Board."
@@ -4190,9 +4185,24 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
   #error "BINARY_FILE_TRANSFER and CUSTOM_FIRMWARE_UPLOAD are required for custom upload."
 #endif
 
-#if ENABLED(INPUT_SHAPING)
-  #if __AVR__ && (ENABLED(INPUT_SHAPING_X) && ((STEPPER_TIMER_RATE) > (ISHAPING_FREQ_X) * 2 * 65536) || \
-                  ENABLED(INPUT_SHAPING_Y) && ((STEPPER_TIMER_RATE) > (ISHAPING_FREQ_Y) * 2 * 65536))
-    #error "Resonant frequency is below the minimum for AVR"
+// Check requirements for Input Shaping
+#if ENABLED(INPUT_SHAPING) && defined(__AVR__)
+  #if HAS_SHAPING_X && (SHAPING_FREQ_X) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+    #if F_CPU > 16000000
+      #error "SHAPING_FREQ_X is below the minimum (20) for AVR 20MHz."
+    #else
+      #error "SHAPING_FREQ_X is below the minimum (16) for AVR 16MHz."
+    #endif
+  #elif HAS_SHAPING_Y && (SHAPING_FREQ_Y) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+    #if F_CPU > 16000000
+      #error "SHAPING_FREQ_Y is below the minimum (20) for AVR 20MHz."
+    #else
+      #error "SHAPING_FREQ_Y is below the minimum (16) for AVR 16MHz."
+    #endif
   #endif
 #endif
+
+// Misc. Cleanup
+#undef _TEST_PWM
+#undef _NUM_AXES_STR
+#undef _LOGICAL_AXES_STR
