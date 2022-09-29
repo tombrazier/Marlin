@@ -1043,10 +1043,10 @@
 //
 #define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
-  #define IS_FREQ_X 40            // (Hz) Resonant frequency.
-//  #define IS_FREQ_Y 30            // (Hz) Resonant frequency.
-  #define IS_QUEUE_LENGTH_X 101   // Must be > steps/mm * maximum speed / IS_FREQ_X / 2.
-//  #define IS_QUEUE_LENGTH_Y 401   // Must be > steps/mm * maximum speed / IS_FREQ_Y / 2.
+  #define ISHAPING_FREQ_X 40            // (Hz) Resonant frequency.
+//  #define ISHAPING_FREQ_Y 30            // (Hz) Resonant frequency.
+  #define ISHAPING_QUEUE_LENGTH_X 101   // Must be > steps/mm * maximum speed / ISHAPING_FREQ_X / 2.
+//  #define ISHAPING_QUEUE_LENGTH_Y 401   // Must be > steps/mm * maximum speed / ISHAPING_FREQ_Y / 2.
 #endif
 
 #define AXIS_RELATIVE_MODES { false, false, false, false }

@@ -3778,10 +3778,10 @@
 
 // Input shaping
 #if ENABLED(INPUT_SHAPING)
-  #if IS_FREQ_X && IS_QUEUE_LENGTH_X
+  #if ISHAPING_FREQ_X && ISHAPING_QUEUE_LENGTH_X
     #define INPUT_SHAPING_X
   #endif
-  #if IS_FREQ_Y && IS_QUEUE_LENGTH_Y
+  #if ISHAPING_FREQ_Y && ISHAPING_QUEUE_LENGTH_Y
     #define INPUT_SHAPING_Y
   #endif
 #endif
