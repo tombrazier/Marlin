@@ -1654,6 +1654,15 @@ void Stepper::pulse_phase_isr() {
       } \
     }while(0)
 
+    #define PULSE_PREP_INPUT_SHAPING(AXIS) do{ \
+      delta_error[_AXIS(AXIS)] += advance_dividend[_AXIS(AXIS)]; \
+      step_needed[_AXIS(AXIS)] = (delta_error[_AXIS(AXIS)] >= 0x20000000l); \
+      if (step_needed[_AXIS(AXIS)]) { \
+        count_position[_AXIS(AXIS)] += count_direction[_AXIS(AXIS)]; \
+        delta_error[_AXIS(AXIS)] += -0x40000000l; \
+      } \
+    }while(0)
+
     // Start an active pulse if needed
     #define PULSE_START(AXIS) do{ \
       if (step_needed[_AXIS(AXIS)]) { \
@@ -1783,10 +1792,10 @@ void Stepper::pulse_phase_isr() {
 
       // Determine if pulses are needed
       #if HAS_X_STEP
-        PULSE_PREP(X);
+        TERN(INPUT_SHAPING_X, PULSE_PREP_INPUT_SHAPING(X), PULSE_PREP(X));
       #endif
       #if HAS_Y_STEP
-        PULSE_PREP(Y);
+        TERN(INPUT_SHAPING_Y, PULSE_PREP_INPUT_SHAPING(Y), PULSE_PREP(Y));
       #endif
       #if HAS_Z_STEP
         PULSE_PREP(Z);
@@ -1923,7 +1932,7 @@ void Stepper::pulse_phase_isr() {
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
-    PULSE_PREP(X);
+    PULSE_PREP_INPUT_SHAPING(X);
     PULSE_START(X);
 
     TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
@@ -1944,7 +1953,7 @@ void Stepper::pulse_phase_isr() {
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
-    PULSE_PREP(Y);
+    PULSE_PREP_INPUT_SHAPING(Y);
     PULSE_START(Y);
 
     TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
@@ -2437,9 +2446,15 @@ uint32_t Stepper::block_phase_isr() {
       advance_dividend = current_block->steps << 1;
       advance_divisor = step_event_count << 1;
 
-      // For input shaping every step is always a half step now and a half step later
-      TERN_(INPUT_SHAPING_X, advance_dividend.x >>= 1);
-      TERN_(INPUT_SHAPING_Y, advance_dividend.y >>= 1);
+      // for input shaped axes, advance_divisor is replaced with 0x40000000
+      // and steps are repeated twice so dividends have to be scaled and halved
+      TERN_(INPUT_SHAPING_X, delta_error.x = 0);
+      TERN_(INPUT_SHAPING_Y, delta_error.y = 0);
+      TERN_(INPUT_SHAPING_X, advance_dividend.x = ((uint64_t)(current_block->steps.x) << 29) / step_event_count);
+      TERN_(INPUT_SHAPING_Y, advance_dividend.y = ((uint64_t)(current_block->steps.y) << 29) / step_event_count);
+      // finally, the scaling operation above introduces rounding errors which must now be removed
+      TERN_(INPUT_SHAPING_X, delta_error.x += (0x40000000l - advance_dividend.x * step_event_count) & 0x3ffffffful);
+      TERN_(INPUT_SHAPING_Y, delta_error.y += (0x40000000l - advance_dividend.y * step_event_count) & 0x3ffffffful);
 
       // No step events completed so far
       step_events_completed = 0;
