@@ -317,7 +317,7 @@ constexpr ena_mask_t enable_overlap[] = {
   typedef IF<ENABLED(__AVR__), uint16_t, uint32_t>::type shaping_time_t;
 
   template <int queue_length> class DelayQueue {
-    private:
+    protected:
       shaping_time_t now = 0, times[queue_length];
       uint16_t head = 0, tail = 0;
 
@@ -331,13 +331,25 @@ constexpr ena_mask_t enable_overlap[] = {
         if (head != tail) return times[head] - now;
         else return shaping_time_t(-1);
       }
-      shaping_time_t peek_tail() {
-        if (head != tail) return times[(tail + queue_length - 1) % queue_length] - now;
-        else return shaping_time_t(-1);
-      }
       void dequeue() { if (++head == queue_length) head = 0; }
       void purge() { tail = head; }
       bool empty() { return head == tail; }
+  };
+
+  template <int queue_length> class ParamDelayQueue : public DelayQueue<queue_length> {
+    private:
+      int32_t params[queue_length];
+
+    public:
+      void enqueue(const shaping_time_t delay, const int32_t param) {
+        params[DelayQueue<queue_length>::tail] = param;
+        DelayQueue<queue_length>::enqueue(delay);
+      }
+      const int32_t dequeue() {
+        const int32_t result = params[DelayQueue<queue_length>::head];
+        DelayQueue<queue_length>::dequeue();
+        return result;
+      }
   };
 
 #endif // INPUT_SHAPING
@@ -421,7 +433,7 @@ class Stepper {
 
     // Delta error variables for the Bresenham line tracer
     static xyze_long_t delta_error;
-    static xyze_ulong_t advance_dividend;
+    static xyze_long_t advance_dividend;
     static uint32_t advance_divisor,
                     step_events_completed,  // The number of step events executed in the current block
                     accelerate_until,       // The point from where we need to stop acceleration
@@ -448,12 +460,16 @@ class Stepper {
 
     #if ENABLED(INPUT_SHAPING)
       #if HAS_SHAPING_X
-        static DelayQueue<SHAPING_BUFFER_X> shaping_queue_x;
-        static constexpr shaping_time_t     shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_X) / 2;
+        static DelayQueue<SHAPING_BUFFER_X>       shaping_queue_x;
+        static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_x;
+        static int32_t                            shaping_dividend_x;
+        static constexpr shaping_time_t           shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_X) / 2;
       #endif
       #if HAS_SHAPING_Y
-        static DelayQueue<SHAPING_BUFFER_Y> shaping_queue_y;
-        static constexpr shaping_time_t     shaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_Y) / 2;
+        static DelayQueue<SHAPING_BUFFER_Y>       shaping_queue_y;
+        static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_y;
+        static int32_t                            shaping_dividend_y;
+        static constexpr shaping_time_t           shaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_Y) / 2;
       #endif
     #endif
 
@@ -562,8 +578,6 @@ class Stepper {
       axis_did_move = 0;
       planner.release_current_block();
       TERN_(LIN_ADVANCE, la_interval = nextAdvanceISR = LA_ADV_NEVER);
-      TERN_(HAS_SHAPING_X, shaping_queue_x.purge());
-      TERN_(HAS_SHAPING_Y, shaping_queue_y.purge());
     }
 
     // Quickly stop all steppers
