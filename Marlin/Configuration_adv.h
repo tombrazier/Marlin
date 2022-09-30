@@ -1047,6 +1047,7 @@
   #define SHAPING_FREQ_Y    40  // (Hz) The dominant resonant frequency of the Y axis.
   #define SHAPING_BUFFER_X 101  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_X * 2).
   #define SHAPING_BUFFER_Y 101  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_Y * 2).
+  #define SHAPING_SEGMENTS  10  // Maximum number of segments that could be processed in max(ISHAPING_FREQ_X, ISHAPING_FREQ_Y) / 2 seconds.
 #endif
 
 #define AXIS_RELATIVE_MODES { false, false, false, false }
