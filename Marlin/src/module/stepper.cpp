@@ -1655,7 +1655,7 @@ void Stepper::pulse_phase_isr() {
       } \
     }while(0)
 
-    #define PULSE_PREP_INPUT_SHAPING(AXIS) do{ \
+    #define PULSE_PREP_SHAPING(AXIS) do{ \
       delta_error[_AXIS(AXIS)] += advance_dividend[_AXIS(AXIS)]; \
       step_needed[_AXIS(AXIS)] = (delta_error[_AXIS(AXIS)] >= 0x20000000l); \
       if (step_needed[_AXIS(AXIS)]) { \
@@ -1793,10 +1793,10 @@ void Stepper::pulse_phase_isr() {
 
       // Determine if pulses are needed
       #if HAS_X_STEP
-        TERN(HAS_SHAPING_X, PULSE_PREP_INPUT_SHAPING(X), PULSE_PREP(X));
+        TERN(HAS_SHAPING_X, PULSE_PREP_SHAPING(X), PULSE_PREP(X));
       #endif
       #if HAS_Y_STEP
-        TERN(HAS_SHAPING_Y, PULSE_PREP_INPUT_SHAPING(Y), PULSE_PREP(Y));
+        TERN(HAS_SHAPING_Y, PULSE_PREP_SHAPING(Y), PULSE_PREP(Y));
       #endif
       #if HAS_Z_STEP
         PULSE_PREP(Z);
@@ -1933,7 +1933,7 @@ void Stepper::pulse_phase_isr() {
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
-    PULSE_PREP_INPUT_SHAPING(X);
+    PULSE_PREP_SHAPING(X);
     PULSE_START(X);
 
     TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
@@ -1954,7 +1954,7 @@ void Stepper::pulse_phase_isr() {
 
     // echo step behaviour
     xyze_bool_t step_needed{0};
-    PULSE_PREP_INPUT_SHAPING(Y);
+    PULSE_PREP_SHAPING(Y);
     PULSE_START(Y);
 
     TERN_(I2S_STEPPER_STREAM, i2s_push_sample());
