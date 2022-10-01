@@ -316,13 +316,19 @@ constexpr ena_mask_t enable_overlap[] = {
 
   typedef IF<ENABLED(__AVR__), uint16_t, uint32_t>::type shaping_time_t;
 
-  template <int queue_length> class DelayQueue {
+  class DelayNowTimer {
+    private:
+      static shaping_time_t now;
+    public:
+      static void decrement_delays(const shaping_time_t interval) { now += interval; }
+  };
+
+  template <int queue_length> class DelayQueue : public DelayNowTimer {
     protected:
-      shaping_time_t now = 0, times[queue_length];
+      shaping_time_t times[queue_length];
       uint16_t head = 0, tail = 0;
 
     public:
-      void decrement_delays(const shaping_time_t interval) { now += interval; }
       void enqueue(const shaping_time_t delay) {
         times[tail] = now + delay;
         if (++tail == queue_length) tail = 0;
