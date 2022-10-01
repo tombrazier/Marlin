@@ -32,6 +32,10 @@
   #include "../../feature/caselight.h"
 #endif
 
+#if ENABLED(HAS_STM32_UID) && !defined(MACHINE_UUID)
+  #include "../../libs/hex_print.h"
+#endif
+
 //#define MINIMAL_CAP_LINES // Don't even mention the disabled capabilities
 
 #if ENABLED(EXTENDED_CAPABILITIES_REPORT)
@@ -59,19 +63,36 @@
  *       the capability is not present.
  */
 void GcodeSuite::M115() {
-  SERIAL_ECHOLNPGM(
-    "FIRMWARE_NAME:Marlin " DETAILED_BUILD_VERSION " (" __DATE__ " " __TIME__ ") "
-    "SOURCE_CODE_URL:" SOURCE_CODE_URL " "
-    "PROTOCOL_VERSION:" PROTOCOL_VERSION " "
-    "MACHINE_TYPE:" MACHINE_NAME " "
-    "EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS) " "
+  SERIAL_ECHOPGM("FIRMWARE_NAME:Marlin"
+    " " DETAILED_BUILD_VERSION " (" __DATE__ " " __TIME__ ")"
+    " SOURCE_CODE_URL:" SOURCE_CODE_URL
+    " PROTOCOL_VERSION:" PROTOCOL_VERSION
+    " MACHINE_TYPE:" MACHINE_NAME
+    " EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS)
     #if NUM_AXES != XYZ
-      "AXIS_COUNT:" STRINGIFY(NUM_AXES) " "
+      " AXIS_COUNT:" STRINGIFY(NUM_AXES)
     #endif
     #ifdef MACHINE_UUID
-      "UUID:" MACHINE_UUID
+      " UUID:" MACHINE_UUID
     #endif
   );
+
+  // STM32UID:111122223333
+  #if ENABLED(HAS_STM32_UID) && !defined(MACHINE_UUID)
+    // STM32 based devices output the CPU device serial number
+    // Used by LumenPnP / OpenPNP to keep track of unique hardware/configurations
+    // https://github.com/opulo-inc/lumenpnp
+    // Although this code should work on all STM32 based boards
+    SERIAL_ECHOPGM(" UUID:");
+    uint32_t *uid_address = (uint32_t*)UID_BASE;
+    LOOP_L_N(i, 3) {
+      const uint32_t UID = uint32_t(READ_REG(*(uid_address)));
+      uid_address += 4U;
+      for (int B = 24; B >= 0; B -= 8) print_hex_byte(UID >> B);
+    }
+  #endif
+
+  SERIAL_EOL();
 
   #if ENABLED(EXTENDED_CAPABILITIES_REPORT)
 
@@ -129,6 +150,13 @@ void GcodeSuite::M115() {
     // TOGGLE_LIGHTS (M355)
     cap_line(F("TOGGLE_LIGHTS"), ENABLED(CASE_LIGHT_ENABLE));
     cap_line(F("CASE_LIGHT_BRIGHTNESS"), TERN0(CASE_LIGHT_ENABLE, caselight.has_brightness()));
+
+    // SPINDLE AND LASER CONTROL (M3, M4, M5)
+    #if ENABLED(SPINDLE_FEATURE)
+      cap_line(F("SPINDLE"), true);
+    #elif ENABLED(LASER_FEATURE)
+      cap_line(F("LASER"), true);
+    #endif
 
     // EMERGENCY_PARSER (M108, M112, M410, M876)
     cap_line(F("EMERGENCY_PARSER"), ENABLED(EMERGENCY_PARSER));
