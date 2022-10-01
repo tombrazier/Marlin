@@ -2478,9 +2478,19 @@ uint32_t Stepper::block_phase_isr() {
       TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 29) / step_event_count);
       TERN_(HAS_SHAPING_Y, if (TEST(current_block->direction_bits, Y_AXIS)) advance_dividend.y = -advance_dividend.y);
       TERN_(HAS_SHAPING_Y, SET_BIT_TO(current_block->direction_bits, Y_AXIS, TEST(last_direction_bits, Y_AXIS)));
-      // finally, the scaling operation above introduces rounding errors which must now be removed
-      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + ((0x40000000L - advance_dividend.x * step_event_count) & 0x3fffffffUL));
-      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + ((0x40000000L - advance_dividend.y * step_event_count) & 0x3fffffffUL));
+
+      // Finally, the scaling operation above introduces rounding errors which must now be removed.
+      // For this segment, there will be step_event_count * 2 calls to the Bresenham logic
+      // so delta_error will be incremented by advance_dividend this many times with each addition modulo 0x40000000
+      // so delta_error will end up changing by (advance_dividend.x * step_event_count * 2) % 0x40000000.
+      // For a divisor which is a power of 2, modulo is the same as as a bitmask, i.e.
+      // (advance_dividend.x * step_event_count * 2) & 0x3fffffff.
+      // The total change in delta_error should actually be zero so we need to increase delta_error by
+      // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3fffffff)
+      // And this needs to be modulo 0x40000000 and adjusted to the range -0x20000000 to 0x20000000.
+      // Adding and subtracting 0x20000000 inside the outside the modulo acheives this.
+      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count * 2) & 0x3fffffffUL));
+      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count * 2) & 0x3fffffffUL));
 
       // plan the change of values for advance_dividend for the input shaping echoes
       TERN_(HAS_SHAPING_X, shaping_dividend_queue_x.enqueue(shaping_delay_x, advance_dividend.x));
