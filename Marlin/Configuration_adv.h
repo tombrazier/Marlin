@@ -1054,9 +1054,6 @@
 //
 // Apply zero vibration (ZV) input shaping to X and/or Y movements.
 //
-// Do not use with lasers!
-// Do not use with direct stepping!
-//
 //#define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
   #define SHAPING_FREQ_X    40  // (Hz) The dominant resonant frequency of the X axis.
