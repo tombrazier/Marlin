@@ -2485,13 +2485,13 @@ uint32_t Stepper::block_phase_isr() {
       // so delta_error will be incremented by advance_dividend this many times with each addition modulo 0x40000000
       // so delta_error will end up changing by (advance_dividend.x * step_event_count * 2) % 0x40000000.
       // For a divisor which is a power of 2, modulo is the same as as a bitmask, i.e.
-      // (advance_dividend.x * step_event_count * 2) & 0x3fffffff.
+      // (advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF.
       // The total change in delta_error should actually be zero so we need to increase delta_error by
-      // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3fffffff)
+      // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF)
       // And this needs to be modulo 0x40000000 and adjusted to the range -0x20000000 to 0x20000000.
       // Adding and subtracting 0x20000000 inside the outside the modulo acheives this.
-      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count * 2) & 0x3fffffffUL));
-      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count * 2) & 0x3fffffffUL));
+      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count * 2) & 0X3FFFFFFFUL));
+      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count * 2) & 0X3FFFFFFFUL));
 
       // plan the change of values for advance_dividend for the input shaping echoes
       TERN_(HAS_SHAPING_X, shaping_dividend_queue_x.enqueue(shaping_delay_x, advance_dividend.x));
