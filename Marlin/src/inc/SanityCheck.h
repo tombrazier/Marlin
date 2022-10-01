@@ -4202,6 +4202,14 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
   #endif
 #endif
 
+#if ENABLED(INPUT_SHAPING) && ENABLED(DIRECT_STEPPING)
+  #error "INPUT_SHAPING cannot presently be used with DIRECT_STEPPING"
+#endif
+
+#if ENABLED(INPUT_SHAPING) && ENABLED(LASER_FEATURE)
+  #error "INPUT_SHAPING cannot presently be used with LASER_FEATURE"
+#endif
+
 // Misc. Cleanup
 #undef _TEST_PWM
 #undef _NUM_AXES_STR
