@@ -224,6 +224,10 @@ uint32_t Stepper::advance_divisor = 0,
            Stepper::la_advance_steps = 0;
 #endif
 
+#if ENABLED(INPUT_SHAPING)
+  shaping_time_t DelayNowTimer::now = 0;
+#endif
+
 #if HAS_SHAPING_X
   DelayQueue<SHAPING_BUFFER_X>      Stepper::shaping_queue_x;
   ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_x;
@@ -1505,12 +1509,14 @@ void Stepper::isr() {
 
     // Get the interval to the next ISR call
     const uint32_t interval = _MIN(
-      uint32_t(HAL_TIMER_TYPE_MAX),                     // Come back in a very long time
-      nextMainISR                                       // Time until the next Pulse / Block phase
-      OPTARG(HAS_SHAPING_X, shaping_queue_x.peek())     // Time until next input shaping echo for X
-      OPTARG(HAS_SHAPING_Y, shaping_queue_y.peek())     // Time until next input shaping echo for Y
-      OPTARG(LIN_ADVANCE, nextAdvanceISR)               // Come back early for Linear Advance?
-      OPTARG(INTEGRATED_BABYSTEPPING, nextBabystepISR)  // Come back early for Babystepping?
+      uint32_t(HAL_TIMER_TYPE_MAX),                           // Come back in a very long time
+      nextMainISR                                             // Time until the next Pulse / Block phase
+      OPTARG(HAS_SHAPING_X, shaping_dividend_queue_x.peek())  // Time until next input shaping dividend change for X
+      OPTARG(HAS_SHAPING_Y, shaping_dividend_queue_y.peek())  // Time until next input shaping dividend change for X
+      OPTARG(HAS_SHAPING_X, shaping_queue_x.peek())           // Time until next input shaping echo for X
+      OPTARG(HAS_SHAPING_Y, shaping_queue_y.peek())           // Time until next input shaping echo for Y
+      OPTARG(LIN_ADVANCE, nextAdvanceISR)                     // Come back early for Linear Advance?
+      OPTARG(INTEGRATED_BABYSTEPPING, nextBabystepISR)        // Come back early for Babystepping?
     );
 
     //
@@ -1521,8 +1527,8 @@ void Stepper::isr() {
     //
 
     nextMainISR -= interval;
-    TERN_(HAS_SHAPING_X, shaping_queue_x.decrement_delays(interval));
-    TERN_(HAS_SHAPING_Y, shaping_queue_y.decrement_delays(interval));
+
+    TERN_(INPUT_SHAPING, DelayNowTimer::decrement_delays(interval));
 
     #if ENABLED(LIN_ADVANCE)
       if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval;
