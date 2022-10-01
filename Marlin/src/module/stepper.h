@@ -323,37 +323,37 @@ constexpr ena_mask_t enable_overlap[] = {
       static void decrement_delays(const shaping_time_t interval) { now += interval; }
   };
 
-  template <int queue_length> class DelayQueue : public DelayNowTimer {
+  template <int SIZE> class DelayQueue : public DelayNowTimer {
     protected:
-      shaping_time_t times[queue_length];
+      shaping_time_t times[SIZE];
       uint16_t head = 0, tail = 0;
 
     public:
       void enqueue(const shaping_time_t delay) {
         times[tail] = now + delay;
-        if (++tail == queue_length) tail = 0;
+        if (++tail == SIZE) tail = 0;
       }
       shaping_time_t peek() {
         if (head != tail) return times[head] - now;
         else return shaping_time_t(-1);
       }
-      void dequeue() { if (++head == queue_length) head = 0; }
+      void dequeue() { if (++head == SIZE) head = 0; }
       void purge() { tail = head; }
       bool empty() { return head == tail; }
   };
 
-  template <int queue_length> class ParamDelayQueue : public DelayQueue<queue_length> {
+  template <int SIZE> class ParamDelayQueue : public DelayQueue<SIZE> {
     private:
-      int32_t params[queue_length];
+      int32_t params[SIZE];
 
     public:
       void enqueue(const shaping_time_t delay, const int32_t param) {
-        params[DelayQueue<queue_length>::tail] = param;
-        DelayQueue<queue_length>::enqueue(delay);
+        params[DelayQueue<SIZE>::tail] = param;
+        DelayQueue<SIZE>::enqueue(delay);
       }
       const int32_t dequeue() {
-        const int32_t result = params[DelayQueue<queue_length>::head];
-        DelayQueue<queue_length>::dequeue();
+        const int32_t result = params[DelayQueue<SIZE>::head];
+        DelayQueue<SIZE>::dequeue();
         return result;
       }
   };

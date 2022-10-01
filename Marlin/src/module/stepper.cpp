@@ -1520,7 +1520,7 @@ void Stepper::isr() {
       uint32_t(HAL_TIMER_TYPE_MAX),                           // Come back in a very long time
       nextMainISR                                             // Time until the next Pulse / Block phase
       OPTARG(HAS_SHAPING_X, shaping_dividend_queue_x.peek())  // Time until next input shaping dividend change for X
-      OPTARG(HAS_SHAPING_Y, shaping_dividend_queue_y.peek())  // Time until next input shaping dividend change for X
+      OPTARG(HAS_SHAPING_Y, shaping_dividend_queue_y.peek())  // Time until next input shaping dividend change for Y
       OPTARG(HAS_SHAPING_X, shaping_queue_x.peek())           // Time until next input shaping echo for X
       OPTARG(HAS_SHAPING_Y, shaping_queue_y.peek())           // Time until next input shaping echo for Y
       OPTARG(LIN_ADVANCE, nextAdvanceISR)                     // Come back early for Linear Advance?
