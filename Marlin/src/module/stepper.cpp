@@ -2489,7 +2489,7 @@ uint32_t Stepper::block_phase_isr() {
       // The total change in delta_error should actually be zero so we need to increase delta_error by
       // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF)
       // And this needs to be modulo 0x40000000 and adjusted to the range -0x20000000 to 0x20000000.
-      // Adding and subtracting 0x20000000 inside the outside the modulo acheives this.
+      // Adding and subtracting 0x20000000 inside the outside the modulo achieves this.
       TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count * 2) & 0X3FFFFFFFUL));
       TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count * 2) & 0X3FFFFFFFUL));
 
