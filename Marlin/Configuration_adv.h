@@ -1058,6 +1058,18 @@
 
 // @section motion
 
+//
+// Apply zero vibration (ZV) input shaping to X and/or Y movements.
+//
+//#define INPUT_SHAPING
+#if ENABLED(INPUT_SHAPING)
+  #define SHAPING_FREQ_X    40  // (Hz) The dominant resonant frequency of the X axis.
+  #define SHAPING_FREQ_Y    40  // (Hz) The dominant resonant frequency of the Y axis.
+  #define SHAPING_BUFFER_X 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_X * 2).
+  #define SHAPING_BUFFER_Y 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_Y * 2).
+  #define SHAPING_SEGMENTS  10  // Maximum number of segments that could be processed in max(ISHAPING_FREQ_X, ISHAPING_FREQ_Y) / 2 seconds.
+#endif
+
 #define AXIS_RELATIVE_MODES { false, false, false, false }
 
 // Add a Duplicate option for well-separated conjoined nozzles

@@ -4222,11 +4222,6 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
   #endif
 #endif
 
-// Misc. Cleanup
-#undef _TEST_PWM
-#undef _NUM_AXES_STR
-#undef _LOGICAL_AXES_STR
-
 // JTAG support in the HAL
 #if ENABLED(DISABLE_DEBUG) && !defined(JTAGSWD_DISABLE)
   #error "DISABLE_DEBUG is not supported for the selected MCU/Board."
@@ -4238,3 +4233,33 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
 #if ENABLED(XFER_BUILD) && !BOTH(BINARY_FILE_TRANSFER, CUSTOM_FIRMWARE_UPLOAD)
   #error "BINARY_FILE_TRANSFER and CUSTOM_FIRMWARE_UPLOAD are required for custom upload."
 #endif
+
+// Check requirements for Input Shaping
+#if ENABLED(INPUT_SHAPING) && defined(__AVR__)
+  #if HAS_SHAPING_X && (SHAPING_FREQ_X) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+    #if F_CPU > 16000000
+      #error "SHAPING_FREQ_X is below the minimum (20) for AVR 20MHz."
+    #else
+      #error "SHAPING_FREQ_X is below the minimum (16) for AVR 16MHz."
+    #endif
+  #elif HAS_SHAPING_Y && (SHAPING_FREQ_Y) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+    #if F_CPU > 16000000
+      #error "SHAPING_FREQ_Y is below the minimum (20) for AVR 20MHz."
+    #else
+      #error "SHAPING_FREQ_Y is below the minimum (16) for AVR 16MHz."
+    #endif
+  #endif
+#endif
+
+#if ENABLED(INPUT_SHAPING) && ENABLED(DIRECT_STEPPING)
+  #error "INPUT_SHAPING cannot presently be used with DIRECT_STEPPING"
+#endif
+
+#if ENABLED(INPUT_SHAPING) && ENABLED(LASER_FEATURE)
+  #error "INPUT_SHAPING cannot presently be used with LASER_FEATURE"
+#endif
+
+// Misc. Cleanup
+#undef _TEST_PWM
+#undef _NUM_AXES_STR
+#undef _LOGICAL_AXES_STR

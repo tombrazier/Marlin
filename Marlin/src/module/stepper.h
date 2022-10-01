@@ -312,6 +312,54 @@ constexpr ena_mask_t enable_overlap[] = {
 
 //static_assert(!any_enable_overlap(), "There is some overlap.");
 
+#if ENABLED(INPUT_SHAPING)
+
+  typedef IF<ENABLED(__AVR__), uint16_t, uint32_t>::type shaping_time_t;
+
+  class DelayNowTimer {
+    private:
+      static shaping_time_t now;
+    public:
+      static void decrement_delays(const shaping_time_t interval) { now += interval; }
+  };
+
+  template <int queue_length> class DelayQueue : public DelayNowTimer {
+    protected:
+      shaping_time_t times[queue_length];
+      uint16_t head = 0, tail = 0;
+
+    public:
+      void enqueue(const shaping_time_t delay) {
+        times[tail] = now + delay;
+        if (++tail == queue_length) tail = 0;
+      }
+      shaping_time_t peek() {
+        if (head != tail) return times[head] - now;
+        else return shaping_time_t(-1);
+      }
+      void dequeue() { if (++head == queue_length) head = 0; }
+      void purge() { tail = head; }
+      bool empty() { return head == tail; }
+  };
+
+  template <int queue_length> class ParamDelayQueue : public DelayQueue<queue_length> {
+    private:
+      int32_t params[queue_length];
+
+    public:
+      void enqueue(const shaping_time_t delay, const int32_t param) {
+        params[DelayQueue<queue_length>::tail] = param;
+        DelayQueue<queue_length>::enqueue(delay);
+      }
+      const int32_t dequeue() {
+        const int32_t result = params[DelayQueue<queue_length>::head];
+        DelayQueue<queue_length>::dequeue();
+        return result;
+      }
+  };
+
+#endif // INPUT_SHAPING
+
 //
 // Stepper class definition
 //
@@ -391,7 +439,7 @@ class Stepper {
 
     // Delta error variables for the Bresenham line tracer
     static xyze_long_t delta_error;
-    static xyze_ulong_t advance_dividend;
+    static xyze_long_t advance_dividend;
     static uint32_t advance_divisor,
                     step_events_completed,  // The number of step events executed in the current block
                     accelerate_until,       // The point from where we need to stop acceleration
@@ -414,6 +462,21 @@ class Stepper {
         static bool A_negative;    // If A coefficient was negative
       #endif
       static bool bezier_2nd_half; // If Bézier curve has been initialized or not
+    #endif
+
+    #if ENABLED(INPUT_SHAPING)
+      #if HAS_SHAPING_X
+        static DelayQueue<SHAPING_BUFFER_X>       shaping_queue_x;
+        static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_x;
+        static int32_t                            shaping_dividend_x;
+        static constexpr shaping_time_t           shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_X) / 2;
+      #endif
+      #if HAS_SHAPING_Y
+        static DelayQueue<SHAPING_BUFFER_Y>       shaping_queue_y;
+        static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_y;
+        static int32_t                            shaping_dividend_y;
+        static constexpr shaping_time_t           shaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_Y) / 2;
+      #endif
     #endif
 
     #if ENABLED(LIN_ADVANCE)
@@ -474,6 +537,13 @@ class Stepper {
 
     // The stepper block processing ISR phase
     static uint32_t block_phase_isr();
+
+    #if HAS_SHAPING_X
+      static void shaping_isr_x();
+    #endif
+    #if HAS_SHAPING_Y
+      static void shaping_isr_y();
+    #endif
 
     #if ENABLED(LIN_ADVANCE)
       // The Linear advance ISR phase
