@@ -681,7 +681,7 @@
 #if HAS_MAX_TC
 
   // Translate old _SS, _CS, _SCK, _DO, _DI, _MISO, and _MOSI PIN defines.
-  #if TEMP_SENSOR_0_IS_MAX_TC || (TEMP_SENSOR_REDUNDANT_IS_MAX_TC && REDUNDANT_TEMP_MATCH(SOURCE, E1))
+  #if TEMP_SENSOR_IS_MAX_TC(0) || (TEMP_SENSOR_IS_MAX_TC(REDUNDANT) && REDUNDANT_TEMP_MATCH(SOURCE, E1))
 
     #if !PIN_EXISTS(TEMP_0_CS) // SS, CS
       #if PIN_EXISTS(MAX6675_SS)
@@ -748,9 +748,9 @@
       #endif
     #endif
 
-  #endif // TEMP_SENSOR_0_IS_MAX_TC
+  #endif // TEMP_SENSOR_IS_MAX_TC(0)
 
-  #if TEMP_SENSOR_1_IS_MAX_TC || (TEMP_SENSOR_REDUNDANT_IS_MAX_TC && REDUNDANT_TEMP_MATCH(SOURCE, E1))
+  #if TEMP_SENSOR_IS_MAX_TC(1) || (TEMP_SENSOR_IS_MAX_TC(REDUNDANT) && REDUNDANT_TEMP_MATCH(SOURCE, E1))
 
     #if !PIN_EXISTS(TEMP_1_CS) // SS2, CS2
       #if PIN_EXISTS(MAX6675_SS2)
@@ -817,7 +817,7 @@
       #endif
     #endif
 
-  #endif // TEMP_SENSOR_1_IS_MAX_TC
+  #endif // TEMP_SENSOR_IS_MAX_TC(1)
 
   //
   // User-defined thermocouple libraries
@@ -2656,7 +2656,7 @@
 //
 // ADC Temp Sensors (Thermistor or Thermocouple with amplifier ADC interface)
 //
-#define HAS_ADC_TEST(P) (PIN_EXISTS(TEMP_##P) && TEMP_SENSOR_##P != 0 && NONE(TEMP_SENSOR_##P##_IS_MAX_TC, TEMP_SENSOR_##P##_IS_DUMMY))
+#define HAS_ADC_TEST(P) (TEMP_SENSOR(P) && PIN_EXISTS(TEMP_##P) && !TEMP_SENSOR_IS_MAX_TC(P) && !TEMP_SENSOR_##P##_IS_DUMMY)
 #if HOTENDS > 0 && HAS_ADC_TEST(0)
   #define HAS_TEMP_ADC_0 1
 #endif
@@ -2700,7 +2700,7 @@
   #define HAS_TEMP_ADC_REDUNDANT 1
 #endif
 
-#define HAS_TEMP(N) ANY(HAS_TEMP_ADC_##N, TEMP_SENSOR_##N##_IS_MAX_TC, TEMP_SENSOR_##N##_IS_DUMMY)
+#define HAS_TEMP(N) (TEMP_SENSOR_IS_MAX_TC(N) || EITHER(HAS_TEMP_ADC_##N, TEMP_SENSOR_##N##_IS_DUMMY))
 #if HAS_HOTEND && HAS_TEMP(0)
   #define HAS_TEMP_HOTEND 1
 #endif
@@ -3124,73 +3124,6 @@
   #define HAS_MICROSTEPS 1
 #endif
 
-#if HAS_MICROSTEPS
-
-  // MS1 MS2 MS3 Stepper Driver Microstepping mode table
-  #ifndef MICROSTEP1
-    #define MICROSTEP1 LOW,LOW,LOW
-  #endif
-  #if ENABLED(HEROIC_STEPPER_DRIVERS)
-    #ifndef MICROSTEP128
-      #define MICROSTEP128 LOW,HIGH,LOW
-    #endif
-  #else
-    #ifndef MICROSTEP2
-      #define MICROSTEP2 HIGH,LOW,LOW
-    #endif
-    #ifndef MICROSTEP4
-      #define MICROSTEP4 LOW,HIGH,LOW
-    #endif
-  #endif
-  #ifndef MICROSTEP8
-    #define MICROSTEP8 HIGH,HIGH,LOW
-  #endif
-  #ifdef __SAM3X8E__
-    #if MB(ALLIGATOR)
-      #ifndef MICROSTEP16
-        #define MICROSTEP16 LOW,LOW,LOW
-      #endif
-      #ifndef MICROSTEP32
-        #define MICROSTEP32 HIGH,HIGH,LOW
-      #endif
-    #else
-      #ifndef MICROSTEP16
-        #define MICROSTEP16 HIGH,HIGH,LOW
-      #endif
-    #endif
-  #else
-    #ifndef MICROSTEP16
-      #define MICROSTEP16 HIGH,HIGH,LOW
-    #endif
-  #endif
-
-  #ifdef MICROSTEP1
-    #define HAS_MICROSTEP1 1
-  #endif
-  #ifdef MICROSTEP2
-    #define HAS_MICROSTEP2 1
-  #endif
-  #ifdef MICROSTEP4
-    #define HAS_MICROSTEP4 1
-  #endif
-  #ifdef MICROSTEP8
-    #define HAS_MICROSTEP8 1
-  #endif
-  #ifdef MICROSTEP16
-    #define HAS_MICROSTEP16 1
-  #endif
-  #ifdef MICROSTEP32
-    #define HAS_MICROSTEP32 1
-  #endif
-  #ifdef MICROSTEP64
-    #define HAS_MICROSTEP64 1
-  #endif
-  #ifdef MICROSTEP128
-    #define HAS_MICROSTEP128 1
-  #endif
-
-#endif // HAS_MICROSTEPS
-
 /**
  * Heater signal inversion defaults
  */
@@ -3306,7 +3239,15 @@
 #endif
 
 #if HAS_TEMPERATURE && ANY(HAS_MARLINUI_MENU, HAS_DWIN_E3V2, HAS_DGUS_LCD_CLASSIC)
-  #ifdef PREHEAT_6_LABEL
+  #ifdef PREHEAT_10_LABEL
+    #define PREHEAT_COUNT 10
+  #elif defined(PREHEAT_9_LABEL)
+    #define PREHEAT_COUNT 9
+  #elif defined(PREHEAT_8_LABEL)
+    #define PREHEAT_COUNT 8
+  #elif defined(PREHEAT_7_LABEL)
+    #define PREHEAT_COUNT 7
+  #elif defined(PREHEAT_6_LABEL)
     #define PREHEAT_COUNT 6
   #elif defined(PREHEAT_5_LABEL)
     #define PREHEAT_COUNT 5
