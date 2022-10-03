@@ -4205,17 +4205,17 @@ static_assert(_PLUS_TEST(4), "HOMING_FEEDRATE_MM_M values must be positive.");
 
 // Check requirements for Input Shaping
 #if ENABLED(INPUT_SHAPING) && defined(__AVR__)
-  #if HAS_SHAPING_X && (SHAPING_FREQ_X) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+  #if HAS_SHAPING_X
     #if F_CPU > 16000000
-      #error "SHAPING_FREQ_X is below the minimum (20) for AVR 20MHz."
+      static_assert((SHAPING_FREQ_X) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_X is below the minimum (20) for AVR 20MHz.");
     #else
-      #error "SHAPING_FREQ_X is below the minimum (16) for AVR 16MHz."
+      static_assert((SHAPING_FREQ_X) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_X is below the minimum (16) for AVR 16MHz.");
     #endif
-  #elif HAS_SHAPING_Y && (SHAPING_FREQ_Y) * 2 * 0x10000 < (STEPPER_TIMER_RATE)
+  #elif HAS_SHAPING_Y
     #if F_CPU > 16000000
-      #error "SHAPING_FREQ_Y is below the minimum (20) for AVR 20MHz."
+      static_assert((SHAPING_FREQ_Y) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_Y is below the minimum (20) for AVR 20MHz.");
     #else
-      #error "SHAPING_FREQ_Y is below the minimum (16) for AVR 16MHz."
+      static_assert((SHAPING_FREQ_Y) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_Y is below the minimum (16) for AVR 16MHz.");
     #endif
   #endif
 #endif

@@ -1074,10 +1074,10 @@
     #undef SHAPING_FREQ_Y
     #undef SHAPING_BUFFER_Y
   #endif
-  #if SHAPING_FREQ_X && SHAPING_BUFFER_X
+  #if defined(SHAPING_FREQ_X) && SHAPING_BUFFER_X
     #define HAS_SHAPING_X 1
   #endif
-  #if SHAPING_FREQ_Y && SHAPING_BUFFER_Y
+  #if defined(SHAPING_FREQ_Y) && SHAPING_BUFFER_Y
     #define HAS_SHAPING_Y 1
   #endif
 #endif
