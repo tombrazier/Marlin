@@ -466,12 +466,14 @@ class Stepper {
 
     #if ENABLED(INPUT_SHAPING)
       #if HAS_SHAPING_X
+        static uint8_t                            shaping_factor_x;
         static DelayQueue<SHAPING_BUFFER_X>       shaping_queue_x;
         static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_x;
         static int32_t                            shaping_dividend_x;
         static constexpr shaping_time_t           shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_X) / 2;
       #endif
       #if HAS_SHAPING_Y
+        static uint8_t                            shaping_factor_y;
         static DelayQueue<SHAPING_BUFFER_Y>       shaping_queue_y;
         static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_y;
         static int32_t                            shaping_dividend_y;
@@ -697,6 +699,10 @@ class Stepper {
       last_direction_bits = bits;
       set_directions();
     }
+
+    #if ENABLED(INPUT_SHAPING)
+      static void set_shaping_damping_ratio(const AxisEnum axis, const float zeta);
+    #endif
 
   private:
 

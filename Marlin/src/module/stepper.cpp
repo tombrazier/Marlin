@@ -237,11 +237,13 @@ uint32_t Stepper::advance_divisor = 0,
 #endif
 
 #if HAS_SHAPING_X
+  uint8_t                           Stepper::shaping_factor_x;
   DelayQueue<SHAPING_BUFFER_X>      Stepper::shaping_queue_x;
   ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_x;
   int32_t                           Stepper::shaping_dividend_x;
 #endif
 #if HAS_SHAPING_Y
+  uint8_t                           Stepper::shaping_factor_y;
   DelayQueue<SHAPING_BUFFER_Y>      Stepper::shaping_queue_y;
   ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_y;
   int32_t                           Stepper::shaping_dividend_y;
@@ -2473,14 +2475,14 @@ uint32_t Stepper::block_phase_isr() {
       // for input shaped axes, advance_divisor is replaced with 0x40000000
       // and steps are repeated twice so dividends have to be scaled and halved
       // and the dividend is directional, i.e. signed
-      TERN_(HAS_SHAPING_X, advance_dividend.x = (uint64_t(current_block->steps.x) << 29) / step_event_count);
+      TERN_(HAS_SHAPING_X, advance_dividend.x = (uint64_t(current_block->steps.x) << 30) / step_event_count);
       TERN_(HAS_SHAPING_X, if (TEST(current_block->direction_bits, X_AXIS)) advance_dividend.x = -advance_dividend.x);
       TERN_(HAS_SHAPING_X, SET_BIT_TO(current_block->direction_bits, X_AXIS, TEST(last_direction_bits, X_AXIS)));
-      TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 29) / step_event_count);
+      TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 30) / step_event_count);
       TERN_(HAS_SHAPING_Y, if (TEST(current_block->direction_bits, Y_AXIS)) advance_dividend.y = -advance_dividend.y);
       TERN_(HAS_SHAPING_Y, SET_BIT_TO(current_block->direction_bits, Y_AXIS, TEST(last_direction_bits, Y_AXIS)));
 
-      // Finally, the scaling operation above introduces rounding errors which must now be removed.
+      // The scaling operation above introduces rounding errors which must now be removed.
       // For this segment, there will be step_event_count * 2 calls to the Bresenham logic
       // so delta_error will be incremented by advance_dividend this many times with each addition modulo 0x40000000
       // so delta_error will end up changing by (advance_dividend.x * step_event_count * 2) % 0x40000000.
@@ -2490,12 +2492,24 @@ uint32_t Stepper::block_phase_isr() {
       // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF)
       // And this needs to be modulo 0x40000000 and adjusted to the range -0x20000000 to 0x20000000.
       // Adding and subtracting 0x20000000 inside the outside the modulo achieves this.
-      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count * 2) & 0X3FFFFFFFUL));
-      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count * 2) & 0X3FFFFFFFUL));
+      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count) & 0x3fffffffUL));
+      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count) & 0x3fffffffUL));
+
+      // when there is damping, the signal and its echo have different amplitudes
+      #if ENABLED(HAS_SHAPING_X)
+        int32_t echo_x = shaping_factor_x * (advance_dividend.x >> 7);
+      #endif
+      #if ENABLED(HAS_SHAPING_Y)
+        int32_t echo_y = shaping_factor_y * (advance_dividend.y >> 7);
+      #endif
 
       // plan the change of values for advance_dividend for the input shaping echoes
-      TERN_(HAS_SHAPING_X, shaping_dividend_queue_x.enqueue(shaping_delay_x, advance_dividend.x));
-      TERN_(HAS_SHAPING_Y, shaping_dividend_queue_y.enqueue(shaping_delay_y, advance_dividend.y));
+      TERN_(HAS_SHAPING_X, shaping_dividend_queue_x.enqueue(shaping_delay_x, echo_x));
+      TERN_(HAS_SHAPING_Y, shaping_dividend_queue_y.enqueue(shaping_delay_y, echo_y));
+
+      // apply the adjustment to the primary signal
+      TERN_(HAS_SHAPING_X, advance_dividend.x -= echo_x);
+      TERN_(HAS_SHAPING_Y, advance_dividend.y -= echo_y);
 
       // No step events completed so far
       step_events_completed = 0;
@@ -2940,7 +2954,36 @@ void Stepper::init() {
     initialized = true;
     digipot_init();
   #endif
+
+  // Init input shaping
+    TERN_(HAS_SHAPING_X, set_shaping_damping_ratio(X_AXIS, SHAPING_ZETA_X));
+    TERN_(HAS_SHAPING_Y, set_shaping_damping_ratio(Y_AXIS, SHAPING_ZETA_Y));
 }
+
+#if ENABLED(INPUT_SHAPING)
+  /**
+   * Calculate a fixed point factor to apply to the signal and its echo
+   * when shaping an axis.
+   */
+  void Stepper::set_shaping_damping_ratio(const AxisEnum axis, const float zeta) {
+    // from the damping ratio, get a factor that can be applied to advance_dividend for fixed point maths
+    // for ZV, we use amplitudes 1/(1+K) and K/(1+K) where K = exp(-zeta * M_PI / sqrt(1.0f - zeta * zeta))
+    // which can be converted to 1:7 fixed point with an excellent fit with a 3rd order polynomial
+    float shaping_factor;
+    if (zeta <= 0.0f) shaping_factor = 64.0f;
+    else if (zeta >= 1.0f) shaping_factor = 0.0f;
+    else {
+      shaping_factor = 64.44056192 + -99.02008832 * zeta;
+      const float zeta2 = zeta * zeta;
+      shaping_factor += -7.58095488 * zeta2;
+      const float zeta3 = zeta2 * zeta;
+      shaping_factor += 43.073216 * zeta3;
+    }
+
+    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) shaping_factor_x = floor(shaping_factor));
+    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) shaping_factor_y = floor(shaping_factor));
+  }
+#endif
 
 /**
  * Set the stepper positions directly in steps
