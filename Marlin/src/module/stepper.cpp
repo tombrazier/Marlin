@@ -1820,10 +1820,18 @@ void Stepper::pulse_phase_isr() {
 
       // Determine if pulses are needed
       #if HAS_X_STEP
-        TERN(HAS_SHAPING_X, PULSE_PREP_SHAPING(X, advance_dividend.x), PULSE_PREP(X));
+        #if HAS_SHAPING_X
+          PULSE_PREP_SHAPING(X, advance_dividend.x);
+        #else
+          PULSE_PREP(X);
+        #endif
       #endif
       #if HAS_Y_STEP
-        TERN(HAS_SHAPING_Y, PULSE_PREP_SHAPING(Y, advance_dividend.y), PULSE_PREP(Y));
+        #if HAS_SHAPING_Y
+          PULSE_PREP_SHAPING(Y, advance_dividend.y);
+        #else
+          PULSE_PREP(Y);
+        #endif
       #endif
       #if HAS_Z_STEP
         PULSE_PREP(Z);
