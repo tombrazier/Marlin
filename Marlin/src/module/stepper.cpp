@@ -1638,6 +1638,8 @@ void Stepper::pulse_phase_isr() {
       TERN_(INPUT_SHAPING_X, shaping_dividend_queue_x.purge());
       TERN_(INPUT_SHAPING_Y, shaping_queue_y.purge());
       TERN_(INPUT_SHAPING_Y, shaping_dividend_queue_y.purge());
+      TERN_(INPUT_SHAPING_X, delta_error.x = 0);
+      TERN_(INPUT_SHAPING_Y, delta_error.y = 0);
     }
   }
 
@@ -1677,17 +1679,17 @@ void Stepper::pulse_phase_isr() {
 
     #define PULSE_PREP_SHAPING(AXIS, DIVIDEND) do{ \
       delta_error[_AXIS(AXIS)] += (DIVIDEND); \
-      if (delta_error[_AXIS(AXIS)] <= -0x60000000L || delta_error[_AXIS(AXIS)] >= 0x60000000L) { \
+      if ((MAXDIR(AXIS) && delta_error[_AXIS(AXIS)] <= -0x30000000L) || (MINDIR(AXIS) && delta_error[_AXIS(AXIS)] >= 0x30000000L)) { \
         TBI(last_direction_bits, _AXIS(AXIS)); \
         DIR_WAIT_BEFORE(); \
         SET_STEP_DIR(AXIS); \
         DIR_WAIT_AFTER(); \
       } \
-      step_needed[_AXIS(AXIS)] = (MAXDIR(AXIS) && delta_error[_AXIS(AXIS)] >= 0x20000000L) || \
-                                 (MINDIR(AXIS) && delta_error[_AXIS(AXIS)] <= -0x20000000L); \
+      step_needed[_AXIS(AXIS)] = (MAXDIR(AXIS) && delta_error[_AXIS(AXIS)] >= 0x10000000L) || \
+                                 (MINDIR(AXIS) && delta_error[_AXIS(AXIS)] <= -0x10000000L); \
       if (step_needed[_AXIS(AXIS)]) { \
         count_position[_AXIS(AXIS)] += count_direction[_AXIS(AXIS)]; \
-        delta_error[_AXIS(AXIS)] += MAXDIR(AXIS) ? -0x40000000L : 0x40000000L; \
+        delta_error[_AXIS(AXIS)] += MAXDIR(AXIS) ? -0x20000000L : 0x20000000L; \
       } \
     }while(0)
 
@@ -2483,25 +2485,25 @@ uint32_t Stepper::block_phase_isr() {
       // for input shaped axes, advance_divisor is replaced with 0x40000000
       // and steps are repeated twice so dividends have to be scaled and halved
       // and the dividend is directional, i.e. signed
-      TERN_(HAS_SHAPING_X, advance_dividend.x = (uint64_t(current_block->steps.x) << 30) / step_event_count);
+      TERN_(HAS_SHAPING_X, advance_dividend.x = (uint64_t(current_block->steps.x) << 29) / step_event_count);
       TERN_(HAS_SHAPING_X, if (TEST(current_block->direction_bits, X_AXIS)) advance_dividend.x = -advance_dividend.x);
       TERN_(HAS_SHAPING_X, SET_BIT_TO(current_block->direction_bits, X_AXIS, TEST(last_direction_bits, X_AXIS)));
-      TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 30) / step_event_count);
+      TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 29) / step_event_count);
       TERN_(HAS_SHAPING_Y, if (TEST(current_block->direction_bits, Y_AXIS)) advance_dividend.y = -advance_dividend.y);
       TERN_(HAS_SHAPING_Y, SET_BIT_TO(current_block->direction_bits, Y_AXIS, TEST(last_direction_bits, Y_AXIS)));
 
       // The scaling operation above introduces rounding errors which must now be removed.
-      // For this segment, there will be step_event_count * 2 calls to the Bresenham logic
-      // so delta_error will be incremented by advance_dividend this many times with each addition modulo 0x40000000
-      // so delta_error will end up changing by (advance_dividend.x * step_event_count * 2) % 0x40000000.
+      // For this segment, there will be step_event_count calls to the Bresenham logic and the same number of echoes.
+      // For each pair of calls to the Bresenham logic, delta_error will increase by advance_dividend modulo 0x20000000
+      // so (e.g. for x) delta_error.x will end up changing by (advance_dividend.x * step_event_count) % 0x20000000.
       // For a divisor which is a power of 2, modulo is the same as as a bitmask, i.e.
-      // (advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF.
-      // The total change in delta_error should actually be zero so we need to increase delta_error by
-      // 0 - ((advance_dividend.x * step_event_count * 2) & 0x3FFFFFFF)
-      // And this needs to be modulo 0x40000000 and adjusted to the range -0x20000000 to 0x20000000.
-      // Adding and subtracting 0x20000000 inside the outside the modulo achieves this.
-      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x20000000L - ((0x20000000L + advance_dividend.x * step_event_count) & 0x3fffffffUL));
-      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x20000000L - ((0x20000000L + advance_dividend.y * step_event_count) & 0x3fffffffUL));
+      // (advance_dividend.x * step_event_count) & 0x1FFFFFFF.
+      // This segment's final change in delta_error should actually be zero so we need to increase delta_error by
+      // 0 - ((advance_dividend.x * step_event_count) & 0x1FFFFFFF)
+      // And this needs to be adjusted to the range -0x10000000 to 0x10000000.
+      // Adding and subtracting 0x10000000 inside the outside the modulo achieves this.
+      TERN_(HAS_SHAPING_X, delta_error.x = old_delta_error_x + 0x10000000L - ((0x10000000L + advance_dividend.x * step_event_count) & 0x1fffffffUL));
+      TERN_(HAS_SHAPING_Y, delta_error.y = old_delta_error_y + 0x10000000L - ((0x10000000L + advance_dividend.y * step_event_count) & 0x1fffffffUL));
 
       // when there is damping, the signal and its echo have different amplitudes
       #if ENABLED(HAS_SHAPING_X)
