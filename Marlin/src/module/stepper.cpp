@@ -237,16 +237,22 @@ uint32_t Stepper::advance_divisor = 0,
 #endif
 
 #if HAS_SHAPING_X
+  float                             Stepper::shaping_zeta_x;
   uint8_t                           Stepper::shaping_factor_x;
   DelayQueue<SHAPING_BUFFER_X>      Stepper::shaping_queue_x;
   ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_x;
   int32_t                           Stepper::shaping_dividend_x;
+  float                             Stepper::shaping_frequency_x;
+  shaping_time_t                    Stepper::shaping_delay_x;
 #endif
 #if HAS_SHAPING_Y
+  float                             Stepper::shaping_zeta_y;
   uint8_t                           Stepper::shaping_factor_y;
   DelayQueue<SHAPING_BUFFER_Y>      Stepper::shaping_queue_y;
   ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_y;
   int32_t                           Stepper::shaping_dividend_y;
+  float                             Stepper::shaping_frequency_y;
+  shaping_time_t                    Stepper::shaping_delay_y;
 #endif
 
 #if ENABLED(INTEGRATED_BABYSTEPPING)
@@ -2964,10 +2970,6 @@ void Stepper::init() {
     initialized = true;
     digipot_init();
   #endif
-
-  // Init input shaping
-    TERN_(HAS_SHAPING_X, set_shaping_damping_ratio(X_AXIS, SHAPING_ZETA_X));
-    TERN_(HAS_SHAPING_Y, set_shaping_damping_ratio(Y_AXIS, SHAPING_ZETA_Y));
 }
 
 #if ENABLED(INPUT_SHAPING)
@@ -2990,8 +2992,25 @@ void Stepper::init() {
       shaping_factor += 43.073216 * zeta3;
     }
 
-    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) shaping_factor_x = floor(shaping_factor));
-    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) shaping_factor_y = floor(shaping_factor));
+    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) { shaping_factor_x = floor(shaping_factor); shaping_zeta_x = zeta; })
+    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) { shaping_factor_y = floor(shaping_factor); shaping_zeta_y = zeta; })
+  }
+
+  float Stepper::get_shaping_damping_ratio(const AxisEnum axis) {
+    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) return shaping_zeta_x);
+    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) return shaping_zeta_y);
+    return -1;
+  }
+
+  void Stepper::set_shaping_frequency(const AxisEnum axis, const float freq) {
+    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) { shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / freq / 2; shaping_frequency_x = freq; })
+    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) { shaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / freq / 2; shaping_frequency_y = freq; })
+  }
+
+  float Stepper::get_shaping_frequency(const AxisEnum axis) {
+    TERN_(HAS_SHAPING_X, if (axis == X_AXIS) return shaping_frequency_x);
+    TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) return shaping_frequency_y);
+    return -1;
   }
 #endif
 
