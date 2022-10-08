@@ -2487,10 +2487,10 @@ uint32_t Stepper::block_phase_isr() {
       // and the dividend is directional, i.e. signed
       TERN_(HAS_SHAPING_X, advance_dividend.x = (uint64_t(current_block->steps.x) << 29) / step_event_count);
       TERN_(HAS_SHAPING_X, if (TEST(current_block->direction_bits, X_AXIS)) advance_dividend.x = -advance_dividend.x);
-      TERN_(HAS_SHAPING_X, SET_BIT_TO(current_block->direction_bits, X_AXIS, TEST(last_direction_bits, X_AXIS)));
+      TERN_(HAS_SHAPING_X, if (!shaping_queue_x.empty()) SET_BIT_TO(current_block->direction_bits, X_AXIS, TEST(last_direction_bits, X_AXIS)));
       TERN_(HAS_SHAPING_Y, advance_dividend.y = (uint64_t(current_block->steps.y) << 29) / step_event_count);
       TERN_(HAS_SHAPING_Y, if (TEST(current_block->direction_bits, Y_AXIS)) advance_dividend.y = -advance_dividend.y);
-      TERN_(HAS_SHAPING_Y, SET_BIT_TO(current_block->direction_bits, Y_AXIS, TEST(last_direction_bits, Y_AXIS)));
+      TERN_(HAS_SHAPING_Y, if (!shaping_queue_y.empty()) SET_BIT_TO(current_block->direction_bits, Y_AXIS, TEST(last_direction_bits, Y_AXIS)));
 
       // The scaling operation above introduces rounding errors which must now be removed.
       // For this segment, there will be step_event_count calls to the Bresenham logic and the same number of echoes.
