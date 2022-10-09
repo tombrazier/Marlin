@@ -466,18 +466,22 @@ class Stepper {
 
     #if ENABLED(INPUT_SHAPING)
       #if HAS_SHAPING_X
+        static float                              shaping_zeta_x;
         static uint8_t                            shaping_factor_x;
         static DelayQueue<SHAPING_BUFFER_X>       shaping_queue_x;
         static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_x;
         static int32_t                            shaping_dividend_x;
-        static constexpr shaping_time_t           shaping_delay_x = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_X) / 2;
+        static float                              shaping_frequency_x;
+        static shaping_time_t                     shaping_delay_x;
       #endif
       #if HAS_SHAPING_Y
+        static float                              shaping_zeta_y;
         static uint8_t                            shaping_factor_y;
         static DelayQueue<SHAPING_BUFFER_Y>       shaping_queue_y;
         static ParamDelayQueue<SHAPING_SEGMENTS>  shaping_dividend_queue_y;
         static int32_t                            shaping_dividend_y;
-        static constexpr shaping_time_t           shaping_delay_y = uint32_t(STEPPER_TIMER_RATE) / (SHAPING_FREQ_Y) / 2;
+        static float                              shaping_frequency_y;
+        static shaping_time_t                     shaping_delay_y;
       #endif
     #endif
 
@@ -702,6 +706,9 @@ class Stepper {
 
     #if ENABLED(INPUT_SHAPING)
       static void set_shaping_damping_ratio(const AxisEnum axis, const float zeta);
+      static float get_shaping_damping_ratio(const AxisEnum axis);
+      static void set_shaping_frequency(const AxisEnum axis, const float freq);
+      static float get_shaping_frequency(const AxisEnum axis);
     #endif
 
   private:

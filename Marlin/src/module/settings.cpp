@@ -36,7 +36,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V87"
+#define EEPROM_VERSION "V88"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -571,6 +571,16 @@ typedef struct SettingsDataStruct {
   //
   #if ENABLED(MPCTEMP)
     MPC_t mpc_constants[HOTENDS];                       // M306
+  #endif
+
+  //
+  // INPUT_SHAPING
+  //
+  #if ENABLED(INPUT_SHAPING)
+    float shaping_frequency_x; // M593 X F
+    float shaping_zeta_x;      // M593 X D
+    float shaping_frequency_y; // M593 Y F
+    float shaping_zeta_y;      // M593 Y D
   #endif
 
 } SettingsData;
@@ -1594,6 +1604,26 @@ void MarlinSettings::postprocess() {
     #endif
 
     //
+    // Input Shaping
+    ///
+    #if ENABLED(INPUT_SHAPING)
+      #if HAS_SHAPING_X
+        EEPROM_WRITE(stepper.get_shaping_frequency(X_AXIS));
+        EEPROM_WRITE(stepper.get_shaping_damping_ratio(X_AXIS));
+      #else
+        EEPROM_SKIP(40.f);
+        EEPROM_SKIP(0.f);
+      #endif
+      #if HAS_SHAPING_Y
+        EEPROM_WRITE(stepper.get_shaping_frequency(Y_AXIS));
+        EEPROM_WRITE(stepper.get_shaping_damping_ratio(Y_AXIS));
+      #else
+        EEPROM_SKIP(40.f);
+        EEPROM_SKIP(0.f);
+      #endif
+    #endif
+
+    //
     // Report final CRC and Data Size
     //
     if (!eeprom_error) {
@@ -2560,6 +2590,27 @@ void MarlinSettings::postprocess() {
       #endif
 
       //
+      // Input Shaping
+      //
+      #if ENABLED(INPUT_SHAPING)
+      {
+        float _freq_x, _zeta_x, _freq_y, _zeta_y;
+        EEPROM_READ(_freq_x);
+        EEPROM_READ(_zeta_x);
+        EEPROM_READ(_freq_y);
+        EEPROM_READ(_zeta_y);
+        #if HAS_SHAPING_X
+          stepper.set_shaping_frequency(X_AXIS, _freq_x);
+          stepper.set_shaping_damping_ratio(X_AXIS, _zeta_x);
+        #endif
+        #if HAS_SHAPING_Y
+          stepper.set_shaping_frequency(Y_AXIS, _freq_y);
+          stepper.set_shaping_damping_ratio(Y_AXIS, _zeta_y);
+        #endif
+      }
+      #endif
+
+      //
       // Validate Final Size and CRC
       //
       eeprom_error = size_error(eeprom_index - (EEPROM_OFFSET));
@@ -3318,6 +3369,20 @@ void MarlinSettings::reset() {
       #endif
       constants.filament_heat_capacity_permm = _filament_heat_capacity_permm[e];
     }
+  #endif
+
+  //
+  // Input Shaping
+  //
+  #if ENABLED(INPUT_SHAPING)
+    #if HAS_SHAPING_X
+      stepper.set_shaping_frequency(X_AXIS, SHAPING_FREQ_X);
+      stepper.set_shaping_damping_ratio(X_AXIS, SHAPING_ZETA_X);
+    #endif
+    #if HAS_SHAPING_Y
+      stepper.set_shaping_frequency(Y_AXIS, SHAPING_FREQ_Y);
+      stepper.set_shaping_damping_ratio(Y_AXIS, SHAPING_ZETA_Y);
+    #endif
   #endif
 
   postprocess();
