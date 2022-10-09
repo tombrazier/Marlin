@@ -237,22 +237,22 @@ uint32_t Stepper::advance_divisor = 0,
 #endif
 
 #if HAS_SHAPING_X
-  float                             Stepper::shaping_zeta_x;
-  uint8_t                           Stepper::shaping_factor_x;
-  DelayQueue<SHAPING_BUFFER_X>      Stepper::shaping_queue_x;
-  ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_x;
-  int32_t                           Stepper::shaping_dividend_x;
-  float                             Stepper::shaping_frequency_x;
-  shaping_time_t                    Stepper::shaping_delay_x;
+  float                                       Stepper::shaping_zeta_x;
+  uint8_t                                     Stepper::shaping_factor_x;
+  DelayQueue<Stepper::shaping_buffer_x>       Stepper::shaping_queue_x;
+  ParamDelayQueue<Stepper::shaping_segments>  Stepper::shaping_dividend_queue_x;
+  int32_t                                     Stepper::shaping_dividend_x;
+  float                                       Stepper::shaping_frequency_x;
+  shaping_time_t                              Stepper::shaping_delay_x;
 #endif
 #if HAS_SHAPING_Y
-  float                             Stepper::shaping_zeta_y;
-  uint8_t                           Stepper::shaping_factor_y;
-  DelayQueue<SHAPING_BUFFER_Y>      Stepper::shaping_queue_y;
-  ParamDelayQueue<SHAPING_SEGMENTS> Stepper::shaping_dividend_queue_y;
-  int32_t                           Stepper::shaping_dividend_y;
-  float                             Stepper::shaping_frequency_y;
-  shaping_time_t                    Stepper::shaping_delay_y;
+  float                                       Stepper::shaping_zeta_y;
+  uint8_t                                     Stepper::shaping_factor_y;
+  DelayQueue<Stepper::shaping_buffer_y>       Stepper::shaping_queue_y;
+  ParamDelayQueue<Stepper::shaping_segments>  Stepper::shaping_dividend_queue_y;
+  int32_t                                     Stepper::shaping_dividend_y;
+  float                                       Stepper::shaping_frequency_y;
+  shaping_time_t                              Stepper::shaping_delay_y;
 #endif
 
 #if ENABLED(INTEGRATED_BABYSTEPPING)

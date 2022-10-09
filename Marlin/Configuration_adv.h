@@ -1054,15 +1054,17 @@
 //
 // Apply zero vibration (ZV) input shaping to X and/or Y movements.
 //
+// This option currently uses a lot of SRAM to hold a step buffer. The buffer
+// size is proportional to the largest step rate possible for any axis. This
+// can be reduced by configuring lower values for DEFAULT_AXIS_STEPS_PER_UNIT
+// and/or DEFAULT_MAX_FEEDRATE.
+//
 //#define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
   #define SHAPING_FREQ_X    40  // (Hz) The dominant resonant frequency of the X axis.
   #define SHAPING_FREQ_Y    40  // (Hz) The dominant resonant frequency of the Y axis.
   #define SHAPING_ZETA_X  0.3f  // Damping ratio of the X axis (range: 0.0 = no damping to 1.0 = critical damping).
   #define SHAPING_ZETA_Y  0.3f  // Damping ratio of the Y axis (range: 0.0 = no damping to 1.0 = critical damping).
-  #define SHAPING_BUFFER_X 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_X * 2).
-  #define SHAPING_BUFFER_Y 301  // Must be > (steps/mm * maximum speed) / (SHAPING_FREQ_Y * 2).
-  #define SHAPING_SEGMENTS  10  // Maximum number of segments that could be processed in 1 / (min(ISHAPING_FREQ_X, ISHAPING_FREQ_Y) * 2) seconds.
 #endif
 
 #define AXIS_RELATIVE_MODES { false, false, false, false }
