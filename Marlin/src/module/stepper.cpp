@@ -1490,6 +1490,16 @@ void Stepper::isr() {
     // Enable ISRs to reduce USART processing latency
     hal.isr_on();
 
+    #if ENABLED(INPUT_SHAPING)
+      // If any of the input shaping queues are full, then there may have to be a print stutter
+      if (!nextMainISR) {
+        TERN_(HAS_SHAPING_X, if (shaping_dividend_queue_x.free_count() == 0) nextMainISR = shaping_dividend_queue_x.peek() + 1);
+        TERN_(HAS_SHAPING_Y, if (shaping_dividend_queue_y.free_count() == 0) nextMainISR = _MAX(nextMainISR, shaping_dividend_queue_y.peek() + 1));
+        TERN_(HAS_SHAPING_X, if (shaping_queue_x.free_count() < steps_per_isr) nextMainISR = _MAX(nextMainISR, shaping_queue_x.peek() + 1));
+        TERN_(HAS_SHAPING_Y, if (shaping_queue_y.free_count() < steps_per_isr) nextMainISR = _MAX(nextMainISR, shaping_queue_y.peek() + 1));
+      }
+    #endif
+
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
     TERN_(HAS_SHAPING_X, if (!shaping_dividend_queue_x.peek()) shaping_dividend_x = shaping_dividend_queue_x.dequeue());

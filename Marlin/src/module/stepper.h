@@ -340,6 +340,7 @@ constexpr ena_mask_t enable_overlap[] = {
       void dequeue() { if (++head == SIZE) head = 0; }
       void purge() { tail = head; }
       bool empty() { return head == tail; }
+      uint16_t free_count() { return head > tail ? head - tail - 1 : head + SIZE - tail - 1; }
   };
 
   template <int SIZE> class ParamDelayQueue : public DelayQueue<SIZE> {
