@@ -36,7 +36,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V88"
+#define EEPROM_VERSION "V87"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -574,13 +574,15 @@ typedef struct SettingsDataStruct {
   #endif
 
   //
-  // INPUT_SHAPING
+  // Input Shaping
   //
-  #if ENABLED(INPUT_SHAPING)
-    float shaping_frequency_x; // M593 X F
-    float shaping_zeta_x;      // M593 X D
-    float shaping_frequency_y; // M593 Y F
-    float shaping_zeta_y;      // M593 Y D
+  #if HAS_SHAPING_X
+    float shaping_frequency_x, // M593 X F
+          shaping_zeta_x;      // M593 X D
+  #endif
+  #if HAS_SHAPING_Y
+    float shaping_frequency_y, // M593 Y F
+          shaping_zeta_y;      // M593 Y D
   #endif
 
 } SettingsData;
@@ -1610,16 +1612,10 @@ void MarlinSettings::postprocess() {
       #if HAS_SHAPING_X
         EEPROM_WRITE(stepper.get_shaping_frequency(X_AXIS));
         EEPROM_WRITE(stepper.get_shaping_damping_ratio(X_AXIS));
-      #else
-        EEPROM_SKIP(40.f);
-        EEPROM_SKIP(0.f);
       #endif
       #if HAS_SHAPING_Y
         EEPROM_WRITE(stepper.get_shaping_frequency(Y_AXIS));
         EEPROM_WRITE(stepper.get_shaping_damping_ratio(Y_AXIS));
-      #else
-        EEPROM_SKIP(40.f);
-        EEPROM_SKIP(0.f);
       #endif
     #endif
 
@@ -2592,21 +2588,21 @@ void MarlinSettings::postprocess() {
       //
       // Input Shaping
       //
-      #if ENABLED(INPUT_SHAPING)
+      #if HAS_SHAPING_X
       {
-        float _freq_x, _zeta_x, _freq_y, _zeta_y;
-        EEPROM_READ(_freq_x);
-        EEPROM_READ(_zeta_x);
-        EEPROM_READ(_freq_y);
-        EEPROM_READ(_zeta_y);
-        #if HAS_SHAPING_X
-          stepper.set_shaping_frequency(X_AXIS, _freq_x);
-          stepper.set_shaping_damping_ratio(X_AXIS, _zeta_x);
-        #endif
-        #if HAS_SHAPING_Y
-          stepper.set_shaping_frequency(Y_AXIS, _freq_y);
-          stepper.set_shaping_damping_ratio(Y_AXIS, _zeta_y);
-        #endif
+        float _data[2];
+        EEPROM_READ(_data);
+        stepper.set_shaping_frequency(X_AXIS, _data[0]);
+        stepper.set_shaping_damping_ratio(X_AXIS, _data[1]);
+      }
+      #endif
+
+      #if HAS_SHAPING_Y
+      {
+        float _data[2];
+        EEPROM_READ(_data);
+        stepper.set_shaping_frequency(Y_AXIS, _data[0]);
+        stepper.set_shaping_damping_ratio(Y_AXIS, _data[1]);
       }
       #endif
 
@@ -3638,6 +3634,11 @@ void MarlinSettings::reset() {
     // TMC stepping mode
     //
     TERN_(HAS_STEALTHCHOP, gcode.M569_report(forReplay));
+
+    //
+    // Input Shaping
+    //
+    TERN_(INPUT_SHAPING, gcode.M593_report(forReplay));
 
     //
     // Linear Advance
