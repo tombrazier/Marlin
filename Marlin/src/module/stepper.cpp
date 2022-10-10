@@ -3002,8 +3002,11 @@ void Stepper::init() {
       shaping_factor += 43.073216 * zeta3;
     }
 
+    const bool was_on = hal.isr_state();
+    hal.isr_off();
     TERN_(HAS_SHAPING_X, if (axis == X_AXIS) { shaping_factor_x = floor(shaping_factor); shaping_zeta_x = zeta; })
     TERN_(HAS_SHAPING_Y, if (axis == Y_AXIS) { shaping_factor_y = floor(shaping_factor); shaping_zeta_y = zeta; })
+    if (was_on) hal.isr_on();
   }
 
   float Stepper::get_shaping_damping_ratio(const AxisEnum axis) {
