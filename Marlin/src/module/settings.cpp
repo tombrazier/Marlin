@@ -577,12 +577,12 @@ typedef struct SettingsDataStruct {
   // Input Shaping
   //
   #if HAS_SHAPING_X
-    float shaping_frequency_x, // M593 X F
-          shaping_zeta_x;      // M593 X D
+    float shaping_x_frequency, // M593 X F
+          shaping_x_zeta;      // M593 X D
   #endif
   #if HAS_SHAPING_Y
-    float shaping_frequency_y, // M593 Y F
-          shaping_zeta_y;      // M593 Y D
+    float shaping_y_frequency, // M593 Y F
+          shaping_y_zeta;      // M593 Y D
   #endif
 
 } SettingsData;

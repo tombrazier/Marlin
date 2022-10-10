@@ -359,6 +359,34 @@ constexpr ena_mask_t enable_overlap[] = {
       }
   };
 
+  // These constexpr are used to calculate the shaping queue buffer size
+  constexpr xyze_float_t max_feedrate = DEFAULT_MAX_FEEDRATE;
+  constexpr xyze_float_t steps_per_unit = DEFAULT_AXIS_STEPS_PER_UNIT;
+  constexpr float max_steprate = _MAX(LOGICAL_AXIS_LIST(
+                                      max_feedrate.e * steps_per_unit.e,
+                                      max_feedrate.x * steps_per_unit.x,
+                                      max_feedrate.y * steps_per_unit.y,
+                                      max_feedrate.z * steps_per_unit.z,
+                                      max_feedrate.i * steps_per_unit.i,
+                                      max_feedrate.j * steps_per_unit.j,
+                                      max_feedrate.k * steps_per_unit.k,
+                                      max_feedrate.u * steps_per_unit.u,
+                                      max_feedrate.v * steps_per_unit.v,
+                                      max_feedrate.w * steps_per_unit.w
+                                    ));
+  constexpr uint16_t shaping_segments = max_steprate / (MIN_STEPS_PER_SEGMENT) / _MIN(TERN0(HAS_SHAPING_X, SHAPING_FREQ_X), TERN0(HAS_SHAPING_Y, SHAPING_FREQ_Y)) / 2 + 3;
+
+  template<int BUF>
+  struct ShapeParams {
+    float zeta;
+    uint8_t factor;
+    int32_t dividend;
+    float frequency;
+    shaping_time_t delay;
+    DelayQueue<BUF> queue;
+    ParamDelayQueue<shaping_segments> dividend_queue;
+  };
+
 #endif // INPUT_SHAPING
 
 //
@@ -466,42 +494,11 @@ class Stepper {
     #endif
 
     #if ENABLED(INPUT_SHAPING)
-      // all these static constexpr statements are to calculate the shaping queue buffer size
-      static constexpr xyze_float_t max_feedrate = DEFAULT_MAX_FEEDRATE;
-      static constexpr xyze_float_t steps_per_unit = DEFAULT_AXIS_STEPS_PER_UNIT;
-      static constexpr float max_steprate = _MAX(LOGICAL_AXIS_LIST(
-                                              max_feedrate.e * steps_per_unit.e,
-                                              max_feedrate.x * steps_per_unit.x,
-                                              max_feedrate.y * steps_per_unit.y,
-                                              max_feedrate.z * steps_per_unit.z,
-                                              max_feedrate.i * steps_per_unit.i,
-                                              max_feedrate.j * steps_per_unit.j,
-                                              max_feedrate.k * steps_per_unit.k,
-                                              max_feedrate.u * steps_per_unit.u,
-                                              max_feedrate.v * steps_per_unit.v,
-                                              max_feedrate.w * steps_per_unit.w
-                                            ));
-      static constexpr uint16_t shaping_segments = max_steprate / MIN_STEPS_PER_SEGMENT / _MIN(TERN0(HAS_SHAPING_X, (SHAPING_FREQ_X)), TERN0(HAS_SHAPING_Y, (SHAPING_FREQ_Y))) / 2 + 3;
-
       #if HAS_SHAPING_X
-        static float                              shaping_zeta_x;
-        static uint8_t                            shaping_factor_x;
-        static constexpr int32_t shaping_buffer_x = max_steprate / (SHAPING_FREQ_X) / 2 + 3;
-        static DelayQueue<shaping_buffer_x>       shaping_queue_x;
-        static ParamDelayQueue<shaping_segments>  shaping_dividend_queue_x;
-        static int32_t                            shaping_dividend_x;
-        static float                              shaping_frequency_x;
-        static shaping_time_t                     shaping_delay_x;
+        static ShapeParams<int(max_steprate / (SHAPING_FREQ_X) / 2 + 3)> shaping_x;
       #endif
       #if HAS_SHAPING_Y
-        static float                              shaping_zeta_y;
-        static uint8_t                            shaping_factor_y;
-        static constexpr int32_t shaping_buffer_y = max_steprate / (SHAPING_FREQ_Y) / 2 + 3;
-        static DelayQueue<shaping_buffer_y>       shaping_queue_y;
-        static ParamDelayQueue<shaping_segments>  shaping_dividend_queue_y;
-        static int32_t                            shaping_dividend_y;
-        static float                              shaping_frequency_y;
-        static shaping_time_t                     shaping_delay_y;
+        static ShapeParams<int(max_steprate / (SHAPING_FREQ_Y) / 2 + 3)> shaping_y;
       #endif
     #endif
 
