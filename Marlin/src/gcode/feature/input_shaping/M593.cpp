@@ -46,7 +46,8 @@ void GcodeSuite::M593() {
     if (WITHIN(zeta, 0, 1)) {
       if (for_X || (!for_X && !for_Y)) stepper.set_shaping_damping_ratio(X_AXIS, zeta);
       if (for_Y || (!for_X && !for_Y)) stepper.set_shaping_damping_ratio(Y_AXIS, zeta);
-    } else {
+    }
+    else {
       SERIAL_ECHO_START();
       SERIAL_ECHOLNPGM("Zeta (D) value out of range (0-1)");
     }
@@ -57,7 +58,8 @@ void GcodeSuite::M593() {
     if (freq <= 0) {
       SERIAL_ECHO_START();
       SERIAL_ECHOLNPGM("Frequency (F) must be greater than 0");
-    } else {
+    }
+    else {
       if (for_X || (!for_X && !for_Y)) stepper.set_shaping_frequency(X_AXIS, freq);
       if (for_Y || (!for_X && !for_Y)) stepper.set_shaping_frequency(Y_AXIS, freq);
     }
@@ -80,5 +82,4 @@ void GcodeSuite::M593() {
 
 }
 
-
-#endif // INPUT_SHAPING
+#endif

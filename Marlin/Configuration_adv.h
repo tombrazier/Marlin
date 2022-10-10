@@ -1051,14 +1051,16 @@
 
 // @section motion
 
-//
-// Apply zero vibration (ZV) input shaping to X and/or Y movements.
-//
-// This option currently uses a lot of SRAM to hold a step buffer. The buffer
-// size is proportional to the largest step rate possible for any axis. This
-// can be reduced by configuring lower values for DEFAULT_AXIS_STEPS_PER_UNIT
-// and/or DEFAULT_MAX_FEEDRATE.
-//
+/**
+ * Input Shaping
+ *
+ * Zero Vibration (ZV) Input Shaping for X and/or Y movements.
+ *
+ * This option uses a lot of SRAM for the step buffer, which is proportional
+ * to the largest step rate possible for any axis. If the build fails due to
+ * low SRAM the buffer size may be reduced by setting smaller values for
+ * DEFAULT_AXIS_STEPS_PER_UNIT and/or DEFAULT_MAX_FEEDRATE.
+ */
 //#define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
   #define SHAPING_FREQ_X    40  // (Hz) The dominant resonant frequency of the X axis.
