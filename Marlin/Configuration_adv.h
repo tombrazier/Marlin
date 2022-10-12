@@ -1060,6 +1060,14 @@
  * to the largest step rate possible for any axis. If the build fails due to
  * low SRAM the buffer size may be reduced by setting smaller values for
  * DEFAULT_AXIS_STEPS_PER_UNIT and/or DEFAULT_MAX_FEEDRATE.
+ *
+ * Tune with M593 D<factor> F<frequency>:
+ *
+ *  D<factor>    Set the zeta/damping factor. If axes (X, Y, etc.) are not specified, set for all axes.
+ *  F<frequency> Set the frequency. If axes (X, Y, etc.) are not specified, set for all axes.
+ *  T[map]       Input Shaping type, 0:ZV, 1:EI, 2:2H EI (not implemented yet)
+ *  X<1>         Set the given parameters only for the X axis.
+ *  Y<1>         Set the given parameters only for the Y axis.
  */
 //#define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
