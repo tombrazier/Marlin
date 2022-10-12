@@ -1,4 +1,5 @@
 //#define LULZBOT_Hibiscus_Mini2
+//#define LULZBOT_Mini3
 //#define LULZBOT_Oliveoil_TAZ6
 //#define LULZBOT_Redgum_TAZWorkhorse
 //#define LULZBOT_Quiver_TAZPro
@@ -121,7 +122,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #if ANY(MiniV2, Sidekick_289, Sidekick_747)
+  #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
     #define MOTHERBOARD BOARD_EINSY_RETRO
   #elif ANY(Workhorse, TAZ6)
     #define MOTHERBOARD BOARD_RAMBO
@@ -184,6 +185,11 @@
   #define LULZBOT_LCD_MACHINE_NAME "Mini 2"
   #define MACHINE_UUID "e5502411-d46d-421d-ba3a-a20126d7930f" // <-- changed
   #define LULZBOT_WIPE
+#elif ENABLED(MiniV3)
+  #define CUSTOM_MACHINE_NAME "LulzBot Mini 3"
+  #define LULZBOT_LCD_MACHINE_NAME "Mini 3"
+  #define MACHINE_UUID "2b294a98-383d-11ed-a261-0242ac120002"
+  #define LULZBOT_WIPE
 #elif ENABLED(TAZ6)
   #define CUSTOM_MACHINE_NAME "LulzBot Taz 6"
   #define LULZBOT_LCD_MACHINE_NAME "TAZ 6"
@@ -244,7 +250,7 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#if ANY(TAZPro, TAZProXT, MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(TAZPro, TAZProXT, MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define X_DRIVER_TYPE  TMC2130
   #define Y_DRIVER_TYPE  TMC2130
   #define Z_DRIVER_TYPE  TMC2130
@@ -1111,7 +1117,7 @@
     #define DEFAULT_bedKp 162
     #define DEFAULT_bedKi 17
     #define DEFAULT_bedKd 378
-  #elif ENABLED(MiniV2)
+  #elif ANY(MiniV2, MiniV3)
     #define DEFAULT_bedKp 384.33
     #define DEFAULT_bedKi 72.17
     #define DEFAULT_bedKd 511.64
@@ -1415,7 +1421,7 @@
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 #define USE_XMIN_PLUG
-#if DISABLED(MiniV2, TAZPro, TAZProXT)
+#if DISABLED(MiniV2, MiniV3, TAZPro, TAZProXT)
   #define USE_YMIN_PLUG
 #endif
 #define USE_ZMIN_PLUG
@@ -1490,7 +1496,7 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1502,7 +1508,7 @@
 #endif
 
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1544,12 +1550,12 @@
  *
  * :[2,3,4,5,6,7]
  */
-#if NONE(TAZPro, Workhorse, MiniV2, TAZProXT, Sidekick_289, Sidekick_747)
+#if NONE(TAZPro, Workhorse, MiniV2, MiniV3, TAZProXT, Sidekick_289, Sidekick_747)
   #define ENDSTOP_NOISE_THRESHOLD 2
 #endif
 
 // Check for stuck or disconnected endstops during homing moves.
-#if DISABLED(TAZPro, MiniV2, TAZProXT, Sidekick_289, Sidekick_747)
+#if DISABLED(TAZPro, MiniV2, MiniV3, TAZProXT, Sidekick_289, Sidekick_747)
   #define DETECT_BROKEN_ENDSTOP
 #endif
 
@@ -1579,7 +1585,7 @@
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3 Sidekick_289, Sidekick_747)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 200, LULZBOT_E_STEPS }
 #elif ENABLED(TAZ6)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 1600, LULZBOT_E_STEPS }
@@ -1597,7 +1603,7 @@
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define Z_FEEDRATE   300
 #elif ENABLED(TAZ6)
   #define Z_FEEDRATE   5
@@ -1633,7 +1639,7 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define DEFAULT_ACCELERATION          2000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_TRAVEL_ACCELERATION   2000    // X, Y, Z acceleration for travel (non printing) moves
 #else
@@ -1652,7 +1658,7 @@
  */
 #define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
-  #if ANY(MiniV2, Sidekick_289, Sidekick_747)
+  #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
     #define DEFAULT_XJERK 12.0
     #define DEFAULT_YJERK 12.0
   #else
@@ -1887,7 +1893,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#if ENABLED(MiniV2)
+#if ANY(MiniV2, MiniV3)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.1 }
 #elif ANY(TAZ6, Workhorse)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.2 }
@@ -1905,7 +1911,7 @@
 #if defined (LULZBOT_BLTouch)
   #define PROBING_MARGIN 20 
 #else
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define PROBING_MARGIN -4
   #elif ENABLED(TAZ6)
     #define PROBING_MARGIN -8
@@ -2081,7 +2087,7 @@
 #else
   #define INVERT_X_DIR true
 #endif
-#if ENABLED(MiniV2)
+#if ANY(MiniV2, MiniV3)
   #define INVERT_Y_DIR false
 #else
   #define INVERT_Y_DIR true
@@ -2141,7 +2147,7 @@
 #else
   #define Y_HOME_DIR 1
 #endif
-#if ANY(MiniV2, TAZPro, TAZProXT, Workhorse, Sidekick289, Sidekick747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Workhorse, Sidekick289, Sidekick747)
   #define Z_HOME_DIR 1
 #else
   #define Z_HOME_DIR -1
@@ -2167,6 +2173,17 @@
   #define LULZBOT_Z_MIN_POS 0
   #define LULZBOT_X_MAX_POS 161.5
   #define LULZBOT_Y_MAX_POS 193
+  #define LULZBOT_Z_MAX_POS 183
+
+#elif ENABLED(MiniV3)
+  #define X_BED_SIZE 160
+  #define Y_BED_SIZE 165
+  // Travel limits (mm) after homing, corresponding to endstop positions.
+  #define LULZBOT_X_MIN_POS -16.75
+  #define LULZBOT_Y_MIN_POS -5
+  #define LULZBOT_Z_MIN_POS 0
+  #define LULZBOT_X_MAX_POS 161.5
+  #define LULZBOT_Y_MAX_POS 176
   #define LULZBOT_Z_MAX_POS 183
 
 #elif ENABLED(TAZ6)
@@ -2580,7 +2597,7 @@
   #endif
 
   // Probe along the Y axis, advancing X after each column
-  #if ANY(MiniV2, TAZ6)
+  #if ANY(MiniV2, MiniV3, TAZ6)
     #define PROBE_Y_FIRST
   #endif
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
@@ -2729,7 +2746,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define HOMING_FEEDRATE_Z  (50*60)
 #elif ANY(Workhorse, TAZPro, TAZProXT)
   #define HOMING_FEEDRATE_Z  1800
@@ -2880,7 +2897,7 @@
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #if ANY(Sidekick_289, Sidekick_747, MiniV2)
+  #if ANY(Sidekick_289, Sidekick_747, MiniV2, MiniV3)
     #define NOZZLE_PARK_POINT { X_CENTER, (Y_MAX_POS - 5), Z_MAX_POS }
   #elif ENABLED(TAZ6)
     #define NOZZLE_PARK_POINT { X_CENTER, (Y_MAX_POS - 5), (10) }
@@ -2947,7 +2964,7 @@
 
   // Specify positions for each tool as { { X, Y, Z }, { X, Y, Z } }
   // Dual hotend system may use { {  -20, (Y_BED_SIZE / 2), (Z_MIN_POS + 1) },  {  420, (Y_BED_SIZE / 2), (Z_MIN_POS + 1) }}
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
   #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_UNIVERSAL_TOOLHEAD)
@@ -2982,7 +2999,7 @@
   //#define NOZZLE_CLEAN_HEATUP       // Heat up the nozzle instead of skipping wipe
 
   // Explicit wipe G-code script applies to a G12 with no arguments.
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nG1 X115 Y177 Z10 F4000\\nG1 Z-1\nM114\nG1 X115 \nG1 X45 \nG1 X115 \nG1 X45 \nG1 X115 \nG1 X45 \nG1 X115 \nG1 X45 \nG1 X115 \nG1 X45 \nG1 X115 \nG1 X45 \nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ENABLED(TAZ6)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
@@ -3177,7 +3194,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define REVERSE_ENCODER_DIRECTION
 #endif
 

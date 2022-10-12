@@ -531,13 +531,13 @@
  */
 #define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-    #if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+    #if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
     #define CONTROLLER_FAN_PIN FAN1_PIN        // Set a custom pin for the controller fan
   #else
     #define CONTROLLER_FAN_PIN FAN2_PIN        // Set a custom pin for the controller fan
   #endif
   //#define CONTROLLER_FAN_USE_Z_ONLY    // With this option only the Z axis is considered
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define CONTROLLER_FAN_IGNORE_Z      // Ignore Z stepper. Useful when stepper timeout is disabled.
   #endif
   #define CONTROLLERFAN_SPEED_MIN        0 // (0-255) Minimum speed. (If set below this value the fan is turned off.)
@@ -602,7 +602,7 @@
  *   PWM on pin OC2A. Only use this option if you don't need PWM on 0C2A. (Check your schematic.)
  *   USE_OCR2A_AS_TOP sacrifices duty cycle control resolution to achieve this broader range of frequencies.
  */
-#if ANY(MiniV2, TAZ6, Workhorse, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZ6, Workhorse, Sidekick_289, Sidekick_747)
   #define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 #endif
 
@@ -873,7 +873,7 @@
  * the position of the toolhead relative to the workspace.
  */
 
-#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define SENSORLESS_BACKOFF_MM  { 4, 4 , 0}     // (mm) Backoff from endstops before sensorless homing
 #else
   #if defined(Workhorse)
@@ -1108,7 +1108,7 @@
 // If the Nozzle or Bed falls when the Z stepper is disabled, set its resting position here.
 //#define Z_AFTER_DEACTIVATE Z_HOME_POS
 
-#if ANY(TAZPro, TAZProXT, MiniV2)
+#if ANY(TAZPro, TAZProXT, MiniV2, MiniV3)
   #define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 #endif
 
@@ -1213,7 +1213,7 @@
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/833.0f)  // mm
   #elif ENABLED(TAZ6)
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/830.0f)  // mm
-  #elif ANY(Workhorse, TAZPro, TAZProXT, MiniV2)
+  #elif ANY(Workhorse, TAZPro, TAZProXT, MiniV2, MiniV3)
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/420.0f)  // mm
   #endif
 
@@ -1229,7 +1229,7 @@
   //#define CALIBRATION_REPORTING
 
   // The true location and dimension the cube/bolt/washer on the bed.
-    #if ENABLED(MiniV2)
+    #if ANY(MiniV2, MiniV3)
     #define CALIBRATION_OBJECT_CENTER     {169.5, 171.3, 0} //  mm
     #define CALIBRATION_OBJECT_DIMENSIONS {22.0, 22.0, 1.5} //  mm
 
@@ -1824,7 +1824,7 @@
  * controller events, as there is a trade-off between reliable
  * printing performance versus fast display updates.
  */
-#if ANY(MiniV2, Sidekick_289, Sidekick_747, TAZ6, Workhorse, HAS_MARLINUI_U8GLIB)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747, TAZ6, Workhorse, HAS_MARLINUI_U8GLIB)
   // Save many cycles by drawing a hollow frame or no frame on the Info Screen
   //#define XYZ_NO_FRAME
   #define XYZ_HOLLOW_FRAME
@@ -2257,7 +2257,7 @@
    * between attempts, and after the maximum number of retries have been tried.
    */
   #define G29_SUCCESS_COMMANDS "M117 Probe successful"
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define G29_RECOVER_COMMANDS "M104 S170\nG28\nG0 Z5 F6000\nG0 X150 F9999\nG91\nM211 S0\nM400\nM906 Z600\nG0 Z-15 F500\nG0 Z5 F500\nM400\nG90\nM906 Z960\nM211 S1\nG28 Z0\nG28\nG12\nM109 R160\nM400\nM117 Probing bed"
   #elif ENABLED(TAZ6)
     #define G29_RECOVER_COMMANDS "G0 Z10\nG12\nM109 R160\nM400\nM117 Probing bed"
@@ -2958,7 +2958,7 @@
   #if AXIS_IS_TMC(Z)
     #define Z_CURRENT       975
     #define Z_CURRENT_HOME  Z_CURRENT
-    #if ENABLED(MiniV2)
+    #if ANY(MiniV2, MiniV3)
       #define Z_MICROSTEPS     32
     #else
       #define Z_MICROSTEPS     16
@@ -3368,7 +3368,7 @@
         #define X_STALL_SENSITIVITY  5
         #define Y_STALL_SENSITIVITY  5 
       #endif
-    #elif ENABLED(MiniV2)
+    #elif ANY(MiniV2, MiniV3)
       #define X_STALL_SENSITIVITY  3
       #define Y_STALL_SENSITIVITY  3
     #elif ANY(Sidekick_289, Sidekick_747)
@@ -4243,7 +4243,7 @@
  * Adds capability to work with any adjustable current drivers
  * Implements as G34 as M915 is deprecated
  */
-#if ANY(MiniV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define MECHANICAL_GANTRY_CALIBRATION
 #endif
 #if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
@@ -4258,7 +4258,7 @@
     #define GANTRY_CALIBRATION_SAFE_POSITION  {150, 192}  // Safe position for nozzle
     #define GANTRY_CALIBRATION_EXTRA_HEIGHT     -10                   // Extra distance in mm past Z_###_POS to move
   #endif
-  #if ENABLED(MiniV2)
+  #if ANY(MiniV2, MiniV3)
     #define GANTRY_CALIBRATION_TO_MIN
   #endif
 
