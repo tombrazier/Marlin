@@ -122,12 +122,14 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
+  #if ANY(MiniV2, Sidekick_289, Sidekick_747)
     #define MOTHERBOARD BOARD_EINSY_RETRO
   #elif ANY(Workhorse, TAZ6)
     #define MOTHERBOARD BOARD_RAMBO
   #elif ANY(TAZPro, TAZProXT)
     #define MOTHERBOARD BOARD_ARCHIM2
+  #elif ENABLED(MiniV3)
+    #define MOTHERBOARD BOARD_BTT_SKR_V3_0_EZ
   #endif
 #endif
 
@@ -139,11 +141,21 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#if DISABLED(TAZPro)
-  #define SERIAL_PORT 0
-#else
+//#if DISABLED(TAZPro)
+//  #define SERIAL_PORT 0
+//#else
+//  #define SERIAL_PORT -1
+//#endif
+
+#if ANY(TAZPro, TAZProXT)
   #define SERIAL_PORT -1
+#elif ENABLED(MiniV3)
+  #define SERIAL_PORT 1   //SKR3? 
+#else
+  #define SERIAL_PORT 0
 #endif
+
+
 
 /**
  * Serial Port Baud Rate
@@ -165,7 +177,7 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
+#define SERIAL_PORT_2 2
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
 
 /**
@@ -173,7 +185,7 @@
  * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_3 1
+#define SERIAL_PORT_3 3
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
@@ -250,7 +262,7 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#if ANY(TAZPro, TAZProXT, MiniV2, MiniV3, Sidekick_289, Sidekick_747)
+#if ANY(TAZPro, TAZProXT, MiniV2, Sidekick_289, Sidekick_747)
   #define X_DRIVER_TYPE  TMC2130
   #define Y_DRIVER_TYPE  TMC2130
   #define Z_DRIVER_TYPE  TMC2130
@@ -259,6 +271,15 @@
   #endif
   #define E0_DRIVER_TYPE TMC2130
   #define E1_DRIVER_TYPE TMC2130
+#elif ENABLED(MiniV3)
+  #define X_DRIVER_TYPE  TMC5160
+  #define Y_DRIVER_TYPE  TMC5160
+  #define Z_DRIVER_TYPE  TMC2209
+  #if ENABLED(TazDualZ)
+    #define Z2_DRIVER_TYPE TMC2209
+  #endif
+  #define E0_DRIVER_TYPE TMC2209
+  #define E1_DRIVER_TYPE TMC2209
 #else
   #define X_DRIVER_TYPE  A4988
   #define Y_DRIVER_TYPE  A4988
@@ -2830,9 +2851,9 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+//#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+//#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 //#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
@@ -3054,7 +3075,7 @@
  *
  * View the current statistics with M78.
  */
-#define PRINTCOUNTER
+//#define PRINTCOUNTER
 #if ENABLED(PRINTCOUNTER)
   #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print
 #endif
@@ -3420,7 +3441,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // https://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#if DISABLED(TAZPro, TAZProXT)
+#if DISABLED(TAZPro, TAZProXT, MiniV3)
   #define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
   #define ST7920_DELAY_1 DELAY_NS(200) // After CLK LOW
@@ -3681,7 +3702,7 @@
 // Touch UI for FTDI EVE (FT800/FT810) displays
 // See Configuration_adv.h for all configuration options.
 //
-#if ANY(TAZPro, TAZProXT)
+#if ANY(TAZPro, TAZProXT, MiniV3)
   #define TOUCH_UI_FTDI_EVE
 #endif
 

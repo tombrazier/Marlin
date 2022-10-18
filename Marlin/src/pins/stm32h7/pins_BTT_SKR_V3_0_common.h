@@ -129,6 +129,10 @@
   #define Z_MIN_PROBE_PIN                   PC13
 #endif
 
+#ifndef Z_MIN_PIN
+  #define Z_MIN_PIN                         PC0  // Z-
+#endif
+
 //
 // Probe enable
 //
@@ -503,6 +507,11 @@
   #endif
 
 #endif // HAS_WIRED_LCD
+
+#if ENABLED(TOUCH_UI_ULTIPANEL)
+  #define BTN_EN1                  EXP1_03_PIN
+  #define BTN_EN2                  EXP1_05_PIN
+#endif
 
 // Alter timing for graphical display
 #if IS_U8GLIB_ST7920
