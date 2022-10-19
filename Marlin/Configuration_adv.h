@@ -541,10 +541,10 @@
     #define CONTROLLER_FAN_PIN FAN2_PIN        // Set a custom pin for the controller fan
   #endif
   //#define CONTROLLER_FAN_USE_Z_ONLY    // With this option only the Z axis is considered
-  #if ANY(MiniV2, MiniV3)
+  #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
     #define CONTROLLER_FAN_IGNORE_Z      // Ignore Z stepper. Useful when stepper timeout is disabled.
   #endif
-  #define CONTROLLERFAN_SPEED_MIN        0 // (0-255) Minimum speed. (If set below this value the fan is turned off.)
+  #define CONTROLLERFAN_SPEED_MIN      100 // (0-255) Minimum speed. (If set below this value the fan is turned off.)
   #define CONTROLLERFAN_SPEED_ACTIVE   255 // (0-255) Active speed, used when any motor is enabled
   #define CONTROLLERFAN_SPEED_IDLE     120 // (0-255) Idle speed, used when motors are disabled
   #define CONTROLLERFAN_IDLE_TIME       60 // (seconds) Extra time to keep the fan running after disabling motors
