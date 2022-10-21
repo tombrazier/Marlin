@@ -131,7 +131,9 @@ public:
 
     #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
       float Z_offset;
-      bed_mesh_t z_values;
+      # if DISABLED(DISABLE_DRYRUN)
+        bed_mesh_t z_values;
+      #endif
     #endif
 
     #if ENABLED(AUTO_BED_LEVELING_LINEAR)
@@ -246,7 +248,7 @@ G29_TYPE GcodeSuite::G29() {
   // A = Abort manual probing
   // C<bool> = Generate fake probe points (DEBUG_LEVELING_FEATURE)
   const bool seenA = TERN0(PROBE_MANUALLY, parser.seen_test('A')),
-         no_action = seenA || seenQ,
+         no_action = TERN0(PROBE_MANUALLY, seenA || seenQ),
               faux = ENABLED(DEBUG_LEVELING_FEATURE) && DISABLED(PROBE_MANUALLY) ? parser.boolval('C') : no_action;
 
   // O = Don't level if leveling is already active
@@ -355,7 +357,7 @@ G29_TYPE GcodeSuite::G29() {
       G29_RETURN(false, false);
     }
 
-    abl.dryrun = parser.boolval('D') || TERN0(PROBE_MANUALLY, no_action);
+    abl.dryrun = TERN(DISABLE_DRYRUN, false, parser.boolval('D'));
 
     #if ENABLED(AUTO_BED_LEVELING_LINEAR)
 
@@ -442,7 +444,7 @@ G29_TYPE GcodeSuite::G29() {
       remember_feedrate_scaling_off();
 
       #if ENABLED(PREHEAT_BEFORE_LEVELING)
-        if (!abl.dryrun) probe.preheat_for_probing(LEVELING_NOZZLE_TEMP,
+        if (!abl.dryrun && !no_action) probe.preheat_for_probing(LEVELING_NOZZLE_TEMP,
           #if BOTH(DWIN_LCD_PROUI, HAS_HEATED_BED)
             HMI_data.BedLevT
           #else
@@ -503,7 +505,7 @@ G29_TYPE GcodeSuite::G29() {
     #endif
 
     #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-      if (!abl.dryrun
+      if (!abl.dryrun && !no_action
         && (abl.gridSpacing != bedlevel.grid_spacing || abl.probe_position_lf != bedlevel.grid_start)
       ) {
         // Reset grid to 0.0 or "not probed". (Also disables ABL)
@@ -514,7 +516,9 @@ G29_TYPE GcodeSuite::G29() {
       }
 
       // Pre-populate local Z values from the stored mesh
-      TERN_(IS_KINEMATIC, COPY(abl.z_values, bedlevel.z_values));
+      #if DISABLED(DISABLE_DRYRUN)
+        TERN_(IS_KINEMATIC, COPY(abl.z_values, bedlevel.z_values));
+      #endif
 
     #endif // AUTO_BED_LEVELING_BILINEAR
 
@@ -583,7 +587,7 @@ G29_TYPE GcodeSuite::G29() {
       #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
         const float newz = abl.measured_z + abl.Z_offset;
-        abl.z_values[abl.meshCount.x][abl.meshCount.y] = newz;
+        TERN(DISABLE_DRYRUN, bedlevel.z_values, abl.z_values)[abl.meshCount.x][abl.meshCount.y] = newz;
         TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(abl.meshCount, newz));
 
         if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM_P(PSTR("Save X"), abl.meshCount.x, SP_Y_STR, abl.meshCount.y, SP_Z_STR, abl.measured_z + abl.Z_offset);
@@ -729,7 +733,7 @@ G29_TYPE GcodeSuite::G29() {
           #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
             const float z = abl.measured_z + abl.Z_offset;
-            abl.z_values[abl.meshCount.x][abl.meshCount.y] = z;
+            TERN(DISABLE_DRYRUN, bedlevel.z_values, abl.z_values)[abl.meshCount.x][abl.meshCount.y] = z;
             TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(abl.meshCount, z));
 
           #endif
@@ -801,10 +805,10 @@ G29_TYPE GcodeSuite::G29() {
     #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
       if (abl.dryrun)
-        bedlevel.print_leveling_grid(&abl.z_values);
+        TERN(DISABLE_DRYRUN, NOOP, bedlevel.print_leveling_grid(&abl.z_values));
       else {
         bedlevel.set_grid(abl.gridSpacing, abl.probe_position_lf);
-        COPY(bedlevel.z_values, abl.z_values);
+        TERN(DISABLE_DRYRUN, NOOP, COPY(bedlevel.z_values, abl.z_values));
         TERN_(IS_KINEMATIC, bedlevel.extrapolate_unprobed_bed_level());
         bedlevel.refresh_bed_level();
 

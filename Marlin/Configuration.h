@@ -1969,6 +1969,10 @@
       #define BILINEAR_SUBDIVISIONS 3
     #endif
 
+    // Disable dry run to save GRID_MAX_POINTS_X * GRID_MAX_POINTS_Y * 4 bytes of
+    // SRAM (when using PROBE_MANUALLY) or stack space (otherwise).
+    //#define DISABLE_DRYRUN
+
   #endif
 
 #elif ENABLED(AUTO_BED_LEVELING_UBL)
