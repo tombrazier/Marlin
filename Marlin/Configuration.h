@@ -133,6 +133,14 @@
   #endif
 #endif
 
+// Older firmware set the USB IDs to the below values for Archim2.  It seems to fix some flashing issues.
+#if MOTHERBOARD == BOARD_ARCHIM2
+    // Force Archim to use same USB ID as Mini-Rambo and Rambo when flashed
+    // NOTE: While in "erase" (bootloader) mode, the ID will be 03eb:6124
+    #define USB_DEVICE_VENDOR_ID          0x27b1
+    #define USB_DEVICE_PRODUCT_ID         0x0001
+#endif
+
 /**
  * Select the serial port on the board to use for communication with the host.
  * This allows the connection of wireless adapters (for instance) to non-default port pins.
