@@ -1407,22 +1407,36 @@ void Stepper::set_directions() {
 
       #else
 
-        // For non ARM targets, we provide a fallback implementation. Really doubt it
-        // will be useful, unless the processor is fast and 32bit
+        // For non ARM targets or targets without UMULL, we provide
+        // a fallback implementation. Really doubt it
+        // will be useful, unless the processor is fast and 32bit.
+
+        #if defined(STM32G0B1xx)
+          typedef uint32_t f_t;
+          // 32 bits * 32 bits >> 32 using MULS
+          #define MUL_F_T do { \
+            f = uint16_t(f >> 16) * uint16_t(t >> 16) + \
+                ((uint16_t(f >> 16) * uint16_t(t)) >> 16) + \
+                ((uint16_t(f) * uint16_t(t >> 16)) >> 16); \
+          }while(0)
+        #else
+          typedef uint64_t f_t;
+          // 32 bits * 32 bits >> 32 using UMULL (or equivalent)
+          #define MUL_F_T do { \
+            f *= t; \
+            f >>= 32; \
+          }while(0)
+        #endif
 
         uint32_t t = bezier_AV * curr_step;               // t: Range 0 - 1^32 = 32 bits
-        uint64_t f = t;
-        f *= t;                                           // Range 32*2 = 64 bits (unsigned)
-        f >>= 32;                                         // Range 32 bits  (unsigned)
-        f *= t;                                           // Range 32*2 = 64 bits  (unsigned)
-        f >>= 32;                                         // Range 32 bits : f = t^3  (unsigned)
+        f_t f = t;
+        MUL_F_T;                                          // Range 32 bits : f = t^2  (unsigned)
+        MUL_F_T;                                          // Range 32 bits : f = t^3  (unsigned)
         int64_t acc = (int64_t) bezier_F << 31;           // Range 63 bits (signed)
         acc += ((uint32_t) f >> 1) * (int64_t) bezier_C;  // Range 29bits + 31 = 60bits (plus sign)
-        f *= t;                                           // Range 32*2 = 64 bits
-        f >>= 32;                                         // Range 32 bits : f = t^3  (unsigned)
+        MUL_F_T;                                          // Range 32 bits : f = t^4  (unsigned)
         acc += ((uint32_t) f >> 1) * (int64_t) bezier_B;  // Range 29bits + 31 = 60bits (plus sign)
-        f *= t;                                           // Range 32*2 = 64 bits
-        f >>= 32;                                         // Range 32 bits : f = t^3  (unsigned)
+        MUL_F_T;                                         // Range 32 bits : f = t^5  (unsigned)
         acc += ((uint32_t) f >> 1) * (int64_t) bezier_A;  // Range 28bits + 31 = 59bits (plus sign)
         acc >>= (31 + 7);                                 // Range 24bits (plus sign)
         return (int32_t) acc;
