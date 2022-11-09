@@ -508,11 +508,6 @@
 
 #endif // HAS_WIRED_LCD
 
-#if ENABLED(TOUCH_UI_ULTIPANEL)
-  #define BTN_EN1                  EXP1_03_PIN
-  #define BTN_EN2                  EXP1_05_PIN
-#endif
-
 // Alter timing for graphical display
 #if IS_U8GLIB_ST7920
   #ifndef BOARD_ST7920_DELAY_1

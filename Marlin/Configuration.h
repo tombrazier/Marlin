@@ -133,6 +133,12 @@
   #endif
 #endif
 
+#if (MOTHERBOARD == BOARD_ARCHIM2) || (MOTHERBOARD == BOARD_EINSY_RETRO)
+  #define LULZBOT_RSENSE 0.12
+#elif (MOTHERBOARD == BOARD_BTT_SKR_V3_0_EZ)
+  #define LULZBOT_RSENSE 0.11
+#endif
+
 // Older firmware set the USB IDs to the below values for Archim2.  It seems to fix some flashing issues.
 #if MOTHERBOARD == BOARD_ARCHIM2
     // Force Archim to use same USB ID as Mini-Rambo and Rambo when flashed
@@ -149,16 +155,8 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#if DISABLED(TAZPro)
-//  #define SERIAL_PORT 0
-//#else
-//  #define SERIAL_PORT -1
-//#endif
-
-#if ANY(TAZPro, TAZProXT)
+#if ANY(TAZPro, TAZProXT, MiniV3)
   #define SERIAL_PORT -1
-#elif ENABLED(MiniV3)
-  #define SERIAL_PORT 1   //SKR3? 
 #else
   #define SERIAL_PORT 0
 #endif
@@ -185,7 +183,9 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_2 2
+#if defined(MiniV3)
+  #define SERIAL_PORT_2 1
+#endif
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
 
 /**
@@ -193,7 +193,7 @@
  * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#if defined(Mini3)
+#if defined(MiniV3)
   #define SERIAL_PORT_3 3
 #endif
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
@@ -284,8 +284,8 @@
   #define E0_DRIVER_TYPE TMC2130
   #define E1_DRIVER_TYPE TMC2130
 #elif ENABLED(MiniV3)
-  #define X_DRIVER_TYPE  TMC5160
-  #define Y_DRIVER_TYPE  TMC5160
+  #define X_DRIVER_TYPE  TMC2209
+  #define Y_DRIVER_TYPE  TMC2209
   #define Z_DRIVER_TYPE  TMC2209
   #if ENABLED(TazDualZ)
     #define Z2_DRIVER_TYPE TMC2209
@@ -1533,7 +1533,7 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1545,7 +1545,7 @@
 #endif
 
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
   #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -2776,7 +2776,7 @@
   #if ENABLED(TAZ6)
     #define Z_SAFE_HOMING_X_POINT -20.1  // X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT 259.5  // Y point for Z homing
-  #elif ANY(Sidekick_289, Sisdekick_747)
+  #elif ANY(Sidekick_289, Sidekick_747)
     #define Z_SAFE_HOMING_X_POINT (X_CENTER)  // X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT (Y_BED_SIZE/2)  // Y point for Z homing
   #endif
@@ -2868,10 +2868,10 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-//#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-//#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
-//#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
   //#define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.
@@ -3092,7 +3092,7 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 #if ENABLED(PRINTCOUNTER)
   #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
 #endif
@@ -3232,7 +3232,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, Sidekick_289, Sidekick_747)
   #define REVERSE_ENCODER_DIRECTION
 #endif
 
@@ -4099,5 +4099,19 @@
 #if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
 #elif BOTH(LULZBOT_BLTouch, SWITCHING_NOZZLE)
-  #error The BLTouch and dual servo motors are not capatible
+  #error The BLTouch and dual servo motors are not compatible
+#endif
+
+//Pin definitions for Mini 3 with SKR3 motherboard and USB Flash Drive Support
+#if ENABLED(MiniV3) && (MOTHERBOARD == BOARD_BTT_SKR_V3_0_EZ)
+  #define Z_MIN_PIN                  PC15  // Use PWRDET connector as Z-Min probe input
+  #define SDSS                       EXP2_04_PIN
+  #define SD_DETECT_PIN              EXP2_07_PIN
+  #define BTN_EN1                    EXP2_05_PIN
+  #define BTN_EN2                    EXP2_03_PIN
+  #define LCD_PINS_ENABLE            EXP1_03_PIN
+  #define LCD_PINS_D4                EXP1_05_PIN
+  #define BTN_ENC                    EXP1_02_PIN
+  #define LCD_PINS_D5                EXP1_06_PIN
+  #define BEEPER_PIN                 EXP1_01_PIN
 #endif
