@@ -432,7 +432,7 @@
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         177 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
-    #define LULZBOT_MOTOR_CURRENT_E0         160 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0         960 // mA
   #endif
 #endif
 #if defined(TOOLHEAD_SL_SE_HE)
@@ -959,60 +959,60 @@
     #define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
   #endif                                  // Set/get with G-code: M301 E[extruder number, 0-2]
 //TAZ 6 Single Extruder (W)
-    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. NOTE: if values are changed, both sets need to be changed.
-    #define TAZ6_STD_DEFAULT_Ki 1.91         //NOTE: if values are changed, both sets need to be changed.
+    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. 
+    #define TAZ6_STD_DEFAULT_Ki 1.91         
     #define TAZ6_STD_DEFAULT_Kd 108.51
-    #define charTAZ6_STD_DEFAULT_Kp "28.79"  //used in the tool head menu gcode.
-    #define charTAZ6_STD_DEFAULT_Ki "1.91"
-    #define charTAZ6_STD_DEFAULT_Kd "108.51"
+    #define charTAZ6_STD_DEFAULT_Kp STRINGIFY(TAZ6_STD_DEFAULT_Kd)  //used in the tool head menu gcode.
+    #define charTAZ6_STD_DEFAULT_Ki STRINGIFY(TAZ6_STD_DEFAULT_Ki)
+    #define charTAZ6_STD_DEFAULT_Kd STRINGIFY(TAZ6_STD_DEFAULT_Kp)
 
   // E3D Titan Aero with LulzBot V6 block (40W)
-    #define SLSEHE_DEFAULT_Kp 21.0           //NOTE: if values are changed, both sets need to be changed.
+    #define SLSEHE_DEFAULT_Kp 21.0           
     #define SLSEHE_DEFAULT_Ki 1.78
     #define SLSEHE_DEFAULT_Kd 61.93
-    #define charSLSEHE_DEFAULT_Kp "21.0"
-    #define charSLSEHE_DEFAULT_Ki "1.78"
-    #define charSLSEHE_DEFAULT_Kd "61.93"
+    #define charSLSEHE_DEFAULT_Kp STRINGIFY(SLSEHE_DEFAULT_Kp)
+    #define charSLSEHE_DEFAULT_Ki STRINGIFY(SLSEHE_DEFAULT_Ki)
+    #define charSLSEHE_DEFAULT_Kd STRINGIFY(SLSEHE_DEFAULT_Kd)
 
   // SK175 Tool head (30W)
-    #define SK175_DEFAULT_Kp 26.47           //NOTE: if values are changed, both sets need to be changed.
+    #define SK175_DEFAULT_Kp 26.47           
     #define SK175_DEFAULT_Ki 2.32
     #define SK175_DEFAULT_Kd 75.56
-    #define charSK175_DEFAULT_Kp "26.47"
-    #define charSK175_DEFAULT_Ki "2.32"
-    #define charSK175_DEFAULT_Kd "75.56"
+    #define charSK175_DEFAULT_Kp STRINGIFY(SK175_DEFAULT_Kp)
+    #define charSK175_DEFAULT_Ki STRINGIFY(SK175_DEFAULT_Ki)
+    #define charSK175_DEFAULT_Kd STRINGIFY(SK175_DEFAULT_Kd)
    
   // SK285 Tool head (30W)
-    #define SK285_DEFAULT_Kp 26.90           //NOTE: if values are changed, both sets need to be changed.
+    #define SK285_DEFAULT_Kp 26.90           
     #define SK285_DEFAULT_Ki 2.41
     #define SK285_DEFAULT_Kd 75.19
-    #define charSK285_DEFAULT_Kp "26.90"
-    #define charSK285_DEFAULT_Ki "2.41"
-    #define charSK285_DEFAULT_Kd "75.19"
+    #define charSK285_DEFAULT_Kp STRINGIFY(SK285_DEFAULT_Kp)
+    #define charSK285_DEFAULT_Ki STRINGIFY(SK285_DEFAULT_Ki)
+    #define charSK285_DEFAULT_Kd STRINGIFY(SK285_DEFAULT_Kd)
 
   // H175 Tool head (40W)
-    #define H175_DEFAULT_Kp 27.58            //NOTE: if values are changed, both sets need to be changed.
+    #define H175_DEFAULT_Kp 27.58            
     #define H175_DEFAULT_Ki 3.22
     #define H175_DEFAULT_Kd 65.66
-    #define charH175_DEFAULT_Kp "27.58" 
-    #define charH175_DEFAULT_Ki "3.22"
-    #define charH175_DEFAULT_Kd "65.66"
+    #define charH175_DEFAULT_Kp STRINGIFY(H175_DEFAULT_Kp) 
+    #define charH175_DEFAULT_Ki STRINGIFY(H175_DEFAULT_Ki)
+    #define charH175_DEFAULT_Kd STRINGIFY(H175_DEFAULT_Kd)
 
   // M175 Tool head (50W)
-    #define M175_DEFAULT_Kp 22.12            //NOTE: if values are changed, both sets need to be changed.
+    #define M175_DEFAULT_Kp 22.12            
     #define M175_DEFAULT_Ki 1.94
     #define M175_DEFAULT_Kd 63.59
-    #define charM175_DEFAULT_Kp "22.12"
-    #define charM175_DEFAULT_Ki "1.94"
-    #define charM175_DEFAULT_Kd "63.59"
+    #define charM175_DEFAULT_Kp STRINGIFY(M175_DEFAULT_Kp)
+    #define charM175_DEFAULT_Ki STRINGIFY(M175_DEFAULT_Ki)
+    #define charM175_DEFAULT_Kd STRINGIFY(M175_DEFAULT_Kd)
 
   // HS & HSPLUS Tool heads  
-    #define HSHSPLUS_DEFAULT_Kp 37.55        //NOTE: if values are changed, both sets need to be changed.
+    #define HSHSPLUS_DEFAULT_Kp 37.55        
     #define HSHSPLUS_DEFAULT_Ki 5.39
     #define HSHSPLUS_DEFAULT_Kd 65.36
-    #define charHSHSPLUS_DEFAULT_Kp "37.55"
-    #define charHSHSPLUS_DEFAULT_Ki "5.39"
-    #define charHSHSPLUS_DEFAULT_Kd "65.36"
+    #define charHSHSPLUS_DEFAULT_Kp STRINGIFY(HSHSPLUS_DEFAULT_Kp)
+    #define charHSHSPLUS_DEFAULT_Ki STRINGIFY(HSHSPLUS_DEFAULT_Ki)
+    #define charHSHSPLUS_DEFAULT_Kd STRINGIFY(HSHSPLUS_DEFAULT_Kd)
 
   #if ENABLED(PID_PARAMS_PER_HOTEND)
     // Specify up to one value per hotend here, according to your setup.
