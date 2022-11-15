@@ -1737,7 +1737,7 @@
    *
    * [1] On AVR an interrupt-capable pin is best for UHS3 compatibility.
    */
-  #if ANY(TAZPro, TAZProXT)
+  #if ANY(TAZPro, TAZProXT, MiniV3)
     #define USB_FLASH_DRIVE_SUPPORT
   #endif
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
@@ -1845,7 +1845,7 @@
  * controller events, as there is a trade-off between reliable
  * printing performance versus fast display updates.
  */
-#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747, TAZ6, Workhorse, HAS_MARLINUI_U8GLIB)
+#if ANY(MiniV2, Sidekick_289, Sidekick_747, TAZ6, Workhorse, HAS_MARLINUI_U8GLIB)
   // Save many cycles by drawing a hollow frame or no frame on the Info Screen
   //#define XYZ_NO_FRAME
   #define XYZ_HOLLOW_FRAME
@@ -2024,10 +2024,8 @@
   #endif
 
   // Mappings for boards with a standard RepRapDiscount Display connector
-  //#define AO_EXP1_PINMAP      // LulzBot CLCD UI EXP1 mapping
-  //#define AO_EXP2_PINMAP      // LulzBot CLCD UI EXP2 mapping
   #if ENABLED(MiniV3)
-    #define AO_EXP2_PINMAP      // AlephObjects CLCD UI EXP1 mapping
+    #define AO_EXP1_PINMAP      // AlephObjects CLCD UI EXP1 mapping
   #else
     #define AO_EXP2_PINMAP      // AlephObjects CLCD UI EXP2 mapping
   #endif
@@ -2949,7 +2947,7 @@
     #define X_CURRENT       975        // (mA) RMS current. Multiply by 1.414 for peak current.
     #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     16        // 0..256
-    #define X_RSENSE          0.12
+    #define X_RSENSE        LULZBOT_RSENSE
     #define X_CHAIN_POS      -1        // -1..0: Not chained. 1: MCU MOSI connected. 2: Next in chain, ...
     //#define X_INTERPOLATE  true      // Enable to override 'INTERPOLATE' for the X axis
     //#define X_HOLD_MULTIPLIER 0.5    // Enable to override 'HOLD_MULTIPLIER' for the X axis
@@ -2969,7 +2967,7 @@
     #define Y_CURRENT       975
     #define Y_CURRENT_HOME  Y_CURRENT
     #define Y_MICROSTEPS     16
-    #define Y_RSENSE          0.12
+    #define Y_RSENSE        LULZBOT_RSENSE
     #define Y_CHAIN_POS      -1
     //#define Y_INTERPOLATE  true
     //#define Y_HOLD_MULTIPLIER 0.5
@@ -2993,7 +2991,7 @@
     #else
       #define Z_MICROSTEPS     16
     #endif
-    #define Z_RSENSE          0.12
+    #define Z_RSENSE         LULZBOT_RSENSE
     #define Z_CHAIN_POS      -1
     //#define Z_INTERPOLATE  true
     //#define Z_HOLD_MULTIPLIER 0.5
@@ -3092,7 +3090,7 @@
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT      LULZBOT_MOTOR_CURRENT_E0
     #define E0_MICROSTEPS    16
-    #define E0_RSENSE         0.12
+    #define E0_RSENSE       LULZBOT_RSENSE
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
     //#define E0_HOLD_MULTIPLIER 0.5
@@ -3101,7 +3099,7 @@
   #if AXIS_IS_TMC(E1)
     #define E1_CURRENT      LULZBOT_MOTOR_CURRENT_E1
     #define E1_MICROSTEPS    16
-    #define E1_RSENSE         0.12
+    #define E1_RSENSE       LULZBOT_RSENSE
     #define E1_CHAIN_POS     -1
     //#define E1_INTERPOLATE true
     //#define E1_HOLD_MULTIPLIER 0.5
@@ -3398,12 +3396,15 @@
         #define X_STALL_SENSITIVITY  5
         #define Y_STALL_SENSITIVITY  5 
       #endif
-    #elif ANY(MiniV2, MiniV3)
+    #elif ANY(MiniV2)
       #define X_STALL_SENSITIVITY  3
       #define Y_STALL_SENSITIVITY  3
     #elif ANY(Sidekick_289, Sidekick_747)
       #define X_STALL_SENSITIVITY  2
       #define Y_STALL_SENSITIVITY  2
+    #elif ANY(MiniV3)
+      #define X_STALL_SENSITIVITY  140    //2209 Driver
+      #define Y_STALL_SENSITIVITY  140    //2209 Driver
     #endif
     #define X2_STALL_SENSITIVITY X_STALL_SENSITIVITY
     #define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
@@ -3445,7 +3446,9 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continuous reporting.
    */
-  //#define TMC_DEBUG
+  #if ENABLED(MiniV3)
+    #define TMC_DEBUG
+  #endif
 
   /**
    * You can set your own advanced settings by filling in predefined functions.

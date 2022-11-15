@@ -47,7 +47,7 @@ bool BaseScreen::buttonStyleCallback(CommandProcessor &cmd, uint8_t tag, uint8_t
 
   #if LCD_TIMEOUT_TO_STATUS > 0
     if (EventLoop::get_pressed_tag() != 0) {
-      SERIAL_ECHO_MSG("buttonStyleCallback, resetting timeout");
+      //SERIAL_ECHO_MSG("buttonStyleCallback, resetting timeout");
       reset_menu_timeout();
     }
   #endif
