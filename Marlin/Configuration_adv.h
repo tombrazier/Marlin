@@ -1086,8 +1086,8 @@
  */
 #define INPUT_SHAPING
 #if ENABLED(INPUT_SHAPING)
-  #define SHAPING_FREQ_X  24.6  // (Hz) The dominant resonant frequency of the X axis.
-  #define SHAPING_FREQ_Y  27.7  // (Hz) The dominant resonant frequency of the Y axis.
+  #define SHAPING_FREQ_X  25.5  // (Hz) The dominant resonant frequency of the X axis.
+  #define SHAPING_FREQ_Y  32.0  // (Hz) The dominant resonant frequency of the Y axis.
   #define SHAPING_ZETA_X 0.15f  // Damping ratio of the X axis (range: 0.0 = no damping to 1.0 = critical damping).
   #define SHAPING_ZETA_Y 0.15f  // Damping ratio of the Y axis (range: 0.0 = no damping to 1.0 = critical damping).
   //#define SHAPING_MENU        // Add a menu to the LCD to set shaping parameters.
