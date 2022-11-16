@@ -116,6 +116,15 @@ namespace ExtUI {
     else
       ConfirmUserRequestAlertBox::hide();
   }
+  
+  #if ENABLED(ADVANCED_PAUSE_FEATURE)
+    void filament_load_prompt(const char * const msg) {
+      if (msg)
+        FilamentPromptBox::show();
+      else
+        FilamentPromptBox::hide();
+    }
+  #endif
 
   #if HAS_LEVELING && HAS_MESH
     void onLevelingStart() {}

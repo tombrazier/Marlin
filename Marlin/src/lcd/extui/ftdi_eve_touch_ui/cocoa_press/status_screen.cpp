@@ -246,7 +246,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       #endif
       GOTO_SCREEN(StatusScreen);
       break;
-    case  6:
+    case 6:
       sound.play(twinkle, PLAY_ASYNCHRONOUS);
       if (ExtUI::isPrintingFromMedia())
         ExtUI::resumePrint();

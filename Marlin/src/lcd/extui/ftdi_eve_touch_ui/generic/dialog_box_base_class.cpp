@@ -68,6 +68,13 @@ void DialogBoxBaseClass::drawButton(T label) {
 template void DialogBoxBaseClass::drawButton(const char *);
 template void DialogBoxBaseClass::drawButton(FSTR_P);
 
+void DialogBoxBaseClass::drawFilamentButtons() {
+  CommandProcessor cmd;
+  cmd.font(font_medium)
+     .tag(1).button(BTN_POS(1,7), BTN_SIZE(2,1), GET_TEXT_F(MSG_FILAMENT_CHANGE_OPTION_PURGE))
+     .tag(2).button(BTN_POS(1,8), BTN_SIZE(2,1), GET_TEXT_F(MSG_FILAMENT_CHANGE_OPTION_RESUME));
+}
+
 bool DialogBoxBaseClass::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1: GOTO_PREVIOUS(); return true;

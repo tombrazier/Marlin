@@ -131,24 +131,57 @@ bool TuneMenu::onTouchEnd(uint8_t tag) {
 }
 
 void TuneMenu::pausePrint() {
+  // sound.play(twinkle, PLAY_ASYNCHRONOUS);
+
+  // if (ExtUI::isPrintingFromMedia())
+  //   ExtUI::pausePrint();
+  // #ifdef ACTION_ON_PAUSE
+  //   else hostui.pause();
+  // #endif
+
+    // This
   sound.play(twinkle, PLAY_ASYNCHRONOUS);
+
   if (ExtUI::isPrintingFromMedia())
+  {
+    SERIAL_ECHOLNPGM("Pause: isPrintingFromMedia");
     ExtUI::pausePrint();
+  }
   #ifdef ACTION_ON_PAUSE
-    else hostui.pause();
+    else 
+    {
+      SERIAL_ECHOLNPGM("Pause: hostui.pause");
+      hostui.pause();
+    }
   #endif
   GOTO_SCREEN(StatusScreen);
 }
 
 void TuneMenu::resumePrint() {
+  // This
   sound.play(twinkle, PLAY_ASYNCHRONOUS);
-  if (ExtUI::awaitingUserConfirm())
+
+  // Something is wrong with this
+  // if (ExtUI::awaitingUserConfirm()) 
+  // {
+  //   SERIAL_ECHOLNPGM("Resume: Awaiting User Confirm");
+  //   ExtUI::setUserConfirmed();
+  // }
+  if (ExtUI::isPrintingFromMedia())
+  {
     ExtUI::setUserConfirmed();
-  else if (ExtUI::isPrintingFromMedia())
+    SERIAL_ECHOLNPGM("Resume: isPrintingFromMedia");
     ExtUI::resumePrint();
+  }
   #ifdef ACTION_ON_RESUME
-    else hostui.resume();
+    else 
+    {
+      SERIAL_ECHOLNPGM("Resume: hostui.resume");
+      hostui.resume();
+    }
   #endif
+
+  // This works
   GOTO_SCREEN(StatusScreen);
 }
 

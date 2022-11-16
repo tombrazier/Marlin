@@ -1121,6 +1121,17 @@ namespace ExtUI {
     #endif
   }
 
+  // This is for filament continue/pruge more
+  void filament_load_prompt(FSTR_P const fstr) {
+    #ifdef __AVR__
+      char msg[strlen_P(FTOP(fstr)) + 1];
+      strcpy_P(msg, FTOP(fstr));
+      filament_load_prompt(msg);
+    #else
+      filament_load_prompt(FTOP(fstr));
+    #endif
+  }
+
   void onStatusChanged(FSTR_P const fstr) {
     #ifdef __AVR__
       char msg[strlen_P(FTOP(fstr)) + 1];
