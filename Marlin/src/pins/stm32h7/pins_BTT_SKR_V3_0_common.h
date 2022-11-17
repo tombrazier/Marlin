@@ -46,7 +46,7 @@
   #define SOFT_I2C_EEPROM                         // Force the use of Software I2C
   #define I2C_SCL_PIN                       PA14
   #define I2C_SDA_PIN                       PA13
-  #define MARLIN_EEPROM_SIZE              0x1000  // 4KB
+  #define MARLIN_EEPROM_SIZE              0x1000  // 4K
 #endif
 
 //
@@ -507,11 +507,6 @@
   #endif
 
 #endif // HAS_WIRED_LCD
-
-#if ENABLED(TOUCH_UI_ULTIPANEL)
-  #define BTN_EN1                  EXP1_03_PIN
-  #define BTN_EN2                  EXP1_05_PIN
-#endif
 
 // Alter timing for graphical display
 #if IS_U8GLIB_ST7920

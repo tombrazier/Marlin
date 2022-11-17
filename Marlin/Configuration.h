@@ -69,7 +69,7 @@
  *
  * Advanced settings can be found in Configuration_adv.h
  */
-#define CONFIGURATION_H_VERSION 02010100
+#define CONFIGURATION_H_VERSION 02010200
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -133,6 +133,20 @@
   #endif
 #endif
 
+#if (MOTHERBOARD == BOARD_ARCHIM2) || (MOTHERBOARD == BOARD_EINSY_RETRO)
+  #define LULZBOT_RSENSE 0.12
+#elif (MOTHERBOARD == BOARD_BTT_SKR_V3_0_EZ)
+  #define LULZBOT_RSENSE 0.11
+#endif
+
+// Older firmware set the USB IDs to the below values for Archim2.  It seems to fix some flashing issues.
+#if MOTHERBOARD == BOARD_ARCHIM2
+    // Force Archim to use same USB ID as Mini-Rambo and Rambo when flashed
+    // NOTE: While in "erase" (bootloader) mode, the ID will be 03eb:6124
+    #define USB_DEVICE_VENDOR_ID          0x27b1
+    #define USB_DEVICE_PRODUCT_ID         0x0001
+#endif
+
 /**
  * Select the serial port on the board to use for communication with the host.
  * This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -141,16 +155,8 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#if DISABLED(TAZPro)
-//  #define SERIAL_PORT 0
-//#else
-//  #define SERIAL_PORT -1
-//#endif
-
-#if ANY(TAZPro, TAZProXT)
+#if ANY(TAZPro, TAZProXT, MiniV3)
   #define SERIAL_PORT -1
-#elif ENABLED(MiniV3)
-  #define SERIAL_PORT 1   //SKR3? 
 #else
   #define SERIAL_PORT 0
 #endif
@@ -177,7 +183,9 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_2 2
+#if defined(MiniV3)
+  #define SERIAL_PORT_2 1
+#endif
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
 
 /**
@@ -185,7 +193,9 @@
  * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_3 3
+#if defined(MiniV3)
+  #define SERIAL_PORT_3 3
+#endif
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
@@ -247,6 +257,8 @@
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
+// @section stepper drivers
+
 /**
  * Stepper Drivers
  *
@@ -272,8 +284,8 @@
   #define E0_DRIVER_TYPE TMC2130
   #define E1_DRIVER_TYPE TMC2130
 #elif ENABLED(MiniV3)
-  #define X_DRIVER_TYPE  TMC5160
-  #define Y_DRIVER_TYPE  TMC5160
+  #define X_DRIVER_TYPE  TMC2209
+  #define Y_DRIVER_TYPE  TMC2209
   #define Z_DRIVER_TYPE  TMC2209
   #if ENABLED(TazDualZ)
     #define Z2_DRIVER_TYPE TMC2209
@@ -428,7 +440,7 @@
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         177 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
-    #define LULZBOT_MOTOR_CURRENT_E0         160 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0         960 // mA
   #endif
 #endif
 #if defined(TOOLHEAD_SL_SE_HE)
@@ -547,6 +559,8 @@
   //#define SINGLENOZZLE_STANDBY_FAN
 #endif
 
+// @section multi-material
+
 /**
  * Multi-Material Unit
  * Set to one of these predefined models:
@@ -559,6 +573,7 @@
  *
  * Requires NOZZLE_PARK_FEATURE to park print head in case MMU unit fails.
  * See additional options in Configuration_adv.h.
+ * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
  */
 //#define MMU_MODEL PRUSA_MMU2
 
@@ -800,7 +815,7 @@
  *    30 : 100kΩ  Kis3d Silicone heating mat 200W/300W with 6mm precision cast plate (EN AW 5083) NTC100K - beta 3950
  *    60 : 100kΩ  Maker's Tool Works Kapton Bed Thermistor - beta 3950
  *    61 : 100kΩ  Formbot/Vivedino 350°C Thermistor - beta 3950
- *    66 : 4.7MΩ  Dyze Design High Temperature Thermistor
+ *    66 : 4.7MΩ  Dyze Design / Trianglelab T-D500 500°C High Temperature Thermistor
  *    67 : 500kΩ  SliceEngineering 450°C Thermistor
  *    68 : PT100 amplifier board from Dyze Design
  *    70 : 100kΩ  bq Hephestos 2
@@ -822,6 +837,7 @@
  *   110 : Pt100  with 1kΩ pullup (atypical)
  *   147 : Pt100  with 4.7kΩ pullup
  *  1010 : Pt1000 with 1kΩ pullup (atypical)
+ *  1022 : Pt1000 with 2.2kΩ pullup
  *  1047 : Pt1000 with 4.7kΩ pullup (E3D)
  *    20 : Pt100  with circuit in the Ultimainboard V2.x with mainboard ADC reference voltage = INA826 amplifier-board supply voltage.
  *                NOTE: (1) Must use an ADC input with no pullup. (2) Some INA826 amplifiers are unreliable at 3.3V so consider using sensor 147, 110, or 21.
@@ -951,60 +967,60 @@
     #define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
   #endif                                  // Set/get with G-code: M301 E[extruder number, 0-2]
 //TAZ 6 Single Extruder (W)
-    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. NOTE: if values are changed, both sets need to be changed.
-    #define TAZ6_STD_DEFAULT_Ki 1.91         //NOTE: if values are changed, both sets need to be changed.
+    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. 
+    #define TAZ6_STD_DEFAULT_Ki 1.91         
     #define TAZ6_STD_DEFAULT_Kd 108.51
-    #define charTAZ6_STD_DEFAULT_Kp "28.79"  //used in the tool head menu gcode.
-    #define charTAZ6_STD_DEFAULT_Ki "1.91"
-    #define charTAZ6_STD_DEFAULT_Kd "108.51"
+    #define charTAZ6_STD_DEFAULT_Kp STRINGIFY(TAZ6_STD_DEFAULT_Kd)  //used in the tool head menu gcode.
+    #define charTAZ6_STD_DEFAULT_Ki STRINGIFY(TAZ6_STD_DEFAULT_Ki)
+    #define charTAZ6_STD_DEFAULT_Kd STRINGIFY(TAZ6_STD_DEFAULT_Kp)
 
   // E3D Titan Aero with LulzBot V6 block (40W)
-    #define SLSEHE_DEFAULT_Kp 21.0           //NOTE: if values are changed, both sets need to be changed.
+    #define SLSEHE_DEFAULT_Kp 21.0           
     #define SLSEHE_DEFAULT_Ki 1.78
     #define SLSEHE_DEFAULT_Kd 61.93
-    #define charSLSEHE_DEFAULT_Kp "21.0"
-    #define charSLSEHE_DEFAULT_Ki "1.78"
-    #define charSLSEHE_DEFAULT_Kd "61.93"
+    #define charSLSEHE_DEFAULT_Kp STRINGIFY(SLSEHE_DEFAULT_Kp)
+    #define charSLSEHE_DEFAULT_Ki STRINGIFY(SLSEHE_DEFAULT_Ki)
+    #define charSLSEHE_DEFAULT_Kd STRINGIFY(SLSEHE_DEFAULT_Kd)
 
   // SK175 Tool head (30W)
-    #define SK175_DEFAULT_Kp 26.47           //NOTE: if values are changed, both sets need to be changed.
+    #define SK175_DEFAULT_Kp 26.47           
     #define SK175_DEFAULT_Ki 2.32
     #define SK175_DEFAULT_Kd 75.56
-    #define charSK175_DEFAULT_Kp "26.47"
-    #define charSK175_DEFAULT_Ki "2.32"
-    #define charSK175_DEFAULT_Kd "75.56"
+    #define charSK175_DEFAULT_Kp STRINGIFY(SK175_DEFAULT_Kp)
+    #define charSK175_DEFAULT_Ki STRINGIFY(SK175_DEFAULT_Ki)
+    #define charSK175_DEFAULT_Kd STRINGIFY(SK175_DEFAULT_Kd)
    
   // SK285 Tool head (30W)
-    #define SK285_DEFAULT_Kp 26.90           //NOTE: if values are changed, both sets need to be changed.
+    #define SK285_DEFAULT_Kp 26.90           
     #define SK285_DEFAULT_Ki 2.41
     #define SK285_DEFAULT_Kd 75.19
-    #define charSK285_DEFAULT_Kp "26.90"
-    #define charSK285_DEFAULT_Ki "2.41"
-    #define charSK285_DEFAULT_Kd "75.19"
+    #define charSK285_DEFAULT_Kp STRINGIFY(SK285_DEFAULT_Kp)
+    #define charSK285_DEFAULT_Ki STRINGIFY(SK285_DEFAULT_Ki)
+    #define charSK285_DEFAULT_Kd STRINGIFY(SK285_DEFAULT_Kd)
 
   // H175 Tool head (40W)
-    #define H175_DEFAULT_Kp 27.58            //NOTE: if values are changed, both sets need to be changed.
+    #define H175_DEFAULT_Kp 27.58            
     #define H175_DEFAULT_Ki 3.22
     #define H175_DEFAULT_Kd 65.66
-    #define charH175_DEFAULT_Kp "27.58" 
-    #define charH175_DEFAULT_Ki "3.22"
-    #define charH175_DEFAULT_Kd "65.66"
+    #define charH175_DEFAULT_Kp STRINGIFY(H175_DEFAULT_Kp) 
+    #define charH175_DEFAULT_Ki STRINGIFY(H175_DEFAULT_Ki)
+    #define charH175_DEFAULT_Kd STRINGIFY(H175_DEFAULT_Kd)
 
   // M175 Tool head (50W)
-    #define M175_DEFAULT_Kp 22.12            //NOTE: if values are changed, both sets need to be changed.
+    #define M175_DEFAULT_Kp 22.12            
     #define M175_DEFAULT_Ki 1.94
     #define M175_DEFAULT_Kd 63.59
-    #define charM175_DEFAULT_Kp "22.12"
-    #define charM175_DEFAULT_Ki "1.94"
-    #define charM175_DEFAULT_Kd "63.59"
+    #define charM175_DEFAULT_Kp STRINGIFY(M175_DEFAULT_Kp)
+    #define charM175_DEFAULT_Ki STRINGIFY(M175_DEFAULT_Ki)
+    #define charM175_DEFAULT_Kd STRINGIFY(M175_DEFAULT_Kd)
 
   // HS & HSPLUS Tool heads  
-    #define HSHSPLUS_DEFAULT_Kp 37.55        //NOTE: if values are changed, both sets need to be changed.
+    #define HSHSPLUS_DEFAULT_Kp 37.55        
     #define HSHSPLUS_DEFAULT_Ki 5.39
     #define HSHSPLUS_DEFAULT_Kd 65.36
-    #define charHSHSPLUS_DEFAULT_Kp "37.55"
-    #define charHSHSPLUS_DEFAULT_Ki "5.39"
-    #define charHSHSPLUS_DEFAULT_Kd "65.36"
+    #define charHSHSPLUS_DEFAULT_Kp STRINGIFY(HSHSPLUS_DEFAULT_Kp)
+    #define charHSHSPLUS_DEFAULT_Ki STRINGIFY(HSHSPLUS_DEFAULT_Ki)
+    #define charHSHSPLUS_DEFAULT_Kd STRINGIFY(HSHSPLUS_DEFAULT_Kd)
 
   #if ENABLED(PID_PARAMS_PER_HOTEND)
     // Specify up to one value per hotend here, according to your setup.
@@ -1517,7 +1533,7 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1529,7 +1545,7 @@
 #endif
 
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
   #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1606,7 +1622,7 @@
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 
-#if ANY(MiniV2, MiniV3 Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 200, LULZBOT_E_STEPS }
 #elif ENABLED(TAZ6)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 1600, LULZBOT_E_STEPS }
@@ -2100,7 +2116,7 @@
 #define DISABLE_E false             // Disable the extruder when not stepping
 #define DISABLE_INACTIVE_EXTRUDER   // Keep only the active extruder enabled
 
-// @section machine
+// @section motion
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #if ANY(TAZ6, TAZPro, TAZProXT)
@@ -2760,7 +2776,7 @@
   #if ENABLED(TAZ6)
     #define Z_SAFE_HOMING_X_POINT -20.1  // X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT 259.5  // Y point for Z homing
-  #elif ANY(Sidekick_289, Sisdekick_747)
+  #elif ANY(Sidekick_289, Sidekick_747)
     #define Z_SAFE_HOMING_X_POINT (X_CENTER)  // X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT (Y_BED_SIZE/2)  // Y point for Z homing
   #endif
@@ -2817,9 +2833,8 @@
   #define XY_DIAG_BD 282.8427124746
   #define XY_SIDE_AD 200
 
-  // Or, set the default skew factors directly here
-  // to override the above measurements:
-  #define XY_SKEW_FACTOR 0.0
+  // Or, set the XY skew factor directly:
+  //#define XY_SKEW_FACTOR 0.0
 
   //#define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
@@ -2828,8 +2843,10 @@
     #define YZ_DIAG_AC 282.8427124746
     #define YZ_DIAG_BD 282.8427124746
     #define YZ_SIDE_AD 200
-    #define XZ_SKEW_FACTOR 0.0
-    #define YZ_SKEW_FACTOR 0.0
+
+    // Or, set the Z skew factors directly:
+    //#define XZ_SKEW_FACTOR 0.0
+    //#define YZ_SKEW_FACTOR 0.0
   #endif
 
   // Enable this option for M852 to set skew at runtime
@@ -2851,10 +2868,10 @@
  *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
-//#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-//#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
-//#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
   //#define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.
@@ -2887,7 +2904,7 @@
 // @section temperature
 
 //
-// Preheat Constants - Up to 6 are supported without changes
+// Preheat Constants - Up to 10 are supported without changes
 //
 #define PREHEAT_1_LABEL       "PLA"
 #define PREHEAT_1_TEMP_HOTEND 200
@@ -3075,9 +3092,9 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 #if ENABLED(PRINTCOUNTER)
-  #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print
+  #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
 #endif
 
 // @section security
@@ -3215,7 +3232,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, Sidekick_289, Sidekick_747)
   #define REVERSE_ENCODER_DIRECTION
 #endif
 
@@ -3713,6 +3730,7 @@
 //#define ANYCUBIC_LCD_CHIRON
 #if EITHER(ANYCUBIC_LCD_I3MEGA, ANYCUBIC_LCD_CHIRON)
   //#define ANYCUBIC_LCD_DEBUG
+  //#define ANYCUBIC_LCD_GCODE_EXT  // Add ".gcode" to menu entries for DGUS clone compatibility
 #endif
 
 //
@@ -3781,7 +3799,7 @@
 //#define MKS_ROBIN_TFT_V1_1R
 
 //
-// 480x320, 3.5", FSMC Stock Display from TronxXY
+// 480x320, 3.5", FSMC Stock Display from Tronxy
 //
 //#define TFT_TRONXY_X5SA
 
@@ -3880,10 +3898,11 @@
 //
 //#define TOUCH_SCREEN
 #if ENABLED(TOUCH_SCREEN)
-  #define BUTTON_DELAY_EDIT  50 // (ms) Button repeat delay for edit screens
-  #define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
+  #define BUTTON_DELAY_EDIT      50 // (ms) Button repeat delay for edit screens
+  #define BUTTON_DELAY_MENU     250 // (ms) Button repeat delay for menus
 
-  //#define TOUCH_IDLE_SLEEP 300 // (s) Turn off the TFT backlight if set (5mn)
+  //#define DISABLE_ENCODER         // Disable the click encoder, if any
+  //#define TOUCH_IDLE_SLEEP_MINS 5 // (minutes) Display Sleep after a period of inactivity. Set with M255 S.
 
   #define TOUCH_SCREEN_CALIBRATION
 
@@ -3976,16 +3995,19 @@
  * luminance values can be set from 0 to 255.
  * For NeoPixel LED an overall brightness parameter is also available.
  *
- * *** CAUTION ***
+ *  === CAUTION ===
  *  LED Strips require a MOSFET Chip between PWM lines and LEDs,
  *  as the Arduino cannot handle the current the LEDs will require.
  *  Failure to follow this precaution can destroy your Arduino!
+ *
  *  NOTE: A separate 5V power supply is required! The NeoPixel LED needs
  *  more current than the Arduino 5V linear regulator can produce.
- * *** CAUTION ***
  *
- * LED Type. Enable only one of the following two options.
+ *  Requires PWM frequency between 50 <> 100Hz (Check HAL or variant)
+ *  Use FAST_PWM_FAN, if possible, to reduce fan noise.
  */
+
+// LED Type. Enable only one of the following two options:
 //#define RGB_LED
 //#define RGBW_LED
 
@@ -3994,6 +4016,10 @@
   //#define RGB_LED_G_PIN 43
   //#define RGB_LED_B_PIN 35
   //#define RGB_LED_W_PIN -1
+  //#define RGB_STARTUP_TEST              // For PWM pins, fade between all colors
+  #if ENABLED(RGB_STARTUP_TEST)
+    #define RGB_STARTUP_TEST_INNER_MS 10  // (ms) Reduce or increase fading speed
+  #endif
 #endif
 
 // Support for Adafruit NeoPixel LED driver
@@ -4073,5 +4099,19 @@
 #if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
 #elif BOTH(LULZBOT_BLTouch, SWITCHING_NOZZLE)
-  #error The BLTouch and dual servo motors are not capatible
+  #error The BLTouch and dual servo motors are not compatible
+#endif
+
+//Pin definitions for Mini 3 with SKR3 motherboard and USB Flash Drive Support
+#if ENABLED(MiniV3) && (MOTHERBOARD == BOARD_BTT_SKR_V3_0_EZ)
+  #define Z_MIN_PIN                  PC15  // Use PWRDET connector as Z-Min probe input
+  #define SDSS                       EXP2_04_PIN
+  #define SD_DETECT_PIN              EXP2_07_PIN
+  #define BTN_EN1                    EXP2_05_PIN
+  #define BTN_EN2                    EXP2_03_PIN
+  #define LCD_PINS_ENABLE            EXP1_03_PIN
+  #define LCD_PINS_D4                EXP1_05_PIN
+  #define BTN_ENC                    EXP1_02_PIN
+  #define LCD_PINS_D5                EXP1_06_PIN
+  #define BEEPER_PIN                 EXP1_01_PIN
 #endif
