@@ -10,7 +10,7 @@
 
 //#define TazDualZ
 #define LULZBOT_FILAMENT_RUNOUT
-//#define LULZBOT_BLTouch
+#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
 #define LULZBOT_UNIVERSAL_TOOLHEAD
@@ -96,7 +96,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.1.0.2"
+#define LULZBOT_FW_VERSION "2.1.2.0.3"
 
 /**
  * *** VENDORS PLEASE READ ***
