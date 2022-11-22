@@ -2846,7 +2846,7 @@
   #define INTERPOLATE      true
 
   #if AXIS_IS_TMC(X)
-    #define X_CURRENT       500        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #define X_CURRENT       450        // (mA) RMS current. Multiply by 1.414 for peak current.
     #define X_CURRENT_HOME  (X_CURRENT / 2)  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     16        // 0..256
     #define X_RSENSE          0.11
@@ -2866,9 +2866,9 @@
   #endif
 
   #if AXIS_IS_TMC(Y)
-    #define Y_CURRENT       500
+    #define Y_CURRENT       450
     #define Y_CURRENT_HOME  (Y_CURRENT / 2)
-    #define Y_MICROSTEPS     8
+    #define Y_MICROSTEPS     16
     #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
     //#define Y_INTERPOLATE  true
@@ -3231,9 +3231,9 @@
    */
   #define HYBRID_THRESHOLD
 
-  #define X_HYBRID_THRESHOLD     500  // [mm/s]
+  #define X_HYBRID_THRESHOLD      50  // [mm/s]
   #define X2_HYBRID_THRESHOLD    100
-  #define Y_HYBRID_THRESHOLD     500
+  #define Y_HYBRID_THRESHOLD      50
   #define Y2_HYBRID_THRESHOLD    100
   #define Z_HYBRID_THRESHOLD       1
   #define Z2_HYBRID_THRESHOLD      1
