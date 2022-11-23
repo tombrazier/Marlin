@@ -115,7 +115,7 @@ bool LevelingMenu::onTouchEnd(uint8_t tag) {
     #if HAS_BED_PROBE
       case 3:
         #ifndef BED_LEVELING_COMMANDS
-          #define BED_LEVELING_COMMANDS "G28\nG0 Z10 F1500\nG29"
+          #define BED_LEVELING_COMMANDS "G28\nG29"
         #endif
         #if ENABLED(AUTO_BED_LEVELING_UBL)
           BedMeshViewScreen::doProbe();
