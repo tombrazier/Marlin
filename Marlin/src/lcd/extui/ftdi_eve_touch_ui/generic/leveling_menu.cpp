@@ -109,13 +109,13 @@ void LevelingMenu::onRedraw(draw_mode_t what) {
 bool LevelingMenu::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1: GOTO_PREVIOUS(); break;
-    #if EITHER(Z_STEPPER_AUTO_ALIGN,MECHANICAL_GANTRY_CALIBRATION)
-      case 2: SpinnerDialogBox::enqueueAndWait(F("G34")); break;
+    #if ANY(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION, X_LEVEL_SEQUENCE)
+      case 2: SpinnerDialogBox::enqueueAndWait(F(LEVELING_COMMANDS)); break;
     #endif
     #if HAS_BED_PROBE
       case 3:
         #ifndef BED_LEVELING_COMMANDS
-          #define BED_LEVELING_COMMANDS "G28 \nG29"
+          #define BED_LEVELING_COMMANDS "G28\nG0 Z10 F1500\nG29"
         #endif
         #if ENABLED(AUTO_BED_LEVELING_UBL)
           BedMeshViewScreen::doProbe();
