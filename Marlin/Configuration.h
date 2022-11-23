@@ -10,7 +10,7 @@
 
 //#define TazDualZ
 #define LULZBOT_FILAMENT_RUNOUT
-#define LULZBOT_BLTouch
+//#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
 #define LULZBOT_UNIVERSAL_TOOLHEAD
@@ -2786,7 +2786,7 @@
 #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define HOMING_FEEDRATE_Z  (50*60)
 #elif ANY(Workhorse, TAZPro, TAZProXT)
-  #define HOMING_FEEDRATE_Z  1800
+  #define HOMING_FEEDRATE_Z  (25*60)
 #else
   #define HOMING_FEEDRATE_Z  (4*60)
 #endif
