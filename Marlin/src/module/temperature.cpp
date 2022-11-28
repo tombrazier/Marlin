@@ -569,6 +569,10 @@ volatile bool Temperature::raw_temps_ready = false;
   bool Temperature::paused_for_probing;
 #endif
 
+#if HAS_PID_HEATING
+  static bool autoTuning;
+#endif
+
 /**
  * public:
  * Class and Instance Methods
@@ -590,6 +594,7 @@ volatile bool Temperature::raw_temps_ready = false;
     celsius_float_t current_temp = 0.0;
     int cycles = 0;
     bool heating = true;
+    autoTuning = true;
 
     millis_t next_temp_ms = millis(), t1 = next_temp_ms, t2 = next_temp_ms;
     long t_high = 0, t_low = 0;
@@ -853,6 +858,7 @@ volatile bool Temperature::raw_temps_ready = false;
     TERN_(DWIN_LCD_PROUI, DWIN_PidTuning(PID_DONE));
 
     EXIT_M303:
+      autoTuning = false;
       TERN_(NO_FAN_SLOWING_IN_PID_TUNING, adaptive_fan_slowing = true);
       return;
   }
@@ -1328,6 +1334,10 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
     PIDRunner(TT &t) : tempinfo(t) { }
 
     float get_pid_output() {
+      if(autoTuning)
+      {
+        return constrain(tempinfo.soft_pwm_amount << 1, 0, MAX_POW);
+      }
 
       #if ENABLED(PID_OPENLOOP)
 
