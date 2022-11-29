@@ -504,10 +504,10 @@
     #define LULZBOT_M115_EXTRUDER_TYPE             "DualExtruder"
     #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -12
     #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -12
-    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -17
-    #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -17
-    #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -23.7
-    #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -23.7
+    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -31
+    #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -23
+    #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -10
+    #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -10
     #define LULZBOT_EXTRUDERS                       2
     #define LULZBOT_TOOLCHANGE_ZRAISE               0
     #define LULZBOT_NUM_SERVOS                      2
