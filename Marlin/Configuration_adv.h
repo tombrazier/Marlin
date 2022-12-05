@@ -1102,7 +1102,7 @@
     #define SHAPING_ZETA_Y  0.15f       // Damping ratio of the Y axis (range: 0.0 = no damping to 1.0 = critical damping).
   #endif
   //#define SHAPING_MIN_FREQ  20        // By default the minimum of the shaping frequencies. Override to affect SRAM usage.
-  //#define SHAPING_MAX_STEPRATE 10000  // By default the maximum total step rate of the shaped axes. Override to affect SRAM usage.
+  #define SHAPING_MAX_STEPRATE 10499    // By default the maximum total step rate of the shaped axes. Override to affect SRAM usage.
   //#define SHAPING_MENU                // Add a menu to the LCD to set shaping parameters.
 #endif
 
@@ -2868,7 +2868,7 @@
 
   #if AXIS_IS_TMC_CONFIG(E0)
     #define E0_CURRENT       TERN(VDE_100, 300, 600)
-    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 4 : 16)
+    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 8 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
