@@ -1308,8 +1308,12 @@
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
   #elif ANY(TAZPro, TAZProXT)
-    #if ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula)
+    #if defined(TOOLHEAD_Quiver_DualExtruder)
       #define CALIBRATION_OBJECT_CENTER     {261.5, -18, -2.0} //  mm
+      #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
+      #define CALIBRATION_MEASURE_FRONT
+    #elif defined(TOOLHEAD_Twin_Nebula_175)
+      #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
     #elif defined(LULZBOT_LongBed)
@@ -2185,7 +2189,7 @@
   //#define BABYSTEP_XY                     // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
   //#define BABYSTEP_MILLIMETER_UNITS       // Specify BABYSTEP_MULTIPLICATOR_(XY|Z) in mm instead of micro-steps
-  #define BABYSTEP_MULTIPLICATOR_Z  10       // (steps or mm) Steps or millimeter distance for each Z babystep
+  #define BABYSTEP_MULTIPLICATOR_Z  5       // (steps or mm) Steps or millimeter distance for each Z babystep
   #define BABYSTEP_MULTIPLICATOR_XY 1       // (steps or mm) Steps or millimeter distance for each XY babystep
 
   #define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
