@@ -1952,8 +1952,10 @@
 #if defined (LULZBOT_BLTouch)
   #define PROBING_MARGIN 20 
 #else
-  #if ANY(MiniV2, MiniV3)
+  #if ENABLED(MiniV2)
     #define PROBING_MARGIN -4
+  #elif ENABLED(MiniV3)
+    #define PROBING_MARGIN 0
   #elif ENABLED(TAZ6)
     #define PROBING_MARGIN -8
   #elif ENABLED(Workhorse)
@@ -2217,14 +2219,14 @@
   #define LULZBOT_Z_MAX_POS 183
 
 #elif ENABLED(MiniV3)
-  #define X_BED_SIZE 160
-  #define Y_BED_SIZE 165
+  #define X_BED_SIZE 170
+  #define Y_BED_SIZE 170
   // Travel limits (mm) after homing, corresponding to endstop positions.
-  #define LULZBOT_X_MIN_POS -16.75
+  #define LULZBOT_X_MIN_POS -5
   #define LULZBOT_Y_MIN_POS -5
   #define LULZBOT_Z_MIN_POS 0
-  #define LULZBOT_X_MAX_POS 161.5
-  #define LULZBOT_Y_MAX_POS 176
+  #define LULZBOT_X_MAX_POS 170
+  #define LULZBOT_Y_MAX_POS 183
   #define LULZBOT_Z_MAX_POS 183
 
 #elif ENABLED(TAZ6)
