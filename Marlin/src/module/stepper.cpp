@@ -1536,8 +1536,14 @@ void Stepper::isr() {
 
     nextMainISR -= interval;
     TERN_(HAS_SHAPING, ShapingQueue::decrement_delays(interval));
-    TERN_(LIN_ADVANCE, if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval);
-    TERN_(INTEGRATED_BABYSTEPPING, if (nextBabystepISR != BABYSTEP_NEVER) nextBabystepISR -= interval);
+
+    #if ENABLED(LIN_ADVANCE)
+      if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval;
+    #endif
+
+    #if ENABLED(INTEGRATED_BABYSTEPPING)
+      if (nextBabystepISR != BABYSTEP_NEVER) nextBabystepISR -= interval;
+    #endif
 
     /**
      * This needs to avoid a race-condition caused by interleaving
@@ -1670,8 +1676,10 @@ void Stepper::pulse_phase_isr() {
     #define PULSE_PREP(AXIS) do{ \
       delta_error[_AXIS(AXIS)] += advance_dividend[_AXIS(AXIS)]; \
       step_needed[_AXIS(AXIS)] = (delta_error[_AXIS(AXIS)] >= 0); \
-      if (step_needed[_AXIS(AXIS)]) \
+      if (step_needed[_AXIS(AXIS)]) { \
+        count_position[_AXIS(AXIS)] += count_direction[_AXIS(AXIS)]; \
         delta_error[_AXIS(AXIS)] -= advance_divisor; \
+      } \
     }while(0)
 
     // With input shaping, direction changes can happen with almost only
@@ -1711,7 +1719,6 @@ void Stepper::pulse_phase_isr() {
     // Start an active pulse if needed
     #define PULSE_START(AXIS) do{ \
       if (step_needed[_AXIS(AXIS)]) { \
-        count_position[_AXIS(AXIS)] += count_direction[_AXIS(AXIS)]; \
         _APPLY_STEP(AXIS, !_INVERT_STEP_PIN(AXIS), 0); \
       } \
     }while(0)
@@ -1929,10 +1936,7 @@ void Stepper::pulse_phase_isr() {
     #endif
 
     #if ENABLED(MIXING_EXTRUDER)
-      if (step_needed.e) {
-        count_position[E_AXIS] += count_direction[E_AXIS];
-        E_STEP_WRITE(mixer.get_next_stepper(), !INVERT_E_STEP_PIN);
-      }
+      if (step_needed.e) E_STEP_WRITE(mixer.get_next_stepper(), !INVERT_E_STEP_PIN);
     #elif HAS_E0_STEP
       PULSE_START(E);
     #endif
@@ -2488,18 +2492,21 @@ uint32_t Stepper::block_phase_isr() {
       acceleration_time = deceleration_time = 0;
 
       #if ENABLED(ADAPTIVE_STEP_SMOOTHING)
-        oversampling_factor = 0;                            // Assume no axis smoothing (via oversampling)
+        uint8_t oversampling = 0;                           // Assume no axis smoothing (via oversampling)
         // Decide if axis smoothing is possible
         uint32_t max_rate = current_block->nominal_rate;    // Get the step event rate
         while (max_rate < MIN_STEP_ISR_FREQUENCY) {         // As long as more ISRs are possible...
           max_rate <<= 1;                                   // Try to double the rate
           if (max_rate < MIN_STEP_ISR_FREQUENCY)            // Don't exceed the estimated ISR limit
-            ++oversampling_factor;                          // Increase the oversampling (used for left-shift)
+            ++oversampling;                                 // Increase the oversampling (used for left-shift)
         }
+        oversampling_factor = oversampling;                 // For all timer interval calculations
+      #else
+        constexpr uint8_t oversampling = 0;
       #endif
 
       // Based on the oversampling factor, do the calculations
-      step_event_count = current_block->step_event_count << oversampling_factor;
+      step_event_count = current_block->step_event_count << oversampling;
 
       // Initialize Bresenham delta errors to 1/2
       delta_error = TERN_(LIN_ADVANCE, la_delta_error =) -int32_t(step_event_count);
@@ -2535,8 +2542,8 @@ uint32_t Stepper::block_phase_isr() {
       step_events_completed = 0;
 
       // Compute the acceleration and deceleration points
-      accelerate_until = current_block->accelerate_until << oversampling_factor;
-      decelerate_after = current_block->decelerate_after << oversampling_factor;
+      accelerate_until = current_block->accelerate_until << oversampling;
+      decelerate_after = current_block->decelerate_after << oversampling;
 
       TERN_(MIXING_EXTRUDER, mixer.stepper_setup(current_block->b_color));
 
@@ -2550,7 +2557,7 @@ uint32_t Stepper::block_phase_isr() {
         #endif
         if (current_block->la_advance_rate) {
           // apply LA scaling and discount the effect of frequency scaling
-          la_dividend = (advance_dividend.e << current_block->la_scaling) << oversampling_factor;
+          la_dividend = (advance_dividend.e << current_block->la_scaling) << oversampling;
         }
       #endif
 
