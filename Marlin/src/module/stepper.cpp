@@ -2345,7 +2345,8 @@ uint32_t Stepper::block_phase_isr() {
       else {  // Must be in cruise phase otherwise
 
         // Calculate the ticks_nominal for this nominal speed, if not done yet
-        if (ticks_nominal < 0) {
+// for testing purposes, don't optimise out calc_timer_interval() at constant speed
+//        if (ticks_nominal < 0) {
           // step_rate to timer interval and loops for the nominal speed
           ticks_nominal = calc_timer_interval(current_block->nominal_rate << oversampling_factor, steps_per_isr);
 
@@ -2353,7 +2354,7 @@ uint32_t Stepper::block_phase_isr() {
             if (current_block->la_advance_rate)
               la_interval = calc_timer_interval(current_block->nominal_rate) << current_block->la_scaling;
           #endif
-        }
+//        }
 
         // The timer interval is just the nominal value for the nominal speed
         interval = ticks_nominal;
