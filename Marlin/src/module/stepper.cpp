@@ -1467,6 +1467,7 @@ HAL_STEP_TIMER_ISR() {
 uint32_t total_start;
 uint32_t totaltime = 0;
 uint32_t callcount = 0;
+uint32_t loopcount = 0;
 uint32_t pre_count = 0;
 uint32_t istest_count = 0;
 uint32_t pp_count = 0;
@@ -1508,6 +1509,8 @@ pre_count += TCNT1 - start_count;
   // We need this variable here to be able to use it in the following loop
   hal_timer_t min_ticks;
   do {
+loopcount++;
+
     // Enable ISRs to reduce USART processing latency
     hal.isr_on();
 
@@ -2173,6 +2176,7 @@ uint32_t Stepper::block_phase_isr() {
                        " la ", la_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
                        " bs ", bs_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
                        " cc ", callcount,
+                       " lc ", loopcount,
                        " sec ", step_events_completed,
                        " tt ", totaltime
                        );
@@ -2408,6 +2412,7 @@ uint32_t Stepper::block_phase_isr() {
   if (!current_block) {
 totaltime = 0;
 callcount = 0;
+loopcount = 0;
 pre_count = 0;
 istest_count = 0;
 pp_count = 0;
