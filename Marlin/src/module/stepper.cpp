@@ -1462,6 +1462,7 @@ HAL_STEP_TIMER_ISR() {
 
 #ifdef STM32G0B1xx
   #define TCNT1 (TIM16->CNT)
+  #define TCNT1L (TIM16->CNT & 0xff)
 #endif
 
 uint32_t total_start;
@@ -1469,7 +1470,6 @@ uint32_t totaltime = 0;
 uint32_t callcount = 0;
 uint32_t loopcount = 0;
 uint32_t pre_count = 0;
-uint32_t istest_count = 0;
 uint32_t pp_count = 0;
 uint32_t is_count = 0;
 uint32_t la_count = 0;
@@ -1477,13 +1477,13 @@ uint32_t bs_count = 0;
 uint32_t bp_count = 0;
 uint32_t tcalc_count = 0;
 hal_timer_t now_ticks;
-hal_timer_t start_count;
+uint8_t start_count;
 
 void Stepper::isr() {
 total_start = micros();
 callcount++;
 
-start_count = TCNT1;
+start_count = TCNT1L;
 
   static uint32_t nextMainISR = 0;  // Interval until the next main Stepper Pulse phase (0 = Now)
 
@@ -1504,7 +1504,7 @@ start_count = TCNT1;
   // Limit the amount of iterations
   uint8_t max_loops = 10;
 
-pre_count += TCNT1 - start_count;
+pre_count += uint8_t(TCNT1L - start_count);
 
   // We need this variable here to be able to use it in the following loop
   hal_timer_t min_ticks;
@@ -1514,17 +1514,17 @@ loopcount++;
     // Enable ISRs to reduce USART processing latency
     hal.isr_on();
 
-start_count = TCNT1;
+start_count = TCNT1L;
 
     TERN_(HAS_SHAPING, shaping_isr());                  // Do Shaper stepping, if needed
 
-istest_count += TCNT1 - start_count;
-start_count = TCNT1;
+is_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
-pp_count += TCNT1 - start_count;
-start_count = TCNT1;
+pp_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     #if ENABLED(LIN_ADVANCE)
       if (!nextAdvanceISR) {                            // 0 = Do Linear Advance E Stepper pulses
@@ -1535,8 +1535,8 @@ start_count = TCNT1;
         nextAdvanceISR = la_interval;
     #endif
 
-la_count += TCNT1 - start_count;
-start_count = TCNT1;
+la_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     #if ENABLED(INTEGRATED_BABYSTEPPING)
       const bool is_babystep = (nextBabystepISR == 0);  // 0 = Do Babystepping (XY)Z pulses
@@ -1545,13 +1545,13 @@ start_count = TCNT1;
 
     // ^== Time critical. NOTHING besides pulse generation should be above here!!!
 
-bs_count += TCNT1 - start_count;
-start_count = TCNT1;
+bs_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     if (!nextMainISR) nextMainISR = block_phase_isr();  // Manage acc/deceleration, get next block
 
-bp_count += TCNT1 - start_count;
-start_count = TCNT1;
+bp_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     #if ENABLED(INTEGRATED_BABYSTEPPING)
       if (is_babystep)                                  // Avoid ANY stepping too soon after baby-stepping
@@ -1635,8 +1635,8 @@ start_count = TCNT1;
      */
     if (!--max_loops) next_isr_ticks = min_ticks;
 
-tcalc_count += TCNT1 - start_count;
-start_count = TCNT1;
+tcalc_count += uint8_t(TCNT1L - start_count);
+start_count = TCNT1L;
 
     // Advance pulses if not enough time to wait for the next ISR
   } while (next_isr_ticks < min_ticks);
@@ -2167,8 +2167,14 @@ uint32_t Stepper::block_phase_isr() {
   if (current_block) {
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
+      SERIAL_ECHOLNPGM("os ", oversampling_factor, " nr ", current_block->nominal_rate);
+      SERIAL_ECHOLNPGM(
+        "base ", ISR_BASE_CYCLES, " scurve ", ISR_S_CURVE_CYCLES,
+        " isbase ", ISR_SHAPING_BASE_CYCLES, " loop ", ISR_LOOP_CYCLES(1),
+        " isloop ", ISR_SHAPING_LOOP_CYCLES(1), " labase ", ISR_LA_BASE_CYCLES,
+        " laloop ", ISR_LA_LOOP_CYCLES);
+
       SERIAL_ECHOLNPGM("pre  ", pre_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " istest ", istest_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
                        " bp ", bp_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
                        " tcalc ", tcalc_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
                        " pp ", pp_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
@@ -2414,7 +2420,6 @@ totaltime = 0;
 callcount = 0;
 loopcount = 0;
 pre_count = 0;
-istest_count = 0;
 pp_count = 0;
 is_count = 0;
 la_count = 0;
@@ -2574,12 +2579,6 @@ tcalc_count = 0;
             ++oversampling_factor;                          // Increase the oversampling (used for left-shift)
         }
       #endif
-      SERIAL_ECHOLNPGM("os ", oversampling_factor, " nr ", current_block->nominal_rate);
-      SERIAL_ECHOLNPGM(
-        "base ", ISR_BASE_CYCLES, " scurve ", ISR_S_CURVE_CYCLES,
-        " isbase ", ISR_SHAPING_BASE_CYCLES, " loop ", ISR_LOOP_CYCLES(1),
-        " isloop ", ISR_SHAPING_LOOP_CYCLES(1), " labase ", ISR_LA_BASE_CYCLES,
-        " laloop ", ISR_LA_LOOP_CYCLES);
 
       // Based on the oversampling factor, do the calculations
       step_event_count = current_block->step_event_count << oversampling_factor;
