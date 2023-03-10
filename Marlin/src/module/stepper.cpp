@@ -1461,11 +1461,9 @@ HAL_STEP_TIMER_ISR() {
 #endif
 
 #ifdef STM32G0B1xx
-  #define TCNT1 (TIM16->CNT)
-  #define TCNT1L (TIM16->CNT & 0xff)
+  #define TCNT5 (TIM16->CNT)
 #endif
 
-uint32_t total_start;
 uint32_t totaltime = 0;
 uint32_t callcount = 0;
 uint32_t loopcount = 0;
@@ -1476,14 +1474,12 @@ uint32_t la_count = 0;
 uint32_t bs_count = 0;
 uint32_t bp_count = 0;
 uint32_t tcalc_count = 0;
-hal_timer_t now_ticks;
-uint8_t start_count;
+uint32_t post_count = 0;
 
 void Stepper::isr() {
-total_start = micros();
 callcount++;
-
-start_count = TCNT1L;
+uint16_t total_start = TCNT5;
+uint16_t start_count = TCNT5;
 
   static uint32_t nextMainISR = 0;  // Interval until the next main Stepper Pulse phase (0 = Now)
 
@@ -1504,7 +1500,7 @@ start_count = TCNT1L;
   // Limit the amount of iterations
   uint8_t max_loops = 10;
 
-pre_count += uint8_t(TCNT1L - start_count);
+pre_count += TCNT5 - start_count;
 
   // We need this variable here to be able to use it in the following loop
   hal_timer_t min_ticks;
@@ -1514,17 +1510,17 @@ loopcount++;
     // Enable ISRs to reduce USART processing latency
     hal.isr_on();
 
-start_count = TCNT1L;
+start_count = TCNT5;
 
     TERN_(HAS_SHAPING, shaping_isr());                  // Do Shaper stepping, if needed
 
-is_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+is_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
-pp_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+pp_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     #if ENABLED(LIN_ADVANCE)
       if (!nextAdvanceISR) {                            // 0 = Do Linear Advance E Stepper pulses
@@ -1535,8 +1531,8 @@ start_count = TCNT1L;
         nextAdvanceISR = la_interval;
     #endif
 
-la_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+la_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     #if ENABLED(INTEGRATED_BABYSTEPPING)
       const bool is_babystep = (nextBabystepISR == 0);  // 0 = Do Babystepping (XY)Z pulses
@@ -1545,13 +1541,13 @@ start_count = TCNT1L;
 
     // ^== Time critical. NOTHING besides pulse generation should be above here!!!
 
-bs_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+bs_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     if (!nextMainISR) nextMainISR = block_phase_isr();  // Manage acc/deceleration, get next block
 
-bp_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+bp_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     #if ENABLED(INTEGRATED_BABYSTEPPING)
       if (is_babystep)                                  // Avoid ANY stepping too soon after baby-stepping
@@ -1635,8 +1631,8 @@ start_count = TCNT1L;
      */
     if (!--max_loops) next_isr_ticks = min_ticks;
 
-tcalc_count += uint8_t(TCNT1L - start_count);
-start_count = TCNT1L;
+tcalc_count += TCNT5 - start_count;
+start_count = TCNT5;
 
     // Advance pulses if not enough time to wait for the next ISR
   } while (next_isr_ticks < min_ticks);
@@ -1650,7 +1646,9 @@ start_count = TCNT1L;
   // Don't forget to finally reenable interrupts
   hal.isr_on();
 
-totaltime += micros() - total_start;
+post_count += TCNT5 - start_count;
+
+totaltime += TCNT5 - total_start;
 }
 
 #if MINIMUM_STEPPER_PULSE || MAXIMUM_STEPPER_RATE
@@ -2167,6 +2165,8 @@ uint32_t Stepper::block_phase_isr() {
   if (current_block) {
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
+      uint8_t save = TCCR1B;
+      TCCR1B &= ~_BV(CS10) & _BV(CS11) & _BV(CS12);
       SERIAL_ECHOLNPGM("os ", oversampling_factor, " nr ", current_block->nominal_rate);
       SERIAL_ECHOLNPGM(
         "base ", ISR_BASE_CYCLES, " scurve ", ISR_S_CURVE_CYCLES,
@@ -2174,18 +2174,26 @@ uint32_t Stepper::block_phase_isr() {
         " isloop ", ISR_SHAPING_LOOP_CYCLES(1), " labase ", ISR_LA_BASE_CYCLES,
         " laloop ", ISR_LA_LOOP_CYCLES);
 
-      SERIAL_ECHOLNPGM("pre  ", pre_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " bp ", bp_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " tcalc ", tcalc_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " pp ", pp_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " is ", is_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " la ", la_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
-                       " bs ", bs_count * ((F_CPU) / (STEPPER_TIMER_RATE)) / step_events_completed,
+      #ifdef __AVR__
+        #define TIMER_RATE (F_CPU)
+      #else
+        #define TIMER_RATE (STEPPER_TIMER_RATE)
+      #endif
+      SERIAL_ECHOLNPGM("pre  ", pre_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " bp ", bp_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " tcalc ", tcalc_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " pp ", pp_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " is ", is_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " la ", la_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " bs ", bs_count * ((F_CPU) / TIMER_RATE) / step_events_completed,
+                       " post ", post_count * (1) / step_events_completed,
                        " cc ", callcount,
                        " lc ", loopcount,
                        " sec ", step_events_completed,
-                       " tt ", totaltime
+                       " tt ", totaltime / (TIMER_RATE / 1000000)
                        );
+      TCCR1B = save;
+
       #if ENABLED(DIRECT_STEPPING)
         // Direct stepping is currently not ready for HAS_I_AXIS
         #if STEPPER_PAGE_FORMAT == SP_4x4D_128
@@ -2426,6 +2434,7 @@ la_count = 0;
 bs_count = 0;
 bp_count = 0;
 tcalc_count = 0;
+post_count = 0;
 
     // Anything in the buffer?
     if ((current_block = planner.get_current_block())) {
@@ -2777,6 +2786,9 @@ bool Stepper::is_block_busy(const block_t * const block) {
 }
 
 void Stepper::init() {
+TCCR5A = 0;
+TCCR5B = _BV(CS50);
+PRR1 &= ~_BV(PRTIM5);
 
   #if MB(ALLIGATOR)
     const float motor_current[] = MOTOR_CURRENT;
