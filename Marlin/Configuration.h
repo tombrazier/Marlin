@@ -1243,7 +1243,7 @@
 #if ENABLED(GEARED_EXTRUDER)
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 8 }
 #elif ENABLED(VDE_100)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.45 * 4 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 8, 200.0/40.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.45 * 4 }
 #else
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/22.5 * 16 }
 #endif
@@ -1262,7 +1262,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 150, 25, 12 }
+#define DEFAULT_MAX_FEEDRATE          { 300, 300, 25, 12 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -2293,7 +2293,7 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-#define SKEW_CORRECTION
+//#define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
