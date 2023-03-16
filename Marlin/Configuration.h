@@ -1,19 +1,15 @@
-//#define LULZBOT_Hibiscus_Mini2
-//#define LULZBOT_Mini3
-//#define LULZBOT_Oliveoil_TAZ6
-//#define LULZBOT_Redgum_TAZWorkhorse
-//#define LULZBOT_Quiver_TAZPro
-//#define LULZBOT_Gladiator_TAZProXT
-//#define LULZBOT_Sidekick_289
-//#define LULZBOT_Sidekick_747
-//#define LULZBOT_KangarooPaw_Experimental
+/*
+*                 LulzBot 3D Printers
+*
+* To Build firmware, make sure to uncomment the tool head 
+* as well as any options that apply to the printer. 
+* 
+*/
 
-//#define TazDualZ
-#define LULZBOT_FILAMENT_RUNOUT
-//#define LULZBOT_BLTouch
-//#define LULZBOT_LongBed
 /************** Uncomment a Tool Head Option From Below *********************/
+
 //#define LULZBOT_UNIVERSAL_TOOLHEAD
+#define LULZBOT_UNIVERSAL_X_SERIES
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
@@ -21,16 +17,16 @@
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
 //#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
-#define TOOLHEAD_Twin_Nebula_175                    // TAZ Pro Dual Extruder
-//#define TOOLHEAD_Albatross_Flexystruder         // TAZ Legacy Flexystruder
-//#define TOOLHEAD_Finch_Aerostruder              // TAZ Legacy Titan Aerostruder v1 0.50 mm
-//#define TOOLHEAD_Tilapia_SingleExtruder         // TAZ Legacy Standard Single Extruder 
-//#define TOOLHEAD_Yellowfin_DualExtruderV3       // TAZ Legacy Dual Extruder
+//#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
+//#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
 
-#if ENABLED(TAZPro)
-  #define EMI_MITIGATION
-#endif
+/************** Uncomment Options for Printer From Below *********************/
+
+#define LULZBOT_FILAMENT_RUNOUT
+//#define LULZBOT_BLTouch
+//#define LULZBOT_LongBed
+//#define TazDualZ
 
 /**
  * Marlin 3D Printer Firmware
@@ -131,6 +127,10 @@
   #elif ENABLED(MiniV3)
     #define MOTHERBOARD BOARD_BTT_SKR_V3_0_EZ
   #endif
+#endif
+
+#if ENABLED(TAZPro)
+  #define EMI_MITIGATION
 #endif
 
 #if (MOTHERBOARD == BOARD_ARCHIM2) || (MOTHERBOARD == BOARD_EINSY_RETRO)
@@ -467,6 +467,24 @@
   #define LULZBOT_M115_EXTRUDER_TYPE       "SK285"
 #endif
 
+#if defined(LULZBOT_UNIVERSAL_X_SERIES) 
+  #define LULZBOT_UNIVERSAL_MOUNT
+  #define LULZBOT_EXTRUDERS                  1
+  #define LULZBOT_M115_EXTRUDER_TYPE         "Universal X-Series"
+  #define LULZBOT_E_STEPS                    410
+  #define LULZBOT_TOOLHEAD_X_MAX_ADJ         0
+  #define LULZBOT_TOOLHEAD_X_MIN_ADJ         0
+  #define LULZBOT_TOOLHEAD_Y_MAX_ADJ         0
+  #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
+  #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
+  #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
+  #if ANY(TAZ6, Workhorse)
+    #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+  #else
+    #define LULZBOT_MOTOR_CURRENT_E0         750 // mA
+  #endif
+#endif
+
 /*********************************** TAZ PRO TOOLHEADS ************************/
 
 #if defined(TOOLHEAD_Quiver_DualExtruder)
@@ -499,9 +517,9 @@
 #endif /* TOOLHEAD_Quiver_DualExtruder */
 
 #if defined(TOOLHEAD_Twin_Nebula_175)
-    #define LULZBOT_LCD_TOOLHEAD_NAME              "Twin Nebula"
+    #define LULZBOT_LCD_TOOLHEAD_NAME              "Twin Nebula 1.75"
 //          16 chars max                            ^^^^^^^^^^^^^^^
-    #define LULZBOT_M115_EXTRUDER_TYPE             "DualExtruder"
+    #define LULZBOT_M115_EXTRUDER_TYPE             "Twin Nebula 1.75"
     #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -12
     #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -12
     #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -31
@@ -522,10 +540,39 @@
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
     #define LULZBOT_SLICE_MOS_PID
     #define LULZBOT_TEMP_SENSOR_1                  5
-    #define LULZBOT_MOTOR_CURRENT_E0               830 // mA
-    #define LULZBOT_MOTOR_CURRENT_E1               830 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
+    #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
     #define SWITCHING_NOZZLE
 #endif /* TOOLHEAD_Twin_Nebula_175 */
+
+#if defined(TOOLHEAD_Twin_Nebula_285)
+    #define LULZBOT_LCD_TOOLHEAD_NAME              "Twin Nebula 2.85"
+//          16 chars max                            ^^^^^^^^^^^^^^^
+    #define LULZBOT_M115_EXTRUDER_TYPE             "Twin Nebula 2.85"
+    #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -12
+    #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -12
+    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -31
+    #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -23
+    #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -10
+    #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -10
+    #define LULZBOT_EXTRUDERS                       2
+    #define LULZBOT_TOOLCHANGE_ZRAISE               0
+    #define LULZBOT_NUM_SERVOS                      2
+    #define LULZBOT_SERVO_DELAY                    {500, 500}
+    #define LULZBOT_SWITCHING_NOZZLE
+    #define LULZBOT_SWITCHING_NOZZLE_E1_SERVO_NR   1
+    #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 75,   125}
+    #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
+    #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44}
+    #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
+    #define LULZBOT_E_STEPS                        410
+    #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
+    #define LULZBOT_SLICE_MOS_PID
+    #define LULZBOT_TEMP_SENSOR_1                  5
+    #define LULZBOT_MOTOR_CURRENT_E0               850 // mA
+    #define LULZBOT_MOTOR_CURRENT_E1               850 // mA
+    #define SWITCHING_NOZZLE
+#endif /* TOOLHEAD_Twin_Nebula_285 */
 
 
 /********************************* OTHER TOOLHEADS ***************************/
@@ -588,7 +635,7 @@
 #endif
 
 // A dual-nozzle that uses a servomotor to raise/lower one (or both) of the nozzles
-#if ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175)
+#if ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
   #define SWITCHING_NOZZLE
 #endif
 #if ENABLED(SWITCHING_NOZZLE)
@@ -1025,6 +1072,31 @@
     #define charHSHSPLUS_DEFAULT_Kp STRINGIFY(HSHSPLUS_DEFAULT_Kp)
     #define charHSHSPLUS_DEFAULT_Ki STRINGIFY(HSHSPLUS_DEFAULT_Ki)
     #define charHSHSPLUS_DEFAULT_Kd STRINGIFY(HSHSPLUS_DEFAULT_Kd)
+  
+  // MET175 Tool head (50W)
+    #define MET175_DEFAULT_Kp 26.90
+    #define MET175_DEFAULT_Ki 2.41
+    #define MET175_DEFAULT_Kd 75.19
+    #define charMET175_DEFAULT_Kp STRINGIFY(MET175_DEFAULT_Kp)
+    #define charMET175_DEFAULT_Ki STRINGIFY(MET175_DEFAULT_Ki)
+    #define charMET175_DEFAULT_Kd STRINGIFY(MET175_DEFAULT_Kd)
+
+  // MET285 Tool head (50W)
+    #define MET285_DEFAULT_Kp 14.00
+    #define MET285_DEFAULT_Ki 0.87
+    #define MET285_DEFAULT_Kd 56.4
+    #define charMET285_DEFAULT_Kp STRINGIFY(MET285_DEFAULT_Kp)
+    #define charMET285_DEFAULT_Ki STRINGIFY(MET285_DEFAULT_Ki)
+    #define charMET285_DEFAULT_Kd STRINGIFY(MET285_DEFAULT_Kd)
+  
+  // AST285 Tool head (50W)
+    #define AST285_DEFAULT_Kp 26.90
+    #define AST285_DEFAULT_Ki 2.41
+    #define AST285_DEFAULT_Kd 75.19
+    #define charAST285_DEFAULT_Kp STRINGIFY(AST285_DEFAULT_Kp)
+    #define charAST285_DEFAULT_Ki STRINGIFY(AST285_DEFAULT_Ki)
+    #define charAST285_DEFAULT_Kd STRINGIFY(AST285_DEFAULT_Kd)
+
 
   #if ENABLED(PID_PARAMS_PER_HOTEND)
     // Specify up to one value per hotend here, according to your setup.
@@ -1068,6 +1140,10 @@
       #define DEFAULT_Kp HSHSPLUS_DEFAULT_Kp 
       #define DEFAULT_Ki HSHSPLUS_DEFAULT_Ki 
       #define DEFAULT_Kd HSHSPLUS_DEFAULT_Kd 
+    #elif ENABLED(LULZBOT_UNIVERSAL_X_SERIES)
+      #define DEFAULT_Kp MET175_DEFAULT_Kp 
+      #define DEFAULT_Ki MET175_DEFAULT_Ki 
+      #define DEFAULT_Kd MET175_DEFAULT_Kd 
     #endif
   #endif
 #endif
@@ -2262,7 +2338,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
-  #elif defined(TOOLHEAD_Twin_Nebula_175)
+  #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
     #define X_BED_SIZE 281
     #define Y_BED_SIZE 283
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -2304,7 +2380,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 599 // <-- changed
-  #elif defined(TOOLHEAD_Twin_Nebula_175)
+  #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
     #define X_BED_SIZE 281
     #define Y_BED_SIZE 283
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -3011,10 +3087,10 @@
   #if ANY(MiniV2, MiniV3)
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
-  #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_UNIVERSAL_TOOLHEAD)
+  #elif ANY(TAZPro, TAZProXT) && ANY(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES)
     #define NOZZLE_CLEAN_START_POINT { 295, 95, 1 }
     #define NOZZLE_CLEAN_END_POINT   { 295, 25, 1 }
-  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175) 
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
     #define NOZZLE_CLEAN_START_POINT {{ -17, 95, 1 }, { 297, 95, 1 }}
     #define NOZZLE_CLEAN_END_POINT   {{ -17, 25, 1 }, { 297, 25, 1 }}
   #else
@@ -3049,9 +3125,9 @@
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ENABLED(Workhorse)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
-  #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_UNIVERSAL_TOOLHEAD)
+  #elif ANY(TAZPro, TAZProXT) && ANY(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X295 Y25 Z10 F4000\nG1 Z-1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
-  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175) 
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
     #define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nT0\nG1 Z-1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
   #endif
 #endif
@@ -4120,4 +4196,13 @@
   #define BTN_ENC                    EXP1_02_PIN
   #define LCD_PINS_D5                EXP1_06_PIN
   #define BEEPER_PIN                 EXP1_01_PIN
+#endif
+
+// Selection of tool head
+#if NONE(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES, TOOLHEAD_SL_SE_HE, TOOLHEAD_HS_HSPLUS, TOOLHEAD_H175, TOOLHEAD_M175, TOOLHEAD_SK175, TOOLHEAD_SK285,TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
+  #error "Please select a Tool Head. See top of configuration.h for more information."
+#endif
+
+#if LULZBOT_EXTRUDERS == 2 && NONE(LULZBOT_Quiver_TAZPro, LULZBOT_Gladiator_TAZProXT)
+  #error "Tool Head Selected is not supported by Printer."
 #endif
