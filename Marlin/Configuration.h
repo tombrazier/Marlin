@@ -1906,7 +1906,11 @@
 #if ENABLED(LULZBOT_BLTouch)
   #define BLTOUCH
   #define LULZBOT_PROBE_TYPE "BLTouch"
-  #define LULZBOT_SHORT_PROBE_TYPE " BT"
+  #if NONE(Sidekick_289, Sidekick_747)  // Machines that come stock with a BLTouch and do not need the identifier
+    #define LULZBOT_SHORT_PROBE_TYPE " BT"
+  #else
+    #define LULZBOT_SHORT_PROBE_TYPE
+  #endif
 #endif
 
 /**

@@ -327,8 +327,14 @@ void menu_main() {
     SUBMENU(MSG_MOTION, menu_motion);
   }
 
-  #if BOTH(ADVANCED_PAUSE_FEATURE, DISABLE_ENCODER)
-    FILAMENT_CHANGE_ITEM();
+  #if ENABLED(CUSTOM_MENU_MAIN)
+    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
+      #ifdef CUSTOM_MENU_MAIN_TITLE
+        SUBMENU_F(F(CUSTOM_MENU_MAIN_TITLE), custom_menus_main);
+      #else
+        SUBMENU(MSG_CUSTOM_COMMANDS, custom_menus_main);
+      #endif
+    }
   #endif
 
   #if HAS_CUTTER
@@ -353,14 +359,8 @@ void menu_main() {
 
   SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
-  #if ENABLED(CUSTOM_MENU_MAIN)
-    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
-      #ifdef CUSTOM_MENU_MAIN_TITLE
-        SUBMENU_F(F(CUSTOM_MENU_MAIN_TITLE), custom_menus_main);
-      #else
-        SUBMENU(MSG_CUSTOM_COMMANDS, custom_menus_main);
-      #endif
-    }
+  #if ENABLED(ADVANCED_PAUSE_FEATURE) && DISABLED(DISABLE_ENCODER)
+    FILAMENT_CHANGE_ITEM();
   #endif
 
   #if ENABLED(LCD_INFO_MENU)
@@ -459,10 +459,6 @@ void menu_main() {
         GET_TEXT_F(MSG_HOST_SHUTDOWN), (const char *)nullptr, F("?")
       );
     });
-  #endif
-
-  #if ENABLED(ADVANCED_PAUSE_FEATURE) && DISABLED(DISABLE_ENCODER)
-    FILAMENT_CHANGE_ITEM();
   #endif
 
   END_MENU();
