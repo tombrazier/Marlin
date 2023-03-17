@@ -2895,7 +2895,7 @@
   #if AXIS_IS_TMC_CONFIG(Z)
     #define Z_CURRENT       975
     #define Z_CURRENT_HOME  Z_CURRENT
-    #if ANY(MiniV2, MiniV3)
+    #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
       #define Z_MICROSTEPS     32
     #else
       #define Z_MICROSTEPS     16
