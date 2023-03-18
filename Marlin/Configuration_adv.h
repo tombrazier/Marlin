@@ -2906,7 +2906,7 @@
 
   #if AXIS_IS_TMC_CONFIG(E0)
     #define E0_CURRENT       TERN(VDE_100, 300, 600)
-    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 8 : 16)
+    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 4 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
