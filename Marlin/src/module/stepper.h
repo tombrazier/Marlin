@@ -538,6 +538,7 @@ class Stepper {
       static constexpr uint8_t steps_per_isr = 1; // Count of steps to perform per Stepper ISR call
     #else
       static uint8_t steps_per_isr;
+      static uint8_t acc_steps_per_isr;
     #endif
 
     #if DISABLED(OLD_ADAPTIVE_MULTISTEPPING)
