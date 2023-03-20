@@ -192,6 +192,7 @@ uint32_t Stepper::acceleration_time, Stepper::deceleration_time;
 
 #if MULTISTEPPING_LIMIT > 1
   uint8_t Stepper::steps_per_isr = 1; // Count of steps to perform per Stepper ISR call
+  uint8_t Stepper::acc_steps_per_isr = 0;
 #endif
 
 #if DISABLED(OLD_ADAPTIVE_MULTISTEPPING)
@@ -2288,6 +2289,16 @@ hal_timer_t Stepper::block_phase_isr() {
       else if (step_events_completed > decelerate_after) {
         uint32_t step_rate;
 
+        #if MULTISTEPPING_LIMIT > 1
+          // at the start of the deceleration phase, jump to the same multi-stepping
+          // needed for the end of the acceleration phase as the cost of calculating
+          // the interval is similar
+          if (acc_steps_per_isr) {
+            steps_per_isr = acc_steps_per_isr;
+            acc_steps_per_isr = 0;
+          }
+        #endif
+
         #if ENABLED(S_CURVE_ACCELERATION)
 
           // If this is the 1st time we process the 2nd half of the trapezoid...
@@ -2379,6 +2390,11 @@ hal_timer_t Stepper::block_phase_isr() {
 
         // Calculate the ticks_nominal for this nominal speed, if not done yet
         if (ticks_nominal == 0) {
+          #if MULTISTEPPING_LIMIT > 1
+            if (!acc_steps_per_isr)
+              acc_steps_per_isr = steps_per_isr;
+          #endif
+
           // step_rate to timer interval and loops for the nominal speed
           ticks_nominal = calc_multistep_timer_interval(current_block->nominal_rate << oversampling_factor);
 
