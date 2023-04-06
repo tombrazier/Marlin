@@ -2151,7 +2151,7 @@
  *
  * Warning: Does not respect endstops!
  */
-#define BABYSTEPPING
+//#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
@@ -2198,7 +2198,7 @@
  *
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
-#define LIN_ADVANCE
+//#define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   #if ENABLED(DISTINCT_E_FACTORS)
     #define ADVANCE_K { 0.0 }     // (mm) Compression length per 1mm/s extruder speed, per extruder
@@ -2855,7 +2855,7 @@
   #if AXIS_IS_TMC_CONFIG(Z)
     #define Z_CURRENT       200
     #define Z_CURRENT_HOME  Z_CURRENT
-    #define Z_MICROSTEPS     16
+    #define Z_MICROSTEPS     4
     #define Z_RSENSE          0.11
     #define Z_CHAIN_POS      -1
     //#define Z_INTERPOLATE  true
@@ -2954,7 +2954,7 @@
 
   #if AXIS_IS_TMC_CONFIG(E0)
     #define E0_CURRENT       TERN(VDE_100, 450, 600)
-    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 4 : 16)
+    #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 2 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true

@@ -2394,7 +2394,7 @@ hal_timer_t Stepper::block_phase_isr() {
 
         #else
           // Using the old trapezoidal control
-          step_rate = STEP_MULTIPLY(deceleration_time, current_block->acceleration_rate);
+          step_rate = STEP_MULTIPLY(deceleration_time, current_block->deceleration_rate);
           if (step_rate < acc_step_rate) { // Still decelerating?
             step_rate = acc_step_rate - step_rate;
             NOLESS(step_rate, current_block->final_rate);
