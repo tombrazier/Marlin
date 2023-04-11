@@ -1238,11 +1238,11 @@
 //#define GEARED_EXTRUDER
 #define VDE_100
 #if ENABLED(GEARED_EXTRUDER)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/30.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 8 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 8 }
 #elif ENABLED(VDE_100)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/30.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.45 * 4 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.45 * 4 }
 #else
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/30.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/22.5 * 16 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/40.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/22.5 * 16 }
 #endif
 
 /* Notes:
@@ -1570,7 +1570,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -1.20 }
+#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -1.11 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.

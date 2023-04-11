@@ -2790,7 +2790,7 @@
   #if AXIS_IS_TMC_CONFIG(Y)
     #define Y_CURRENT       450
     #define Y_CURRENT_HOME  (Y_CURRENT / 2)
-    #define Y_MICROSTEPS     8
+    #define Y_MICROSTEPS     16
     #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
     //#define Y_INTERPOLATE  true
