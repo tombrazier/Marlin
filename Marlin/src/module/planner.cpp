@@ -2872,6 +2872,14 @@ bool Planner::_populate_block(
   // Max entry speed of this block equals the max exit speed of the previous block.
   block->max_entry_speed_sqr = vmax_junction_sqr;
 
+  // To avoid stringing, there needs to be a near stop between print and travel moves
+  static bool prev_move_travel = true;
+  const bool move_travel = esteps == 0;
+  if (prev_move_travel != move_travel) {
+    prev_move_travel = move_travel;
+    block->max_entry_speed_sqr = sq(float(MINIMUM_PLANNER_SPEED));
+  }
+
   // Initialize block entry speed. Compute based on deceleration to user-defined MINIMUM_PLANNER_SPEED.
   const float v_allowable_sqr = max_allowable_speed_sqr(-block->acceleration, sq(float(MINIMUM_PLANNER_SPEED)), block->millimeters);
 
