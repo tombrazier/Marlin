@@ -627,7 +627,8 @@ void menu_backlash();
       #if ENABLED(X_AXIS_TWIST_COMPENSATION)
         SUBMENU(MSG_XATC, xatc_wizard_continue);
       #endif
-
+      
+      queue.inject_P(PSTR("M500\nM117 Z Offset Saved"));
       END_MENU();
     }
   #endif
