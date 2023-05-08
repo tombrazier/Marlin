@@ -1665,7 +1665,7 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  #define EVENT_GCODE_SD_ABORT "G27\nM524"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G28Z\nM524"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -3923,19 +3923,19 @@
 
   #if defined(LULZBOT_UNIVERSAL_X_SERIES)
     #if DISABLED(Workhorse)
-      #define MAIN_MENU_ITEM_1_DESC "Meteorite - 1.75"
+      #define MAIN_MENU_ITEM_1_DESC "Meteor - 1.75"
       #define MAIN_MENU_ITEM_1_GCODE "M92E410\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\nM906E" E_CURRENT_LGX175 "\nM500\nM117 Meteorite - 1.75"
 
-      #define MAIN_MENU_ITEM_2_DESC "Meteorite - 2.85"
+      #define MAIN_MENU_ITEM_2_DESC "Meteor - 2.85"
       #define MAIN_MENU_ITEM_2_GCODE "M92E452\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\nM906E" E_CURRENT_LGX285 "\nM500\nM117 Meteorite - 2.85"
 
       #define MAIN_MENU_ITEM_3_DESC "Asteroid - 2.85"
       #define MAIN_MENU_ITEM_3_GCODE "M92E452\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\nM906E" E_CURRENT_LGX285 "\nM500\nM117 Asteroid - 2.85"
     #else
-      #define MAIN_MENU_ITEM_1_DESC "Meteorite - 1.75"
+      #define MAIN_MENU_ITEM_1_DESC "Meteor - 1.75"
       #define MAIN_MENU_ITEM_1_GCODE "M92E410\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\nM907E" E_CURRENT_LGX175 "\nM500\nM117 Meteorite - 1.75"
 
-      #define MAIN_MENU_ITEM_2_DESC "Meteorite - 2.85"
+      #define MAIN_MENU_ITEM_2_DESC "Meteor - 2.85"
       #define MAIN_MENU_ITEM_2_GCODE "M92E452\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\nM907E" E_CURRENT_LGX285 "\nM500\nM117 Meteorite - 2.85"
 
       #define MAIN_MENU_ITEM_3_DESC "Asteroid - 2.85"
