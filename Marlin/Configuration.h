@@ -2437,6 +2437,8 @@
   #define LULZBOT_Z_MAX_POS  244.5    
 #endif
 
+#define charLULZBOT_Z_MAX_POS STRINGIFY(LULZBOT_Z_MAX_POS) //Used for event of SD abort
+
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MAX_POS (LULZBOT_X_MAX_POS + LULZBOT_TOOLHEAD_X_MAX_ADJ)
 #define X_MIN_POS (LULZBOT_X_MIN_POS + LULZBOT_TOOLHEAD_X_MIN_ADJ)
