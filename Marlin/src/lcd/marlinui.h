@@ -412,6 +412,7 @@ public:
 
     #if LCD_WITH_BLINK
       static bool get_blink();
+      static bool get_slow_blink();
     #endif
 
     #if HAS_WIRED_LCD

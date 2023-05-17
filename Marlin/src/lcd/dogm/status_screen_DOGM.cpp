@@ -485,7 +485,7 @@ FORCE_INLINE void _draw_axis_value(const AxisEnum axis, const char *value, const
     static uint8_t lastElapsed;
     void MarlinUI::drawElapsed() {
       if (printJobOngoing()) {
-        lcd_put_u8str(PROGRESS_BAR_X, EXTRAS_BASELINE, F("E:"));
+        lcd_put_u8str(PROGRESS_BAR_X, EXTRAS_BASELINE, F("Time:"));
         lcd_put_u8str(elapsed_x_pos, EXTRAS_BASELINE, elapsed_string);
       }
     }

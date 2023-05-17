@@ -171,6 +171,17 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
     return blink != 0;
   }
 
+  bool MarlinUI::get_slow_blink() {
+    static uint8_t slow_blink = 0;
+    static millis_t next_slow_blink_ms = 0;
+    millis_t ms = millis();
+    if (ELAPSED(ms, next_slow_blink_ms)) {
+      slow_blink ^= 0xFF;
+      next_slow_blink_ms = ms + 4000 - (LCD_UPDATE_INTERVAL) / 2;
+    }
+    return slow_blink != 0;
+  }
+
 #endif
 
 // Encoder Handling
@@ -1745,9 +1756,9 @@ void MarlinUI::init() {
       };
       static bool prev_blink;
       static uint8_t i;
-      if (prev_blink != get_blink()) {
-        prev_blink = get_blink();
-        if (++i >= COUNT(progFunc)) i = 0;
+      if (prev_blink != get_slow_blink()) {
+        prev_blink = get_slow_blink();
+        if (+i >= COUNT(progFunc)) i = 0;
         (*progFunc[i])();
       }
     }
