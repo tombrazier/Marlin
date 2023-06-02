@@ -1393,178 +1393,179 @@ void CrealityDWINClass::Menu_Item_Handler(const uint8_t menu, const uint8_t item
       }
       break;
     case ManualLevel:
+      {
+        #define MLEVEL_BACK 0
+        #define MLEVEL_PROBE (MLEVEL_BACK + ENABLED(HAS_BED_PROBE))
+        #define MLEVEL_BL (MLEVEL_PROBE + 1)
+        #define MLEVEL_TL (MLEVEL_BL + 1)
+        #define MLEVEL_TR (MLEVEL_TL + 1)
+        #define MLEVEL_BR (MLEVEL_TR + 1)
+        #define MLEVEL_C (MLEVEL_BR + 1)
+        #define MLEVEL_ZPOS (MLEVEL_C + 1)
+        #define MLEVEL_TOTAL MLEVEL_ZPOS
 
-      #define MLEVEL_BACK 0
-      #define MLEVEL_PROBE (MLEVEL_BACK + ENABLED(HAS_BED_PROBE))
-      #define MLEVEL_BL (MLEVEL_PROBE + 1)
-      #define MLEVEL_TL (MLEVEL_BL + 1)
-      #define MLEVEL_TR (MLEVEL_TL + 1)
-      #define MLEVEL_BR (MLEVEL_TR + 1)
-      #define MLEVEL_C (MLEVEL_BR + 1)
-      #define MLEVEL_ZPOS (MLEVEL_C + 1)
-      #define MLEVEL_TOTAL MLEVEL_ZPOS
+        static float mlev_z_pos = 0;
+        static bool use_probe = false;
 
-      static float mlev_z_pos = 0;
-      static bool use_probe = false;
-
-      #if HAS_BED_PROBE
-        constexpr float probe_x_min = _MAX(0 + corner_pos, X_MIN_POS + probe.offset.x, X_MIN_POS + PROBING_MARGIN) - probe.offset.x,
-                        probe_x_max = _MIN((X_BED_SIZE + X_MIN_POS) - corner_pos, X_MAX_POS + probe.offset.x, X_MAX_POS - PROBING_MARGIN) - probe.offset.x,
-                        probe_y_min = _MAX(0 + corner_pos, Y_MIN_POS + probe.offset.y, Y_MIN_POS + PROBING_MARGIN) - probe.offset.y,
-                        probe_y_max = _MIN((Y_BED_SIZE + Y_MIN_POS) - corner_pos, Y_MAX_POS + probe.offset.y, Y_MAX_POS - PROBING_MARGIN) - probe.offset.y;
-      #endif
-
-      switch (item) {
-        case MLEVEL_BACK:
-          if (draw)
-            Draw_Menu_Item(row, ICON_Back, F("Back"));
-          else {
-            TERN_(HAS_LEVELING, set_bed_leveling_enabled(level_state));
-            Draw_Menu(Prepare, PREPARE_MANUALLEVEL);
-          }
-          break;
         #if HAS_BED_PROBE
-          case MLEVEL_PROBE:
-            if (draw) {
-              Draw_Menu_Item(row, ICON_Zoffset, F("Use Probe"));
-              Draw_Checkbox(row, use_probe);
-            }
+          float probe_x_min = _MAX(0 + corner_pos, X_MIN_POS + probe.offset.x, X_MIN_POS + PROBING_MARGIN) - probe.offset.x,
+                probe_x_max = _MIN((X_BED_SIZE + X_MIN_POS) - corner_pos, X_MAX_POS + probe.offset.x, X_MAX_POS - PROBING_MARGIN) - probe.offset.x,
+                probe_y_min = _MAX(0 + corner_pos, Y_MIN_POS + probe.offset.y, Y_MIN_POS + PROBING_MARGIN) - probe.offset.y,
+                probe_y_max = _MIN((Y_BED_SIZE + Y_MIN_POS) - corner_pos, Y_MAX_POS + probe.offset.y, Y_MAX_POS - PROBING_MARGIN) - probe.offset.y;
+        #endif
+
+        switch (item) {
+          case MLEVEL_BACK:
+            if (draw)
+              Draw_Menu_Item(row, ICON_Back, F("Back"));
             else {
-              use_probe ^= true;
-              Draw_Checkbox(row, use_probe);
-              if (use_probe) {
-                Popup_Handler(Level);
-                constexpr struct { xy_pos_t p, ProbePtRaise r } points[] = {
-                  { { probe_x_min, probe_y_min }, PROBE_PT_RAISE },
-                  { { probe_x_min, probe_y_max }, PROBE_PT_RAISE },
-                  { { probe_x_max, probe_y_max }, PROBE_PT_RAISE },
-                  { { probe_x_max, probe_y_min }, PROBE_PT_STOW }
-                };
-                corner_avg = 0;
-                for (uint8_t i = 0; i < COUNT(points); i++) {
-                  const float mz = probe.probe_at_point(points[i].p, points[i].r, 0, false);
-                  if (isnan(mz)) { corner_avg = 0; break; }
-                  corner_avg += mz;
+              TERN_(HAS_LEVELING, set_bed_leveling_enabled(level_state));
+              Draw_Menu(Prepare, PREPARE_MANUALLEVEL);
+            }
+            break;
+          #if HAS_BED_PROBE
+            case MLEVEL_PROBE:
+              if (draw) {
+                Draw_Menu_Item(row, ICON_Zoffset, F("Use Probe"));
+                Draw_Checkbox(row, use_probe);
+              }
+              else {
+                use_probe ^= true;
+                Draw_Checkbox(row, use_probe);
+                if (use_probe) {
+                  Popup_Handler(Level);
+                  struct { xy_pos_t p; ProbePtRaise r; } points[] = {
+                    { { probe_x_min, probe_y_min }, PROBE_PT_RAISE },
+                    { { probe_x_min, probe_y_max }, PROBE_PT_RAISE },
+                    { { probe_x_max, probe_y_max }, PROBE_PT_RAISE },
+                    { { probe_x_max, probe_y_min }, PROBE_PT_STOW }
+                  };
+                  corner_avg = 0;
+                  for (uint8_t i = 0; i < COUNT(points); i++) {
+                    const float mz = probe.probe_at_point(points[i].p, points[i].r, 0, false);
+                    if (isnan(mz)) { corner_avg = 0; break; }
+                    corner_avg += mz;
+                  }
+                  corner_avg /= 4;
+                  Redraw_Menu();
                 }
-                corner_avg /= 4;
+              }
+              break;
+          #endif
+          case MLEVEL_BL:
+            if (draw)
+              Draw_Menu_Item(row, ICON_AxisBL, F("Bottom Left"));
+            else {
+              Popup_Handler(MoveWait);
+              if (use_probe) {
+                #if HAS_BED_PROBE
+                  sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_min, 1, 3, str_1), dtostrf(probe_y_min, 1, 3, str_2));
+                  gcode.process_subcommands_now(cmd);
+                  planner.synchronize();
+                  Popup_Handler(ManualProbing);
+                #endif
+              }
+              else {
+                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf(corner_pos, 1, 3, str_1), dtostrf(corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
+                gcode.process_subcommands_now(cmd);
+                planner.synchronize();
                 Redraw_Menu();
               }
             }
             break;
-        #endif
-        case MLEVEL_BL:
-          if (draw)
-            Draw_Menu_Item(row, ICON_AxisBL, F("Bottom Left"));
-          else {
-            Popup_Handler(MoveWait);
-            if (use_probe) {
-              #if HAS_BED_PROBE
-                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_min, 1, 3, str_1), dtostrf(probe_y_min, 1, 3, str_2));
+          case MLEVEL_TL:
+            if (draw)
+              Draw_Menu_Item(row, ICON_AxisTL, F("Top Left"));
+            else {
+              Popup_Handler(MoveWait);
+              if (use_probe) {
+                #if HAS_BED_PROBE
+                  sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_min, 1, 3, str_1), dtostrf(probe_y_max, 1, 3, str_2));
+                  gcode.process_subcommands_now(cmd);
+                  planner.synchronize();
+                  Popup_Handler(ManualProbing);
+                #endif
+              }
+              else {
+                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf(corner_pos, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) - corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
                 gcode.process_subcommands_now(cmd);
                 planner.synchronize();
-                Popup_Handler(ManualProbing);
-              #endif
+                Redraw_Menu();
+              }
             }
+            break;
+          case MLEVEL_TR:
+            if (draw)
+              Draw_Menu_Item(row, ICON_AxisTR, F("Top Right"));
             else {
-              sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf(corner_pos, 1, 3, str_1), dtostrf(corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
-              gcode.process_subcommands_now(cmd);
-              planner.synchronize();
-              Redraw_Menu();
-            }
-          }
-          break;
-        case MLEVEL_TL:
-          if (draw)
-            Draw_Menu_Item(row, ICON_AxisTL, F("Top Left"));
-          else {
-            Popup_Handler(MoveWait);
-            if (use_probe) {
-              #if HAS_BED_PROBE
-                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_min, 1, 3, str_1), dtostrf(probe_y_max, 1, 3, str_2));
+              Popup_Handler(MoveWait);
+              if (use_probe) {
+                #if HAS_BED_PROBE
+                  sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_max, 1, 3, str_1), dtostrf(probe_y_max, 1, 3, str_2));
+                  gcode.process_subcommands_now(cmd);
+                  planner.synchronize();
+                  Popup_Handler(ManualProbing);
+                #endif
+              }
+              else {
+                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) - corner_pos, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) - corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
                 gcode.process_subcommands_now(cmd);
                 planner.synchronize();
-                Popup_Handler(ManualProbing);
-              #endif
+                Redraw_Menu();
+              }
             }
+            break;
+          case MLEVEL_BR:
+            if (draw)
+              Draw_Menu_Item(row, ICON_AxisBR, F("Bottom Right"));
             else {
-              sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf(corner_pos, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) - corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
-              gcode.process_subcommands_now(cmd);
-              planner.synchronize();
-              Redraw_Menu();
-            }
-          }
-          break;
-        case MLEVEL_TR:
-          if (draw)
-            Draw_Menu_Item(row, ICON_AxisTR, F("Top Right"));
-          else {
-            Popup_Handler(MoveWait);
-            if (use_probe) {
-              #if HAS_BED_PROBE
-                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_max, 1, 3, str_1), dtostrf(probe_y_max, 1, 3, str_2));
+              Popup_Handler(MoveWait);
+              if (use_probe) {
+                #if HAS_BED_PROBE
+                  sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_max, 1, 3, str_1), dtostrf(probe_y_min, 1, 3, str_2));
+                  gcode.process_subcommands_now(cmd);
+                  planner.synchronize();
+                  Popup_Handler(ManualProbing);
+                #endif
+              }
+              else {
+                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) - corner_pos, 1, 3, str_1), dtostrf(corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
                 gcode.process_subcommands_now(cmd);
                 planner.synchronize();
-                Popup_Handler(ManualProbing);
-              #endif
+                Redraw_Menu();
+              }
             }
+            break;
+          case MLEVEL_C:
+            if (draw)
+              Draw_Menu_Item(row, ICON_AxisC, F("Center"));
             else {
-              sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) - corner_pos, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) - corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
-              gcode.process_subcommands_now(cmd);
-              planner.synchronize();
-              Redraw_Menu();
-            }
-          }
-          break;
-        case MLEVEL_BR:
-          if (draw)
-            Draw_Menu_Item(row, ICON_AxisBR, F("Bottom Right"));
-          else {
-            Popup_Handler(MoveWait);
-            if (use_probe) {
-              #if HAS_BED_PROBE
-                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(probe_x_max, 1, 3, str_1), dtostrf(probe_y_min, 1, 3, str_2));
+              Popup_Handler(MoveWait);
+              if (use_probe) {
+                #if HAS_BED_PROBE
+                  sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(X_MAX_POS / 2.0f - probe.offset.x, 1, 3, str_1), dtostrf(Y_MAX_POS / 2.0f - probe.offset.y, 1, 3, str_2));
+                  gcode.process_subcommands_now(cmd);
+                  planner.synchronize();
+                  Popup_Handler(ManualProbing);
+                #endif
+              }
+              else {
+                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) / 2.0f, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) / 2.0f, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
                 gcode.process_subcommands_now(cmd);
                 planner.synchronize();
-                Popup_Handler(ManualProbing);
-              #endif
+                Redraw_Menu();
+              }
             }
-            else {
-              sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) - corner_pos, 1, 3, str_1), dtostrf(corner_pos, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
-              gcode.process_subcommands_now(cmd);
-              planner.synchronize();
-              Redraw_Menu();
+            break;
+          case MLEVEL_ZPOS:
+            if (draw) {
+              Draw_Menu_Item(row, ICON_SetZOffset, F("Z Position"));
+              Draw_Float(mlev_z_pos, row, false, 100);
             }
-          }
-          break;
-        case MLEVEL_C:
-          if (draw)
-            Draw_Menu_Item(row, ICON_AxisC, F("Center"));
-          else {
-            Popup_Handler(MoveWait);
-            if (use_probe) {
-              #if HAS_BED_PROBE
-                sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s"), dtostrf(X_MAX_POS / 2.0f - probe.offset.x, 1, 3, str_1), dtostrf(Y_MAX_POS / 2.0f - probe.offset.y, 1, 3, str_2));
-                gcode.process_subcommands_now(cmd);
-                planner.synchronize();
-                Popup_Handler(ManualProbing);
-              #endif
-            }
-            else {
-              sprintf_P(cmd, PSTR("G0 F4000\nG0 Z10\nG0 X%s Y%s\nG0 F300 Z%s"), dtostrf((X_BED_SIZE + X_MIN_POS) / 2.0f, 1, 3, str_1), dtostrf((Y_BED_SIZE + Y_MIN_POS) / 2.0f, 1, 3, str_2), dtostrf(mlev_z_pos, 1, 3, str_3));
-              gcode.process_subcommands_now(cmd);
-              planner.synchronize();
-              Redraw_Menu();
-            }
-          }
-          break;
-        case MLEVEL_ZPOS:
-          if (draw) {
-            Draw_Menu_Item(row, ICON_SetZOffset, F("Z Position"));
-            Draw_Float(mlev_z_pos, row, false, 100);
-          }
-          else
-            Modify_Value(mlev_z_pos, 0, MAX_Z_OFFSET, 100);
-          break;
+            else
+              Modify_Value(mlev_z_pos, 0, MAX_Z_OFFSET, 100);
+            break;
+        }
       }
       break;
     #if HAS_ZOFFSET_ITEM
