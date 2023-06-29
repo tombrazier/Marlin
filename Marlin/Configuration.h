@@ -4369,7 +4369,7 @@
 
 #if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
-#elif ALL(LULZBOT_BLTouch, SWITCHING_NOZZLE)
+#elif ENABLED(LULZBOT_BLTouch, SWITCHING_NOZZLE)
   #error The BLTouch and dual servo motors are not compatible
 #endif
 

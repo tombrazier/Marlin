@@ -487,7 +487,7 @@ void menu_motion() {
   //
 
 
-  #if EITHER(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION)
+  #if ANY(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION)
     GCODES_ITEM(MSG_AUTO_Z_ALIGN, F("G34"));
   #elif ENABLED(X_LEVEL_SEQUENCE)
     GCODES_ITEM(MSG_AUTO_Z_ALIGN, F(LEVELING_COMMANDS));
@@ -514,7 +514,7 @@ void menu_motion() {
   #if ENABLED(ASSISTED_TRAMMING_WIZARD)
     SUBMENU(MSG_TRAMMING_WIZARD, goto_tramming_wizard);
   #endif
-  
+
   //
   // Pen up/down menu
   //
