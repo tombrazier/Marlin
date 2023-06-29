@@ -47,7 +47,7 @@ bool FilamentMonitorBase::enabled = true,
 
 #if HAS_FILAMENT_RUNOUT_DISTANCE
   float RunoutResponseDelayed::runout_distance_mm = FILAMENT_RUNOUT_DISTANCE_MM;
-  volatile float RunoutResponseDelayed::runout_mm_countdown[NUM_RUNOUT_SENSORS];
+  volatile countdown_t RunoutResponseDelayed::mm_countdown;
   #if ENABLED(FILAMENT_MOTION_SENSOR)
     uint8_t FilamentSensorEncoder::motion_detected;
   #endif
@@ -128,12 +128,12 @@ void event_filament_runout(const uint8_t extruder) {
 
   if (run_runout_script) {
     #if MULTI_FILAMENT_SENSOR
-      char script[strlen(FILAMENT_RUNOUT_SCRIPT) + 1];
-      sprintf_P(script, PSTR(FILAMENT_RUNOUT_SCRIPT), tool);
+      MString<strlen(FILAMENT_RUNOUT_SCRIPT)> script;
+      script.setf(F(FILAMENT_RUNOUT_SCRIPT), AS_CHAR(tool));
       #if ENABLED(FILAMENT_RUNOUT_SENSOR_DEBUG)
-        SERIAL_ECHOLNPGM("Runout Command: ", script);
+        SERIAL_ECHOLNPGM("Runout Command: ", &script);
       #endif
-      queue.inject(script);
+      queue.inject(&script);
     #else
       #if ENABLED(FILAMENT_RUNOUT_SENSOR_DEBUG)
         SERIAL_ECHOPGM("Runout Command: ");

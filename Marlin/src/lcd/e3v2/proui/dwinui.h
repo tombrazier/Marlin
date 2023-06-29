@@ -24,14 +24,16 @@
 /**
  * DWIN Enhanced implementation for PRO UI
  * Author: Miguel A. Risco-Castillo (MRISCOC)
- * Version: 3.18.1
- * Date: 2022/07/05
+ * Version: 3.21.1
+ * Date: 2023/03/21
  */
 
-#include "dwin_lcd.h"
+#include "../../../inc/MarlinConfigPre.h"
+
 #include "../common/dwin_set.h"
 #include "../common/dwin_font.h"
 #include "../common/dwin_color.h"
+#include "dwin_lcd.h"
 
 // Extra Icons
 #define ICON_AdvSet               ICON_Language
@@ -66,7 +68,8 @@
 #define ICON_HomeOffsetY          ICON_StepY
 #define ICON_HomeOffsetZ          ICON_StepZ
 #define ICON_HSMode               ICON_StockConfiguration
-#define ICON_InvertE0             ICON_StepE
+#define ICON_InputShaping         ICON_MaxAccelerated
+#define ICON_JDmm                 ICON_MaxJerk
 #define ICON_Tram                 ICON_SetEndTemp
 #define ICON_Level                ICON_HotendTemp
 #define ICON_Lock                 ICON_Cool
@@ -74,8 +77,13 @@
 #define ICON_MaxPosX              ICON_MoveX
 #define ICON_MaxPosY              ICON_MoveY
 #define ICON_MaxPosZ              ICON_MoveZ
+#define ICON_MeshEdit             ICON_Homing
+#define ICON_MeshEditX            ICON_MoveX
+#define ICON_MeshEditY            ICON_MoveY
+#define ICON_MeshEditZ            ICON_MoveZ
 #define ICON_MeshNext             ICON_Axis
 #define ICON_MeshPoints           ICON_SetEndTemp
+#define ICON_MeshReset            ICON_StockConfiguration
 #define ICON_MeshSave             ICON_WriteEEPROM
 #define ICON_MeshViewer           ICON_HotendTemp
 #define ICON_MoveZ0               ICON_HotendTemp
@@ -85,11 +93,22 @@
 #define ICON_ParkPosY             ICON_StepY
 #define ICON_ParkPosZ             ICON_StepZ
 #define ICON_PhySet               ICON_PrintSize
-#define ICON_PIDbed               ICON_SetBedTemp
-#define ICON_PIDcycles            ICON_ResumeEEPROM
+#define ICON_PIDNozzle            ICON_SetEndTemp
+#define ICON_PIDBed               ICON_SetBedTemp
+#define ICON_PIDCycles            ICON_ResumeEEPROM
 #define ICON_PIDValue             ICON_Contact
 #define ICON_PrintStats           ICON_PrintTime
 #define ICON_PrintStatsReset      ICON_RemainTime
+#define ICON_Preheat1             ICON_PLAPreheat
+#define ICON_Preheat2             ICON_ABSPreheat
+#define ICON_Preheat3             ICON_CustomPreheat
+#define ICON_Preheat4             ICON_CustomPreheat
+#define ICON_Preheat5             ICON_CustomPreheat
+#define ICON_Preheat6             ICON_CustomPreheat
+#define ICON_Preheat7             ICON_CustomPreheat
+#define ICON_Preheat8             ICON_CustomPreheat
+#define ICON_Preheat9             ICON_CustomPreheat
+#define ICON_Preheat10            ICON_CustomPreheat
 #define ICON_ProbeDeploy          ICON_SetEndTemp
 #define ICON_ProbeMargin          ICON_PrintSize
 #define ICON_ProbeOffsetX         ICON_StepX
@@ -105,12 +124,42 @@
 #define ICON_Scolor               ICON_MaxSpeed
 #define ICON_SetBaudRate          ICON_Setspeed
 #define ICON_SetCustomPreheat     ICON_SetEndTemp
+#define ICON_SetPreheat1          ICON_SetPLAPreheat
+#define ICON_SetPreheat2          ICON_SetABSPreheat
+#define ICON_SetPreheat3          ICON_SetCustomPreheat
+#define ICON_SetPreheat4          ICON_SetCustomPreheat
+#define ICON_SetPreheat5          ICON_SetCustomPreheat
+#define ICON_SetPreheat6          ICON_SetCustomPreheat
+#define ICON_SetPreheat7          ICON_SetCustomPreheat
+#define ICON_SetPreheat8          ICON_SetCustomPreheat
+#define ICON_SetPreheat9          ICON_SetCustomPreheat
+#define ICON_SetPreheat10         ICON_SetCustomPreheat
+#define ICON_ShapingX             ICON_MoveX
+#define ICON_ShapingY             ICON_MoveY
 #define ICON_Sound                ICON_Cool
-#define ICON_TBSetup              ICON_Contact
+#define ICON_TMCSet               ICON_PrintSize
+#define ICON_TMCXSet              ICON_MoveX
+#define ICON_TMCYSet              ICON_MoveY
+#define ICON_TMCZSet              ICON_MoveZ
+#define ICON_TMCESet              ICON_Extruder
 #define ICON_UBLActive            ICON_HotendTemp
+#define ICON_UBLActive            ICON_HotendTemp
+#define ICON_UBLSlot              ICON_ResumeEEPROM
+#define ICON_UBLMeshSave          ICON_WriteEEPROM
+#define ICON_UBLMeshLoad          ICON_ReadEEPROM
+#define ICON_UBLTiltGrid          ICON_PrintSize
+#define ICON_UBLSmartFill         ICON_StockConfiguration
+#define ICON_ZAfterHome           ICON_SetEndTemp
 
 #define ICON_CaseLight            ICON_Motion
 #define ICON_LedControl           ICON_Motion
+
+// MPC
+#define ICON_MPCNozzle         ICON_SetEndTemp
+#define ICON_MPCValue          ICON_Contact
+#define ICON_MPCHeater         ICON_Temperature
+#define ICON_MPCHeatCap        ICON_SetBedTemp
+#define ICON_MPCFan            ICON_FanSpeed
 
 // Buttons
 #define BTN_Continue          85
@@ -245,10 +294,10 @@ namespace DWINUI {
   //  color: Line segment color
   //  x/y: End point
   inline void LineTo(uint16_t color, uint16_t x, uint16_t y) {
-    DWIN_Draw_Line(color, cursor.x, cursor.y, x, y);
+    dwinDrawLine(color, cursor.x, cursor.y, x, y);
   }
   inline void LineTo(uint16_t x, uint16_t y) {
-    DWIN_Draw_Line(pencolor, cursor.x, cursor.y, x, y);
+    dwinDrawLine(pencolor, cursor.x, cursor.y, x, y);
   }
 
   // Extend a frame box
@@ -262,18 +311,25 @@ namespace DWINUI {
     return t;
   }
 
+  // Draw an Icon and select library automatically
+  //  BG: The icon background display: false=Background filtering is not displayed, true=Background display
+  //  libID: Icon library ID
+  //  picID: Icon ID
+  //  x/y: Upper-left point
+  void ICON_Show(bool BG, uint8_t icon, uint16_t x, uint16_t y);
+
   // Draw an Icon with transparent background from the library ICON
   //  icon: Icon ID
   //  x/y: Upper-left point
   inline void Draw_Icon(uint8_t icon, uint16_t x, uint16_t y) {
-    DWIN_ICON_Show(ICON, icon, x, y);
+    ICON_Show(false, icon, x, y);
   }
 
   // Draw an Icon from the library ICON with its background
   //  icon: Icon ID
   //  x/y: Upper-left point
   inline void Draw_IconWB(uint8_t icon, uint16_t x, uint16_t y) {
-    DWIN_ICON_Show(true, false, false, ICON, icon, x, y);
+    ICON_Show(true, icon, x, y);
   }
 
   // Draw a numeric integer value
@@ -414,28 +470,28 @@ namespace DWINUI {
   //  x/y: Upper-left coordinate of the string
   //  *string: The string
   inline void Draw_String(uint16_t x, uint16_t y, const char * const string) {
-    DWIN_Draw_String(false, fontid, textcolor, backcolor, x, y, string);
+    dwinDrawString(false, fontid, textcolor, backcolor, x, y, string);
   }
   inline void Draw_String(uint16_t x, uint16_t y, FSTR_P title) {
-    DWIN_Draw_String(false, fontid, textcolor, backcolor, x, y, FTOP(title));
+    dwinDrawString(false, fontid, textcolor, backcolor, x, y, FTOP(title));
   }
   inline void Draw_String(uint16_t color, uint16_t x, uint16_t y, const char * const string) {
-    DWIN_Draw_String(false, fontid, color, backcolor, x, y, string);
+    dwinDrawString(false, fontid, color, backcolor, x, y, string);
   }
   inline void Draw_String(uint16_t color, uint16_t x, uint16_t y, FSTR_P title) {
-    DWIN_Draw_String(false, fontid, color, backcolor, x, y, title);
+    dwinDrawString(false, fontid, color, backcolor, x, y, title);
   }
   inline void Draw_String(uint16_t color, uint16_t bgcolor, uint16_t x, uint16_t y, const char * const string) {
-    DWIN_Draw_String(true, fontid, color, bgcolor, x, y, string);
+    dwinDrawString(true, fontid, color, bgcolor, x, y, string);
   }
   inline void Draw_String(uint16_t color, uint16_t bgcolor, uint16_t x, uint16_t y, FSTR_P title) {
-    DWIN_Draw_String(true, fontid, color, bgcolor, x, y, title);
+    dwinDrawString(true, fontid, color, bgcolor, x, y, title);
   }
   inline void Draw_String(fontid_t fid, uint16_t color, uint16_t bgcolor, uint16_t x, uint16_t y, const char * const string) {
-    DWIN_Draw_String(true, fid, color, bgcolor, x, y, string);
+    dwinDrawString(true, fid, color, bgcolor, x, y, string);
   }
   inline void Draw_String(fontid_t fid, uint16_t color, uint16_t bgcolor, uint16_t x, uint16_t y, FSTR_P title) {
-    DWIN_Draw_String(true, fid, color, bgcolor, x, y, title);
+    dwinDrawString(true, fid, color, bgcolor, x, y, title);
   }
 
   // Draw a centered string using DWIN_WIDTH
@@ -479,7 +535,7 @@ namespace DWINUI {
   //  color: Rectangle color
   //  frame: Box coordinates and size
   inline void Draw_Box(uint8_t mode, uint16_t color, frame_rect_t frame) {
-    DWIN_Draw_Box(mode, color, frame.x, frame.y, frame.w, frame.h);
+    dwinDrawBox(mode, color, frame.x, frame.y, frame.w, frame.h);
   }
 
   // Draw a circle
