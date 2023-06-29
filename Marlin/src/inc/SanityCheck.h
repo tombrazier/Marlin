@@ -1531,8 +1531,8 @@ static_assert(COUNT(arm) == LOGICAL_AXES, "AXIS_RELATIVE_MODES must contain " _L
    */
   #if IS_SCARA && DISABLED(AUTO_BED_LEVELING_BILINEAR)
     #error "SCARA machines can only use the AUTO_BED_LEVELING_BILINEAR leveling option."
-  #elif ABL_USES_GRID && !(WITHIN(GRID_MAX_POINTS_X, 3, 255) && WITHIN(GRID_MAX_POINTS_Y, 3, 255))
-    #error "GRID_MAX_POINTS_[XY] must be between 3 and 255."
+  #elif ABL_USES_GRID && !(WITHIN(GRID_MAX_POINTS_X, 2, 255) && WITHIN(GRID_MAX_POINTS_Y, 2, 255))
+    #error "GRID_MAX_POINTS_[XY] must be between 2 and 255."
   #endif
 
 #elif ENABLED(MESH_BED_LEVELING)
