@@ -1679,12 +1679,12 @@
   // The timeout to return to the status screen from sub-menus
   #define LCD_TIMEOUT_TO_STATUS 15000   // (ms)
 
-  #if ENABLED(SHOW_BOOTSCREEN)
-    #define BOOTSCREEN_TIMEOUT 2000       // (ms) Total Duration to display the boot screen(s)
-    #if EITHER(HAS_MARLINUI_U8GLIB, TFT_COLOR_UI)
-      #define BOOT_MARLIN_LOGO_SMALL      // Show a smaller Marlin logo on the Boot Screen (saving lots of flash)
-    #endif
-  #endif
+ // #if ENABLED(SHOW_BOOTSCREEN)
+ //   #define BOOTSCREEN_TIMEOUT 2000       // (ms) Total Duration to display the boot screen(s)
+ //   #if EITHER(HAS_MARLINUI_U8GLIB, TFT_COLOR_UI)
+ //     #define BOOT_MARLIN_LOGO_SMALL      // Show a smaller Marlin logo on the Boot Screen (saving lots of flash)
+ //   #endif
+ // #endif
 
   // Scroll a longer status message into view
   #define STATUS_MESSAGE_SCROLLING
@@ -4067,13 +4067,13 @@
       #define MAIN_MENU_ITEM_1_DESC "TH SWAP POSITION"
       #define MAIN_MENU_ITEM_1_GCODE "G28O\nG27"
 
-      #define MAIN_MENU_ITEM_2_DESC "Meteor - 1.75"
+      #define MAIN_MENU_ITEM_2_DESC "MET - 1.75|NKL-PL BR"
       #define MAIN_MENU_ITEM_2_GCODE "M92E410\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\nM906E" E_CURRENT_LGX175 "\nM500\nM117 Meteorite - 1.75"
 
-      #define MAIN_MENU_ITEM_3_DESC "Meteor - 2.85"
+      #define MAIN_MENU_ITEM_3_DESC "MET - 2.85|NKL-PL BR"
       #define MAIN_MENU_ITEM_3_GCODE "M92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\nM906E" E_CURRENT_LGX285 "\nM500\nM117 Meteorite - 2.85"
 
-      #define MAIN_MENU_ITEM_4_DESC "Asteroid - 2.85"
+      #define MAIN_MENU_ITEM_4_DESC "AST - 2.85|NKL-PL BR"
       #define MAIN_MENU_ITEM_4_GCODE "M92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\nM906E" E_CURRENT_LGX285 "\nM500\nM117 Asteroid - 2.85"
     #else
       #define MAIN_MENU_ITEM_1_DESC "TH SWAP POSITION"

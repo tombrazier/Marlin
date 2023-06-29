@@ -1651,35 +1651,29 @@
  * Set to the state (HIGH or LOW) that applies to each endstop.
  */
 #if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
-  #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+  #define X_MIN_ENDSTOP_HIT_STATE LOW
+  #define Y_MAX_ENDSTOP_HIT_STATE LOW 
 #else
-  #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#endif
-#if ANY(Sidekick_289, Sidekick_747)
-  #define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#else
-  #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+  #define X_MIN_ENDSTOP_HIT_STATE HIGH 
+  #define Y_MAX_ENDSTOP_HIT_STATE HIGH
 #endif
 
-#define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
-  #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_HIT_STATE HIGH 
+
+#if ANY(Sidekick_289, Sidekick_747)
+  #define Y_MIN_ENDSTOP_HIT_STATE LOW 
 #else
-  #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+  #define Y_MIN_ENDSTOP_HIT_STATE HIGH 
 #endif
-#define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+
 #if defined(LULZBOT_BLTouch)
-  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
-  #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
+  #define Z_MIN_ENDSTOP_HIT_STATE HIGH 
 #else
-  #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
-  #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW 
+  #define Z_MIN_ENDSTOP_HIT_STATE LOW
 #endif
-#define X_MIN_ENDSTOP_HIT_STATE HIGH
-#define X_MAX_ENDSTOP_HIT_STATE HIGH
-#define Y_MIN_ENDSTOP_HIT_STATE HIGH
-#define Y_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_ENDSTOP_HIT_STATE HIGH
+
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
 #define I_MIN_ENDSTOP_HIT_STATE HIGH
 #define I_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1693,7 +1687,6 @@
 #define V_MAX_ENDSTOP_HIT_STATE HIGH
 #define W_MIN_ENDSTOP_HIT_STATE HIGH
 #define W_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
@@ -2018,6 +2011,8 @@
 // For Z_PROBE_ALLEN_KEY see the Delta example configurations.
 //
 
+//#define Z_PROBE_ALLEN_KEY
+#if defined(Z_PROBE_ALLEN_KEY)
   #define Z_PROBE_ALLEN_KEY_DEPLOY_1 { 30.0, PRINTABLE_RADIUS, 100.0 }
   #define Z_PROBE_ALLEN_KEY_DEPLOY_1_FEEDRATE XY_PROBE_FEEDRATE
 
@@ -4374,7 +4369,7 @@
 
 #if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
-#elif BOTH(LULZBOT_BLTouch, SWITCHING_NOZZLE)
+#elif ALL(LULZBOT_BLTouch, SWITCHING_NOZZLE)
   #error The BLTouch and dual servo motors are not compatible
 #endif
 
