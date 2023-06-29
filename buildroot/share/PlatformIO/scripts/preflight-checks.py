@@ -64,10 +64,10 @@ if pioutil.is_pio_build():
 		config = env.GetProjectConfig()
 		result = check_envs("env:"+build_env, board_envs, config)
 
-        if not result:
-            err = "Error: Build environment '%s' is incompatible with %s. Use one of these environments: %s" % \
-                  ( build_env, motherboard, ", ".join([ e[4:] for e in board_envs if e.startswith("env:") ]) )
-            raise SystemExit(err)
+		if not result:
+				err = "Error: Build environment '%s' is incompatible with %s. Use one of these environments: %s" % \
+						( build_env, motherboard, ", ".join([ e[4:] for e in board_envs if e.startswith("env:") ]) )
+				raise SystemExit(err)
 
 		#
 		# Check for Config files in two common incorrect places
@@ -113,12 +113,12 @@ if pioutil.is_pio_build():
         #
         # Check FILAMENT_RUNOUT_SCRIPT has a %c parammeter when required
         #
-        if 'FILAMENT_RUNOUT_SENSOR' in env['MARLIN_FEATURES'] and 'NUM_RUNOUT_SENSORS' in env['MARLIN_FEATURES']:
-            if env['MARLIN_FEATURES']['NUM_RUNOUT_SENSORS'].isdigit() and int(env['MARLIN_FEATURES']['NUM_RUNOUT_SENSORS']) > 1:
-                if 'FILAMENT_RUNOUT_SCRIPT' in env['MARLIN_FEATURES']:
-                    frs = env['MARLIN_FEATURES']['FILAMENT_RUNOUT_SCRIPT']
-                    if "M600" in frs and "%c" not in frs:
-                        err = "ERROR: FILAMENT_RUNOUT_SCRIPT needs a %c parameter (e.g., \"M600 T%c\") when NUM_RUNOUT_SENSORS is > 1"
-                        raise SystemExit(err)
+		if 'FILAMENT_RUNOUT_SENSOR' in env['MARLIN_FEATURES'] and 'NUM_RUNOUT_SENSORS' in env['MARLIN_FEATURES']:
+				if env['MARLIN_FEATURES']['NUM_RUNOUT_SENSORS'].isdigit() and int(env['MARLIN_FEATURES']['NUM_RUNOUT_SENSORS']) > 1:
+						if 'FILAMENT_RUNOUT_SCRIPT' in env['MARLIN_FEATURES']:
+								frs = env['MARLIN_FEATURES']['FILAMENT_RUNOUT_SCRIPT']
+								if "M600" in frs and "%c" not in frs:
+										err = "ERROR: FILAMENT_RUNOUT_SCRIPT needs a %c parameter (e.g., \"M600 T%c\") when NUM_RUNOUT_SENSORS is > 1"
+										raise SystemExit(err)
 
-    sanity_check_target()
+		sanity_check_target()
