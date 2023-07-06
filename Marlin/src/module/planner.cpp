@@ -2373,9 +2373,6 @@ bool Planner::_populate_block(
     if (was_enabled) stepper.wake_up();
   #endif
 
-  block->nominal_speed = block->millimeters * inverse_secs;           // (mm/sec) Always > 0
-  block->nominal_rate = CEIL(block->step_event_count * inverse_secs); // (step/sec) Always > 0
-
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     if (extruder == FILAMENT_SENSOR_EXTRUDER_NUM)   // Only for extruder with filament sensor
       filwidth.advance_e(steps_dist_mm.e);
@@ -2464,6 +2461,17 @@ bool Planner::_populate_block(
     }
 
   #endif // XY_FREQUENCY_LIMIT
+
+  block->nominal_speed = block->millimeters * inverse_secs;           // (mm/sec) Always > 0
+
+  const float e_mm_s = steps_dist_mm.e * inverse_secs * speed_factor;
+  if (e_mm_s > 0.0) {
+    const float e_speed_multiplier = _MIN(1.7f, 1.0f + 0.17f * e_mm_s);
+    block->steps.e = uint32_t(e_speed_multiplier * esteps);
+  }
+
+  block->step_event_count = _MAX(block->step_event_count, block->steps.e);
+  block->nominal_rate = CEIL(block->step_event_count * inverse_secs); // (step/sec) Always > 0
 
   // Correct the speed
   if (speed_factor < 1.0f) {
@@ -2890,7 +2898,7 @@ bool Planner::_populate_block(
   const bool move_travel = esteps == 0;
   if (prev_move_travel != move_travel) {
     prev_move_travel = move_travel;
-    block->max_entry_speed_sqr = sq(float(MINIMUM_PLANNER_SPEED));
+    block->max_entry_speed_sqr = _MIN(block->max_entry_speed_sqr, sq(20.0f));
   }
 
   // Initialize block entry speed. Compute based on deceleration to user-defined MINIMUM_PLANNER_SPEED.
