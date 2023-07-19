@@ -25,11 +25,11 @@ from math import pi
 
 
 
-m = 1.175                 # (kg) mass of Y axis
+m = 0.36                  # (kg) mass of Y axis
 R = 8                     # (Ω) resistance of each winding + Rdson of driver FETs
-L = 16.3e-3               # (H) inductance of each winding
+L = 16.6e-3               # (H) inductance of each winding
 Vs = 12                   # (V) supply voltage
-Ke = 6.1 / (2*pi*270/50)  # ratio of peak back EMF to shaft omega
+Ke = 12.1 / (2*pi*461.33/50)  # ratio of peak back EMF to shaft omega
 steps = 200               # steps / rotation
 
 # max speed for given acceleration and shaft radius
@@ -54,13 +54,9 @@ def a(v, r):
 rs = np.arange(1e-3, 50e-3, 1e-3)
 
 # plot the speeds possible at various accelerations and pulley radii
-#plt.plot(rs, v(2, rs), "r", rs, v(6, rs), "g", rs, v(10, rs), "b")
+plt.plot(rs, v(5, rs), "r", rs, v(10, rs), "g", rs, v(15, rs), "b")
+plt.show()
 
 # plot the accelerations possible at various speeds and pulley radii
-#plt.plot(rs, a(0.16, rs), "r", rs, a(0.18, rs), "g", rs, a(0.2, rs), "b")
-
-vs = np.arange(0.1, 0.3, 1e-3)
-
-plt.plot(vs, a(vs, 0.00647))
-
+plt.plot(rs, a(0.25, rs), "r", rs, a(0.35, rs), "g", rs, a(0.45, rs), "b")
 plt.show()
