@@ -243,7 +243,6 @@ typedef struct PlannerBlock {
              deceleration_time_inverse;
   #else
     uint32_t acceleration_rate;             // The acceleration rate used for acceleration calculation
-    uint32_t deceleration_rate;             // The acceleration rate used for acceleration calculation
   #endif
 
   axis_bits_t direction_bits;               // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)

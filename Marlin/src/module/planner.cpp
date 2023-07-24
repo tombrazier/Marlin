@@ -812,7 +812,7 @@ void Planner::calculate_trapezoid_for_block(block_t * const block, const_float_t
     const float half_inverse_accel = 0.5f * inverse_accel,
                 nominal_rate_sq = sq(float(block->nominal_rate)),
                 // Steps required for acceleration, deceleration to/from nominal rate
-                decelerate_steps_float = (1.0/1.0) * half_inverse_accel * (nominal_rate_sq - sq(float(final_rate)));
+                decelerate_steps_float = half_inverse_accel * (nominal_rate_sq - sq(float(final_rate)));
           float accelerate_steps_float = half_inverse_accel * (nominal_rate_sq - sq(float(initial_rate)));
     accelerate_steps = CEIL(accelerate_steps_float);
     decelerate_steps = FLOOR(decelerate_steps_float);
@@ -825,7 +825,7 @@ void Planner::calculate_trapezoid_for_block(block_t * const block, const_float_t
     // Calculate accel / braking time in order to reach the final_rate exactly
     // at the end of this block.
     if (plateau_steps < 0) {
-      accelerate_steps_float = CEIL((1.0/2.0) * block->step_event_count + (1.0/2.0) * half_inverse_accel * (sq(float(final_rate)) - sq(float(initial_rate))));
+      accelerate_steps_float = CEIL((block->step_event_count + accelerate_steps_float - decelerate_steps_float) * 0.5f);
       accelerate_steps = _MIN(uint32_t(_MAX(accelerate_steps_float, 0)), block->step_event_count);
       decelerate_steps = block->step_event_count - accelerate_steps;
 
@@ -1014,7 +1014,7 @@ void Planner::reverse_pass_kernel(block_t * const current, const block_t * const
       const float next_entry_speed_sqr = next ? next->entry_speed_sqr : _MAX(TERN0(HINTS_SAFE_EXIT_SPEED, safe_exit_speed_sqr), sq(float(MINIMUM_PLANNER_SPEED))),
                   new_entry_speed_sqr = current->flag.nominal_length
                     ? max_entry_speed_sqr
-                    : _MIN(max_entry_speed_sqr, max_allowable_speed_sqr(-1.0*current->acceleration, next_entry_speed_sqr, current->millimeters));
+                    : _MIN(max_entry_speed_sqr, max_allowable_speed_sqr(-current->acceleration, next_entry_speed_sqr, current->millimeters));
       if (current->entry_speed_sqr != new_entry_speed_sqr) {
 
         // Need to recalculate the block speed - Mark it now, so the stepper
@@ -2373,6 +2373,9 @@ bool Planner::_populate_block(
     if (was_enabled) stepper.wake_up();
   #endif
 
+  block->nominal_speed = block->millimeters * inverse_secs;           // (mm/sec) Always > 0
+  block->nominal_rate = CEIL(block->step_event_count * inverse_secs); // (step/sec) Always > 0
+
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     if (extruder == FILAMENT_SENSOR_EXTRUDER_NUM)   // Only for extruder with filament sensor
       filwidth.advance_e(steps_dist_mm.e);
@@ -2461,17 +2464,6 @@ bool Planner::_populate_block(
     }
 
   #endif // XY_FREQUENCY_LIMIT
-
-  block->nominal_speed = block->millimeters * inverse_secs;           // (mm/sec) Always > 0
-
-  const float e_mm_s = steps_dist_mm.e * inverse_secs * speed_factor;
-  if (e_mm_s > 0.0) {
-    const float e_speed_multiplier = _MIN(1.7f, 1.0f + 0.17f * e_mm_s);
-    block->steps.e = uint32_t(e_speed_multiplier * esteps);
-  }
-
-  block->step_event_count = _MAX(block->step_event_count, block->steps.e);
-  block->nominal_rate = CEIL(block->step_event_count * inverse_secs); // (step/sec) Always > 0
 
   // Correct the speed
   if (speed_factor < 1.0f) {
@@ -2570,7 +2562,6 @@ bool Planner::_populate_block(
   block->acceleration = accel / steps_per_mm;
   #if DISABLED(S_CURVE_ACCELERATION)
     block->acceleration_rate = (uint32_t)(accel * (float(1UL << 24) / (STEPPER_TIMER_RATE)));
-    block->deceleration_rate = (uint32_t)(accel * 1.0 * (float(1UL << 24) / (STEPPER_TIMER_RATE)));
   #endif
   #if ENABLED(LIN_ADVANCE)
     block->la_advance_rate = 0;
@@ -2902,7 +2893,7 @@ bool Planner::_populate_block(
   }
 
   // Initialize block entry speed. Compute based on deceleration to user-defined MINIMUM_PLANNER_SPEED.
-  const float v_allowable_sqr = max_allowable_speed_sqr(-1.0*block->acceleration, sq(float(MINIMUM_PLANNER_SPEED)), block->millimeters);
+  const float v_allowable_sqr = max_allowable_speed_sqr(-block->acceleration, sq(float(MINIMUM_PLANNER_SPEED)), block->millimeters);
 
   // Start with the minimum allowed speed
   block->entry_speed_sqr = sq(float(MINIMUM_PLANNER_SPEED));
