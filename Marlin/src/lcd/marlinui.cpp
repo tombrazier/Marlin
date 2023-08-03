@@ -1442,9 +1442,6 @@ void MarlinUI::host_notify_P(PGM_P const pstr) {
 void MarlinUI::host_notify(const char * const cstr) {
   TERN_(HOST_STATUS_NOTIFICATIONS, hostui.notify(cstr));
 }
-void MarlinUI::host_status() {
-  TERN_(HOST_STATUS_NOTIFICATIONS, hostui.notify(status_message));
-}
 
 #include <stdarg.h>
 
@@ -1573,7 +1570,7 @@ void MarlinUI::host_status() {
     vsnprintf_P(status_message, MAX_MESSAGE_LENGTH, fmt, args);
     va_end(args);
 
-    host_status();
+    host_notify(status_message);
 
     finish_status(level > 0);
   }
@@ -1611,7 +1608,7 @@ void MarlinUI::host_status() {
 
     TERN_(EXTENSIBLE_UI, ExtUI::onStatusChanged(status_message));
     TERN_(DWIN_CREALITY_LCD, dwinStatusChanged(status_message));
-    TERN_(DWIN_LCD_PROUI, DWIN_CheckStatusMessage());
+    TERN_(DWIN_LCD_PROUI, dwinCheckStatusMessage());
     TERN_(DWIN_CREALITY_LCD_JYERSUI, jyersDWIN.updateStatus(status_message));
   }
 
@@ -1655,7 +1652,7 @@ void MarlinUI::host_status() {
     vsnprintf_P(&msg, 30, fmt, args);
     va_end(args);
 
-    host_status();
+    host_notify(msg);
   }
 
 #endif // !HAS_STATUS_MESSAGE
@@ -1690,11 +1687,13 @@ void MarlinUI::host_status() {
 
   #endif
 
-  void MarlinUI::flow_fault() {
-    LCD_ALERTMESSAGE(MSG_FLOWMETER_FAULT);
-    BUZZ(1000, 440);
-    TERN_(HAS_MARLINUI_MENU, return_to_status());
-  }
+  #if ENABLED(FLOWMETER_SAFETY)
+    void MarlinUI::flow_fault() {
+      LCD_ALERTMESSAGE(MSG_FLOWMETER_FAULT);
+      BUZZ(1000, 440);
+      TERN_(HAS_MARLINUI_MENU, return_to_status());
+    }
+  #endif
 
   void MarlinUI::pause_print() {
     #if HAS_MARLINUI_MENU
@@ -1729,13 +1728,13 @@ void MarlinUI::host_status() {
 
   #if HAS_TOUCH_BUTTONS
 
-    //
-    // Screen Click
-    //  - On menu screens move directly to the touched item
-    //  - On menu screens, right side (last 3 cols) acts like a scroll - half up => prev page, half down = next page
-    //  - On select screens (and others) touch the Right Half for +, Left Half for -
-    //  - On edit screens, touch Up Half for -,  Bottom Half to +
-    //
+    /**
+     * Screen Click
+     *  - On menu screens move directly to the touched item
+     *  - On menu screens, right side (last 3 cols) acts like a scroll - half up => prev page, half down = next page
+     *  - On select screens (and others) touch the Left Half for ←, Right Half for →
+     *  - On edit screens, touch Top Half for ↑, Bottom Half for ↓
+     */
     void MarlinUI::screen_click(const uint8_t row, const uint8_t col, const uint8_t, const uint8_t) {
       const millis_t now = millis();
       if (PENDING(now, next_button_update_ms)) return;
