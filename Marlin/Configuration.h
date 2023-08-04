@@ -1195,16 +1195,6 @@
 //====================== PID > Bed Temperature Control ======================
 //===========================================================================
 
-// @section bed temp
-
-/**
- * Max Bed Power
- * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
- * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
- * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
- */
-#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-
 /**
  * PID Bed Heating
  *
@@ -1220,6 +1210,8 @@
 #define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
+
+// @section bed temp
 
 /**
  * Max Bed Power
@@ -2038,8 +2030,6 @@
   // 2 or 3 sets of coordinates for deploying and retracting the spring loaded touch probe on G29,
   // if servo actuated touch probe is not defined. Uncomment as appropriate for your printer/probe.
 
-//#define Z_PROBE_ALLEN_KEY
-#if defined(Z_PROBE_ALLEN_KEY)
   #define Z_PROBE_ALLEN_KEY_DEPLOY_1 { 30.0, PRINTABLE_RADIUS, 100.0 }
   #define Z_PROBE_ALLEN_KEY_DEPLOY_1_FEEDRATE XY_PROBE_FEEDRATE
 
