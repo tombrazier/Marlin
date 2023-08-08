@@ -1,23 +1,65 @@
 #!/usr/bin/python3
 
+"""
+This script generates gcode for one of three patterns to tune input shaping. Each pattern
+performs a number of frequency scans, starting from 0Hz and going up to some maximum (default
+60Hz). A frequency scan is a zig-zag line which is drawn at steadily increasing speed.
+
+Horizontal lines are oscillating in the Y direction. e.g.
+
+  ^^^^^^^^^^^^^^^^^^^^
+
+And vertical lines are oscillating in the X direction. e.g.
+
+  >
+  >
+  >
+  >
+  >
+  >
+  >
+  >
+
+Don't get them confused! You read X frequencies off the vertical lines and Y frequencies off
+the horizontal line.
+
+At the resonant frequency, the oscillations become noticeably larger and there may even
+be layer shifts. If this is a problem, reduce the value of the amplitude variable.
+
+The "freq" pattern draws one frequency scan for Y and then one for X. Measure from the start of
+the line to where the oscillations are worst. Divide distance in mm by wavelength (default 2)
+to get the frequency.
+
+The "zeta_x" and "zeta_y" patterns draw a series of frequency scans all in one direction. The
+zeta value increases by 0.05 for every frequency scan drawn, starting with a value of 0.05.
+Find the line which has the most uniform amplitude of oscillation across the whole line. This
+gives you the X or Y zeta value.
+"""
+
+### Parameters for generating the gcode
+
+layer_height = 0.2          # (mm)
+line_width = 0.5            # (mm)
+filament_dia = 1.75         # (mm)
+nozzle_temp = 220           # °C
+bed_temp = 50               # °C
+
+z_speed = 10.0              # (mm/s) Z movement speed
+travel_speed = 100.0        # (mm/s) speed for travel moves
+anchor_line_speed = 40.0    # (mm/s) speed for start line
+
+wavelength = 2.0            # (mm) the width of one ful zig-zag
+amplitude = 0.5             # (mm) the peak to peak size of the zig-zag pattern
+top_freq = 60               # (Hz) the frequency scans from 0Hz to this value
+decel = 1000                # (mm/s^2) rate of deceleration at the end of the pattern
+
+pattern_type = "zeta_x"       # choose one of "freq", "zeta_x" or "zeta_y"
+
+
+### Start of the script proper
+
 from math import pi
 from math import sin
-
-layer_height = 0.2
-line_width = 0.5
-filament_dia = 1.75
-z_speed = 10.0
-travel_speed = 100.0
-anchor_line_speed = 40.0
-
-wavelength = 2.0
-amplitude = 0.5
-top_freq = 60
-decel = 1000
-
-freq_pattern = False
-zeta_pattern_y = True
-zeta_pattern_x = False
 
 filament_flow_ratio = layer_height * line_width / (pi * filament_dia*filament_dia / 4)
 
@@ -51,15 +93,15 @@ print()
 
 # settings for the print
 print("M205 S0 T0           ; minimum extruding and travel feed rate")
-if freq_pattern:
+if pattern_type == "freq":
   print("M593 F0              ; input shaping off")
 print("M900 K0              ; linear advance off")
 print()
 
 # heating and cooling
 print("M107                 ; fan off")
-print("M140 S50             ; bed temperature")
-print("M104 S220            ; head temperature")
+print("M140 S%d             ; bed temperature" % bed_temp)
+print("M104 S%d            ; head temperature" % nozzle_temp)
 print()
 
 # home and reset extruder pos
@@ -68,8 +110,8 @@ print("G92 E0")
 print()
 
 # wait for temperatures
-print("M190 S50             ; bed temperature")
-print("M109 S220            ; head temperature")
+print("M190 S%d             ; bed temperature" % bed_temp)
+print("M109 S%d            ; head temperature" % nozzle_temp)
 print()
 
 # level bed
@@ -172,14 +214,14 @@ def draw_x_zigzags_rev(zigzags, coast_dist):
 
   print()
 
-if freq_pattern:
+if pattern_type == "freq":
   # draw Y zigzags at constant X acceleration
   draw_y_zigzags(zigzags, coast_dist)
 
   # draw X zigzags at constant Y acceleration
   draw_x_zigzags(zigzags, coast_dist)
 
-if zeta_pattern_y:
+if pattern_type == "zeta_y":
   # move a little away from the anchor line
   line_to(x + 5, y, z)
 
@@ -195,7 +237,7 @@ if zeta_pattern_y:
     draw_y_zigzags_rev(zigzags, coast_dist)
     go_to(x, y + 5, z, travel_speed)
 
-if zeta_pattern_x:
+if pattern_type == "zeta_x":
   # move a little away from the anchor line
   line_to(x + 5, y, z)
 
