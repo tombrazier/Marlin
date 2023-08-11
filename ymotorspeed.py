@@ -17,11 +17,11 @@ from math import pi
 #
 # and using scalar magnitudes instead of complex numbers at 90° torque angle:
 #
-# Vs = sqrt((I*R + Vb)**2 + (2 * pi * f * L * I * j)**2)
+# Vs = sqrt((I*R + Vb)**2 + (2 * pi * f * L * I)**2)
 #
 # or, at 0° torque angle:
 #
-# Vs = sqrt((I*R)**2 + (Vb + 2 * pi * f * L * I * j)**2)
+# Vs = sqrt((I*R)**2 + (Vb + 2 * pi * f * L * I)**2)
 
 
 
@@ -34,10 +34,10 @@ steps = 200               # steps / rotation
 
 # max speed for given acceleration and shaft radius
 def v(a, r):
-  I = r * m * a / Ke        # peak current
-  Vl_f = 2 * pi * L * I     # peak voltage on inductor / two phase frequency
-  Vb_f = Ke * 2 * pi / 50   # peak back EMF / two phase frequency
-  Vr = I * R                # peak voltage dropped through resistance
+  I = r * m * a / Ke                # peak current
+  Vl_f = 2 * pi * L * I             # peak voltage on inductor / two phase frequency
+  Vb_f = Ke * 2 * pi / (steps / 4)  # peak back EMF / two phase frequency
+  Vr = I * R                        # peak voltage dropped through resistance
   f = (-Vr*Vb_f + ((Vr*Vb_f)**2 - (Vl_f**2 + Vb_f**2) * (Vr**2 - Vs**2))**0.5) / (Vl_f**2 + Vb_f**2)
   return f * 4 / steps * 2 * pi * r
 
