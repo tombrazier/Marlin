@@ -24,27 +24,37 @@ from math import pi
 # Vs = sqrt((I*R)**2 + (Vb + 2 * pi * f * L * I)**2)
 
 
-# LDO-36STH20-1004AHG motor specs below
-
 T = 21e-3                 # torque required to feed the filament at high speed
-m = 1.6e-6 + 156e-9       # (kg m^2) moment of inertia of core
-R = 2.1 + 1               # (Ω) resistance of each winding + Rdson of driver FETs
-L = 1.6e-3                # (H) inductance of each winding
+m_c = 156e-9              # (kg m^2) moment of inertia of extruder carrier
 Vs = 12                   # (V) supply voltage
-Ke = 2 * 0.1 / 1.414      # ratio of peak back EMF to shaft omega (for each coil)
-steps = 200               # steps / rotation
+R_fet = 1                 # (Ω) Rdson of driver FETs
+
+# LDO-36STH20-1004AHG motor specs
+#steps = 200               # steps / rotation
+#m_m = 1.6e-6 + 156e-9     # (kg m^2) moment of inertia of rotor
+#R_m = 2.1                 # (Ω) resistance of each winding
+#L = 1.6e-3                # (H) inductance of each winding
+#Ke = 2 * 0.1 / 1.414      # ratio of peak back EMF to shaft omega (for each coil)
+
+# my extruder motor specs
+steps = 200                     # steps / rotation
+m_m = 0.5 * 40e-3 * 11e-3**2    # (kg m^2) moment of inertia of rotor
+R_m = 4                         # (Ω) resistance of each winding
+L = 3.1e-3                      # (H) inductance of each winding
+Ke = 5.7 / (2*pi*139/(steps/4)) # ratio of peak back EMF to shaft omega (for each coil)
 
 # max speed for given acceleration
 def v(a):
-  I = (m * a + T) / Ke      # peak current (for each coil)
-  Vl_f = 2 * pi * L * I     # peak voltage on inductor / two phase frequency
-  Vb_f = Ke * 2 * pi / (steps / 4)   # peak back EMF / two phase frequency
-  Vr = I * R                # peak voltage dropped through resistance
+  I = ((m_m + m_c) * a + T) / Ke      # peak current (for each coil)
+  Vl_f = 2 * pi * L * I               # peak voltage on inductor / two phase frequency
+  Vb_f = Ke * 2 * pi / (steps / 4)    # peak back EMF / two phase frequency
+  Vr = I * (R_fet + R_m)              # peak voltage dropped through resistance
   f = (-Vr*Vb_f + ((Vr*Vb_f)**2 - (Vl_f**2 + Vb_f**2) * (Vr**2 - Vs**2))**0.5) / (Vl_f**2 + Vb_f**2)
   return f * 4 / steps * 2 * pi
 
-accs = np.arange(2000, 4000.0, 1.0)
+accs = np.arange(1, 4000.0, 1.0)
 
 # plot the speeds possible at various accelerations
 plt.plot(accs, v(accs), "r")
+plt.ylim(bottom = 0)
 plt.show()
