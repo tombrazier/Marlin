@@ -28,24 +28,33 @@ T = 21e-3                 # torque required to feed the filament at high speed
 m_c = 156e-9              # (kg m^2) moment of inertia of extruder carrier
 Vs = 12                   # (V) supply voltage
 R_fet = 1                 # (Ω) Rdson of driver FETs
+imargin = 0.5             # margin added to current to account for torque loss at speed
+
+# LDO-36STH13-0604MA motor specs
+steps = 400               # steps / rotation
+m_m = 9.7e-7              # (kg m^2) moment of inertia of rotor
+R_m = 14                  # (Ω) resistance of each winding
+L = 6.5e-3                # (H) inductance of each winding
+Ke = 2 * 0.05 / 0.6 / 1.414     # ratio of peak back EMF to shaft omega (for each coil)
 
 # LDO-36STH20-1004AHG motor specs
 #steps = 200               # steps / rotation
-#m_m = 1.6e-6 + 156e-9     # (kg m^2) moment of inertia of rotor
+#m_m = 1.6e-6              # (kg m^2) moment of inertia of rotor
 #R_m = 2.1                 # (Ω) resistance of each winding
 #L = 1.6e-3                # (H) inductance of each winding
 #Ke = 2 * 0.1 / 1.414      # ratio of peak back EMF to shaft omega (for each coil)
 
 # my extruder motor specs
-steps = 200                     # steps / rotation
-m_m = 0.5 * 40e-3 * 11e-3**2    # (kg m^2) moment of inertia of rotor
-R_m = 4                         # (Ω) resistance of each winding
-L = 3.1e-3                      # (H) inductance of each winding
-Ke = 5.7 / (2*pi*139/(steps/4)) # ratio of peak back EMF to shaft omega (for each coil)
+#steps = 200                     # steps / rotation
+#m_m = 0.5 * 40e-3 * 11e-3**2    # (kg m^2) moment of inertia of rotor
+#R_m = 4                         # (Ω) resistance of each winding
+#L = 3.1e-3                      # (H) inductance of each winding
+#Ke = 5.7 / (2*pi*139/(steps/4)) # ratio of peak back EMF to shaft omega (for each coil)
 
 # max speed for given acceleration
 def v(a):
   I = ((m_m + m_c) * a + T) / Ke      # peak current (for each coil)
+  I *= (1 + imargin)
   Vl_f = 2 * pi * L * I               # peak voltage on inductor / two phase frequency
   Vb_f = Ke * 2 * pi / (steps / 4)    # peak back EMF / two phase frequency
   Vr = I * (R_fet + R_m)              # peak voltage dropped through resistance

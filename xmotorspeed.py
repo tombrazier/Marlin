@@ -31,10 +31,12 @@ L = 16.6e-3               # (H) inductance of each winding
 Vs = 12                   # (V) supply voltage
 Ke = 12.1 / (2*pi*461.33/50)  # ratio of peak back EMF to shaft omega
 steps = 200               # steps / rotation
+imargin = 0.5             # margin added to current to account for torque loss at speed
 
 # max speed for given acceleration and shaft radius
 def v(a, r):
   I = r * m * a / Ke                # peak current
+  I *= (1 + imargin)
   Vl_f = 2 * pi * L * I             # peak voltage on inductor / two phase frequency
   Vb_f = Ke * 2 * pi / (steps / 4)  # peak back EMF / two phase frequency
   Vr = I * R                        # peak voltage dropped through resistance
@@ -48,6 +50,7 @@ def a(v, r):
   Xl = 2 * pi * f * L             # reactance of inductor
   # peak current
   I = (-R*Vb + (R**2 * Vb**2 - (R**2 + Xl**2)*(Vb**2 - Vs**2))**0.5) / (R**2 + Xl**2)
+  I /= (1 + imargin)
   a = I / r / m * Ke              # acceleration
   return a
 
