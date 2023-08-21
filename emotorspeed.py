@@ -30,12 +30,19 @@ Vs = 12                   # (V) supply voltage
 R_fet = 1                 # (Ω) Rdson of driver FETs
 imargin = 0.5             # margin added to current to account for torque loss at speed
 
+# LDO motor jason suggested on 21 Aug 9:18
+steps = 200               # steps / rotation
+m_m = 6.3e-7              # (kg m^2) moment of inertia of rotor
+R_m = 2.4                 # (Ω) resistance of each winding
+L = 0.9e-3                # (H) inductance of each winding
+Ke = 2 * 0.05 / 1.0 / 1.414     # ratio of peak back EMF to shaft omega (for each coil)
+
 # LDO-36STH13-0604MA motor specs
-steps = 400               # steps / rotation
-m_m = 9.7e-7              # (kg m^2) moment of inertia of rotor
-R_m = 14                  # (Ω) resistance of each winding
-L = 6.5e-3                # (H) inductance of each winding
-Ke = 2 * 0.05 / 0.6 / 1.414     # ratio of peak back EMF to shaft omega (for each coil)
+#steps = 400               # steps / rotation
+#m_m = 9.7e-7              # (kg m^2) moment of inertia of rotor
+#R_m = 14                  # (Ω) resistance of each winding
+#L = 6.5e-3                # (H) inductance of each winding
+#Ke = 2 * 0.05 / 0.6 / 1.414     # ratio of peak back EMF to shaft omega (for each coil)
 
 # LDO-36STH20-1004AHG motor specs
 #steps = 200               # steps / rotation
