@@ -1011,7 +1011,11 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      120
+#if DISABLED(LULZBOT_LONG_BED)
+    #define BED_MAXTEMP  120
+#else
+    #define BED_MAXTEMP  95
+#endif
 #define CHAMBER_MAXTEMP  60
 
 /**
