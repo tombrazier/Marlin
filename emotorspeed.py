@@ -27,8 +27,8 @@ from math import pi
 T = 21e-3                 # torque required to feed the filament at high speed
 m_c = 156e-9              # (kg m^2) moment of inertia of extruder carrier
 Vs = 12                   # (V) supply voltage
-R_fet = 1                 # (Ω) Rdson of driver FETs
-imargin = 0.5             # margin added to current to account for torque loss at speed
+R_fet = 0.34              # (Ω) Rdson of driver FETs
+imargin = 0.2             # margin added to current to account for torque loss at speed
 
 # LDO motor jason suggested on 21 Aug 9:18
 steps = 200               # steps / rotation
@@ -60,7 +60,7 @@ Ke = 2 * 0.05 / 1.0 / 1.414     # ratio of peak back EMF to shaft omega (for eac
 
 # max speed for given acceleration
 def v(a):
-  I = ((m_m + m_c) * a + T) / Ke      # peak current (for each coil)
+  I = 2 * ((m_m + m_c) * a + T) / Ke  # peak current (for each coil)
   I *= (1 + imargin)
   Vl_f = 2 * pi * L * I               # peak voltage on inductor / two phase frequency
   Vb_f = Ke * 2 * pi / (steps / 4)    # peak back EMF / two phase frequency

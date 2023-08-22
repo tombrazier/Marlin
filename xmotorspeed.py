@@ -24,42 +24,50 @@ from math import pi
 # Vs = sqrt((I*R)**2 + (Vb + 2 * pi * f * L * I)**2)
 
 
-
-m = 0.36                  # (kg) mass of X axis
-R = 8                     # (Ω) resistance of each winding + Rdson of driver FETs
-L = 16.6e-3               # (H) inductance of each winding
 Vs = 12                   # (V) supply voltage
+m = 0.36                  # (kg) mass of X axis
+R_fet = 0.34              # (Ω) Rdson of driver FETs
+imargin = 0.0             # margin added to current to account for torque loss at speed
+
+R_m = 6.9                 # (Ω) resistance of each winding
+L = 15.2e-3               # (H) inductance of each winding
 Ke = 12.1 / (2*pi*461.33/50)  # ratio of peak back EMF to shaft omega
 steps = 200               # steps / rotation
-imargin = 0.5             # margin added to current to account for torque loss at speed
 
-# max speed for given acceleration and shaft radius
-def v(a, r):
-  I = r * m * a / Ke                # peak current
-  I *= (1 + imargin)
-  Vl_f = 2 * pi * L * I             # peak voltage on inductor / two phase frequency
-  Vb_f = Ke * 2 * pi / (steps / 4)  # peak back EMF / two phase frequency
-  Vr = I * R                        # peak voltage dropped through resistance
-  f = (-Vr*Vb_f + ((Vr*Vb_f)**2 - (Vl_f**2 + Vb_f**2) * (Vr**2 - Vs**2))**0.5) / (Vl_f**2 + Vb_f**2)
-  return f * 4 / steps * 2 * pi * r
+# current, given acceleration and pulley radius
+def i(a, r):
+  I = 2 * a * r * m / Ke  # peak current
+  return I
 
-# max acceleration for given speed and shaft radius
+# max acceleration for given speed and pulley radius
 def a(v, r):
   f = v / r / 2 / pi * steps / 4  # two phase frequency
   Vb = Ke * 2 * pi / 50 * f       # peak back EMF
   Xl = 2 * pi * f * L             # reactance of inductor
+  R = R_m + R_fet                 # total series resistance
   # peak current
   I = (-R*Vb + (R**2 * Vb**2 - (R**2 + Xl**2)*(Vb**2 - Vs**2))**0.5) / (R**2 + Xl**2)
   I /= (1 + imargin)
-  a = I / r / m * Ke              # acceleration
+  a = 0.5 * I / r / m * Ke        # acceleration
   return a
 
-rs = np.arange(1e-3, 50e-3, 1e-3)
+# plot the max acceleration vs various speeds at various pulley radii
+rs = (("r", "5mm", 0.005), ("g", "7.5mm", 0.0075), ("b", "10mm", 0.010), ("m", "12.5mm", 0.0125))
+vs = np.arange(10e-3, 500e-3, 1e-3)
 
-# plot the speeds possible at various accelerations and pulley radii
-plt.plot(rs, v(5, rs), "r", rs, v(10, rs), "g", rs, v(15, rs), "b")
-plt.show()
+fig, axs = plt.subplots(1, 2)
+fig.set_size_inches(10, 5)
 
-# plot the accelerations possible at various speeds and pulley radii
-plt.plot(rs, a(0.25, rs), "r", rs, a(0.35, rs), "g", rs, a(0.45, rs), "b")
+for colour, label, r in rs:
+  axs[0].plot(vs * 1000, a(vs, r) * 1000, colour, label = label)
+axs[0].set_ylabel("Max acceleration (mm/s/s)")
+axs[0].set_xlabel("Speed (mm/s)")
+axs[0].legend(title = "Pulley radius")
+
+for colour, label, r in rs:
+  axs[1].plot(vs * 1000, i(a(vs, r), r) * 0.5**0.5, colour, label = label)
+axs[1].set_ylabel("RMS current (A)")
+axs[1].set_xlabel("Speed (mm/s)")
+axs[1].legend(title = "Pulley radius")
+
 plt.show()
