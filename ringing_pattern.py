@@ -96,6 +96,7 @@ print("M205 S0 T0           ; minimum extruding and travel feed rate")
 if pattern_type == "freq":
   print("M593 F0              ; input shaping off")
 print("M900 K0              ; linear advance off")
+print("G90                  ; absolute positioning")
 print()
 
 # heating and cooling
