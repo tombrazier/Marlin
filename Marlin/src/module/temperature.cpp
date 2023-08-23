@@ -1561,7 +1561,7 @@ void Temperature::mintemp_error(const heater_id_t heater_id) {
     float get_pid_output() {
       if(autoTuning)
       {
-        return constrain(tempinfo.soft_pwm_amount << 1, 0, MAX_POW);
+        return constrain(tempinfo.soft_pwm_amount << 1, 0, PID_MAX);
       }
 
       #if ENABLED(PID_OPENLOOP)
@@ -1622,7 +1622,7 @@ void Temperature::mintemp_error(const heater_id_t heater_id) {
         REPEAT(HOTENDS, _HOTENDPID)
       };
 
-      const float pid_output = is_idling ? 0 : hotend_pid[ee].get_pid_output(ee);
+      const float pid_output = is_idling ? 0 : hotend_pid[ee].get_pid_output();
 
       #if ENABLED(PID_DEBUG)
         if (ee == active_extruder)
