@@ -28,9 +28,9 @@ T = 21e-3                 # torque required to feed the filament at high speed
 m_c = 156e-9              # (kg m^2) moment of inertia of extruder carrier
 Vs = 12                   # (V) supply voltage
 R_fet = 0.34              # (Ω) Rdson of driver FETs
-imargin = 0.2             # margin added to current to account for torque loss at speed
+imargin = 1               # margin added to current to account for torque loss at speed
 
-# LDO motor jason suggested on 21 Aug 9:18
+# LDO-36STH13-1004AH motor specs
 steps = 200               # steps / rotation
 m_m = 6.3e-7              # (kg m^2) moment of inertia of rotor
 R_m = 2.4                 # (Ω) resistance of each winding
