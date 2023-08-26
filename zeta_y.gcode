@@ -2,6 +2,7 @@ M501
 
 M205 S0 T0           ; minimum extruding and travel feed rate
 M900 K0              ; linear advance off
+G90                  ; absolute positioning
 
 M107                 ; fan off
 M140 S50             ; bed temperature
