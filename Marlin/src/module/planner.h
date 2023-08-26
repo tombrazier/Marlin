@@ -80,11 +80,24 @@
 
 // Feedrate for manual moves
 #ifdef MANUAL_FEEDRATE
-  constexpr xyze_feedrate_t _mf = MANUAL_FEEDRATE,
-           manual_feedrate_mm_s = LOGICAL_AXIS_ARRAY(_mf.e / 60.0f,
-                                                     _mf.x / 60.0f, _mf.y / 60.0f, _mf.z / 60.0f,
-                                                     _mf.i / 60.0f, _mf.j / 60.0f, _mf.k / 60.0f,
-                                                     _mf.u / 60.0f, _mf.v / 60.0f, _mf.w / 60.0f);
+  constexpr xyze_feedrate_t manual_feedrate_mm_m = MANUAL_FEEDRATE,
+                            manual_feedrate_mm_s = LOGICAL_AXIS_ARRAY(
+                              MMM_TO_MMS(manual_feedrate_mm_m.e),
+                              MMM_TO_MMS(manual_feedrate_mm_m.x), MMM_TO_MMS(manual_feedrate_mm_m.y), MMM_TO_MMS(manual_feedrate_mm_m.z),
+                              MMM_TO_MMS(manual_feedrate_mm_m.i), MMM_TO_MMS(manual_feedrate_mm_m.j), MMM_TO_MMS(manual_feedrate_mm_m.k),
+                              MMM_TO_MMS(manual_feedrate_mm_m.u), MMM_TO_MMS(manual_feedrate_mm_m.v), MMM_TO_MMS(manual_feedrate_mm_m.w));
+#endif
+
+#if ENABLED(BABYSTEPPING)
+  #if ENABLED(BABYSTEP_MILLIMETER_UNITS)
+    #define BABYSTEP_SIZE_X int32_t((BABYSTEP_MULTIPLICATOR_XY) * planner.settings.axis_steps_per_mm[X_AXIS])
+    #define BABYSTEP_SIZE_Y int32_t((BABYSTEP_MULTIPLICATOR_XY) * planner.settings.axis_steps_per_mm[Y_AXIS])
+    #define BABYSTEP_SIZE_Z int32_t((BABYSTEP_MULTIPLICATOR_Z)  * planner.settings.axis_steps_per_mm[Z_AXIS])
+  #else
+    #define BABYSTEP_SIZE_X BABYSTEP_MULTIPLICATOR_XY
+    #define BABYSTEP_SIZE_Y BABYSTEP_MULTIPLICATOR_XY
+    #define BABYSTEP_SIZE_Z BABYSTEP_MULTIPLICATOR_Z
+  #endif
 #endif
 
 #if IS_KINEMATIC && HAS_JUNCTION_DEVIATION
@@ -245,7 +258,7 @@ typedef struct PlannerBlock {
     uint32_t acceleration_rate;             // The acceleration rate used for acceleration calculation
   #endif
 
-  axis_bits_t direction_bits;               // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+  AxisBits direction_bits;                  // Direction bits set for this block, where 1 is negative motion
 
   // Advance extrusion
   #if ENABLED(LIN_ADVANCE)
@@ -297,7 +310,17 @@ typedef struct PlannerBlock {
   #define HAS_POSITION_FLOAT 1
 #endif
 
-#define BLOCK_MOD(n) ((n)&(BLOCK_BUFFER_SIZE-1))
+FORCE_INLINE uint8_t block_dec_mod(uint8_t v1, uint8_t v2) {
+  uint8_t result = v1 - v2;
+  if (v1 < v2) result += BLOCK_BUFFER_SIZE;
+  return result;
+}
+
+FORCE_INLINE uint8_t block_inc_mod(uint8_t v1, uint8_t v2) {
+  uint8_t result = v1 + v2;
+  if (result >= BLOCK_BUFFER_SIZE) result -= BLOCK_BUFFER_SIZE;
+  return result;
+}
 
 #if ENABLED(LASER_FEATURE)
   typedef struct {
@@ -416,7 +439,7 @@ class Planner {
 
     #if ENABLED(DIRECT_STEPPING)
       static uint32_t last_page_step_rate;          // Last page step rate given
-      static xyze_bool_t last_page_dir;             // Last page direction given
+      static AxisBits last_page_dir;                // Last page direction given, where 1 represents forward or positive motion
     #endif
 
     #if HAS_EXTRUDERS
@@ -533,6 +556,11 @@ class Planner {
      */
     static uint32_t acceleration_long_cutoff;
 
+    #ifdef MAX7219_DEBUG_SLOWDOWN
+      friend class Max7219;
+      static uint8_t slowdown_count;
+    #endif
+
     #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
       static float last_fade_z;
     #endif
@@ -637,7 +665,7 @@ class Planner {
         filament_size[e] = v;
         if (v > 0) volumetric_area_nominal = CIRCLE_AREA(v * 0.5); //TODO: should it be per extruder
         // make sure all extruders have some sane value for the filament size
-        LOOP_L_N(i, COUNT(filament_size))
+        for (uint8_t i = 0; i < COUNT(filament_size); ++i)
           if (!filament_size[i]) filament_size[i] = DEFAULT_NOMINAL_FILAMENT_DIA;
       }
 
@@ -755,10 +783,10 @@ class Planner {
     #endif // HAS_POSITION_MODIFIERS
 
     // Number of moves currently in the planner including the busy block, if any
-    FORCE_INLINE static uint8_t movesplanned() { return BLOCK_MOD(block_buffer_head - block_buffer_tail); }
+    FORCE_INLINE static uint8_t movesplanned() { return block_dec_mod(block_buffer_head, block_buffer_tail); }
 
     // Number of nonbusy moves currently in the planner
-    FORCE_INLINE static uint8_t nonbusy_movesplanned() { return BLOCK_MOD(block_buffer_head - block_buffer_nonbusy); }
+    FORCE_INLINE static uint8_t nonbusy_movesplanned() { return block_dec_mod(block_buffer_head, block_buffer_nonbusy); }
 
     // Remove all blocks from the buffer
     FORCE_INLINE static void clear_block_buffer() { block_buffer_nonbusy = block_buffer_planned = block_buffer_head = block_buffer_tail = 0; }
@@ -824,6 +852,7 @@ class Planner {
       OPTARG(HAS_POSITION_FLOAT, const xyze_pos_t &target_float)
       OPTARG(HAS_DIST_MM_ARG, const xyze_float_t &cart_dist_mm)
       , feedRate_t fr_mm_s, const uint8_t extruder, const PlannerHints &hints
+      , float &minimum_planner_speed_sqr
     );
 
     /**
@@ -925,7 +954,7 @@ class Planner {
     }
 
     // SCARA AB and Polar YB axes are in degrees, not mm
-    #if EITHER(IS_SCARA, POLAR)
+    #if ANY(IS_SCARA, POLAR)
       FORCE_INLINE static float get_axis_position_degrees(const AxisEnum axis) { return get_axis_position_mm(axis); }
     #endif
 
@@ -1016,8 +1045,8 @@ class Planner {
     /**
      * Get the index of the next / previous block in the ring buffer
      */
-    static constexpr uint8_t next_block_index(const uint8_t block_index) { return BLOCK_MOD(block_index + 1); }
-    static constexpr uint8_t prev_block_index(const uint8_t block_index) { return BLOCK_MOD(block_index - 1); }
+    static const uint8_t next_block_index(const uint8_t block_index) { return block_inc_mod(block_index, 1); }
+    static const uint8_t prev_block_index(const uint8_t block_index) { return block_dec_mod(block_index, 1); }
 
     /**
      * Calculate the maximum allowable speed squared at this point, in order
@@ -1028,7 +1057,7 @@ class Planner {
       return target_velocity_sqr - 2 * accel * distance;
     }
 
-    #if EITHER(S_CURVE_ACCELERATION, LIN_ADVANCE)
+    #if ANY(S_CURVE_ACCELERATION, LIN_ADVANCE)
       /**
        * Calculate the speed reached given initial speed, acceleration and distance
        */
@@ -1039,15 +1068,15 @@ class Planner {
 
     static void calculate_trapezoid_for_block(block_t * const block, const_float_t entry_factor, const_float_t exit_factor);
 
-    static void reverse_pass_kernel(block_t * const current, const block_t * const next OPTARG(ARC_SUPPORT, const_float_t safe_exit_speed_sqr));
+    static void reverse_pass_kernel(block_t * const current, const block_t * const next, const_float_t safe_exit_speed_sqr);
     static void forward_pass_kernel(const block_t * const previous, block_t * const current, uint8_t block_index);
 
-    static void reverse_pass(TERN_(ARC_SUPPORT, const_float_t safe_exit_speed_sqr));
+    static void reverse_pass(const_float_t safe_exit_speed_sqr);
     static void forward_pass();
 
-    static void recalculate_trapezoids(TERN_(ARC_SUPPORT, const_float_t safe_exit_speed_sqr));
+    static void recalculate_trapezoids(const_float_t safe_exit_speed_sqr);
 
-    static void recalculate(TERN_(ARC_SUPPORT, const_float_t safe_exit_speed_sqr));
+    static void recalculate(const_float_t safe_exit_speed_sqr);
 
     #if HAS_JUNCTION_DEVIATION
 
