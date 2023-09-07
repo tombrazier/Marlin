@@ -7,8 +7,8 @@
 
 /************** Uncomment a Tool Head Option From Below *********************/
 
-//#define LULZBOT_UNIVERSAL_TOOLHEAD
-#define LULZBOT_UNIVERSAL_X_SERIES
+#define TOOLHEAD_Legacy_Universal
+//#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
@@ -21,7 +21,7 @@
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
 
 /************** Uncomment Options for Printer From Below *********************/
-
+#define SHOW_TOOLHEAD_NAME
 #define LULZBOT_FILAMENT_RUNOUT
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed
@@ -426,10 +426,10 @@
 #endif /* TOOLHEAD_Yellowfin_DualExtruderV3 */
 
 /******************************** UNIVERSAL TOOLHEADS *************************/
-#if defined(LULZBOT_UNIVERSAL_TOOLHEAD) || ANY(TOOLHEAD_SK285,TOOLHEAD_SK175,TOOLHEAD_M175,TOOLHEAD_H175,TOOLHEAD_SL_SE_HE, TOOLHEAD_HS_HSPLUS)
+#if defined(TOOLHEAD_Legacy_Universal) || ANY(TOOLHEAD_SK285,TOOLHEAD_SK175,TOOLHEAD_M175,TOOLHEAD_H175,TOOLHEAD_SL_SE_HE, TOOLHEAD_HS_HSPLUS)
   #define LULZBOT_UNIVERSAL_MOUNT
   #define LULZBOT_EXTRUDERS                  1
-  #define LULZBOT_M115_EXTRUDER_TYPE         "Universal"
+  #define LULZBOT_M115_EXTRUDER_TYPE         "Legacy Universal"
   #define LULZBOT_E_STEPS                    420
   #define LULZBOT_TOOLHEAD_X_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_X_MIN_ADJ         0
@@ -437,6 +437,7 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
+  #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         177 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
@@ -467,10 +468,10 @@
   #define LULZBOT_M115_EXTRUDER_TYPE       "SK285"
 #endif
 
-#if defined(LULZBOT_UNIVERSAL_X_SERIES) 
+#if defined(TOOLHEAD_Galaxy_Series) 
   #define LULZBOT_UNIVERSAL_MOUNT
   #define LULZBOT_EXTRUDERS                  1
-  #define LULZBOT_M115_EXTRUDER_TYPE         "Universal X-Series"
+  #define LULZBOT_M115_EXTRUDER_TYPE         "Galaxy Series"
   #define LULZBOT_E_STEPS                    410
   #define LULZBOT_TOOLHEAD_X_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_X_MIN_ADJ         0
@@ -478,6 +479,7 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
+  #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
@@ -2240,7 +2242,7 @@
  * These options are most useful for the BLTouch probe, but may also improve
  * readings with inductive probes and piezo sensors.
  */
-//#define PROBING_HEATERS_OFF       // Turn heaters off when probing
+#define PROBING_HEATERS_OFF       // Turn heaters off when probing
 #if ENABLED(PROBING_HEATERS_OFF)
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
   //#define WAIT_FOR_HOTEND         // Wait for hotend to heat back up between probes (to improve accuracy & prevent cold extrude)
@@ -3270,7 +3272,7 @@
   #if ANY(MiniV2, MiniV3)
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
-  #elif ANY(TAZPro, TAZProXT) && ANY(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define NOZZLE_CLEAN_START_POINT { 295, 95, 1 }
     #define NOZZLE_CLEAN_END_POINT   { 295, 25, 1 }
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
@@ -3307,7 +3309,7 @@
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ENABLED(Workhorse)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
-  #elif ANY(TAZPro, TAZProXT) && ANY(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X295 Y25 Z10 F4000\nG1 Z-1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
     #define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nT0\nG1 Z-1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
@@ -4442,10 +4444,14 @@
 #endif
 
 // Selection of tool head
-#if NONE(LULZBOT_UNIVERSAL_TOOLHEAD, LULZBOT_UNIVERSAL_X_SERIES, TOOLHEAD_SL_SE_HE, TOOLHEAD_HS_HSPLUS, TOOLHEAD_H175, TOOLHEAD_M175, TOOLHEAD_SK175, TOOLHEAD_SK285,TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
+#if NONE(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series, TOOLHEAD_SL_SE_HE, TOOLHEAD_HS_HSPLUS, TOOLHEAD_H175, TOOLHEAD_M175, TOOLHEAD_SK175, TOOLHEAD_SK285,TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
   #error "Please select a Tool Head. See top of configuration.h for more information."
 #endif
 
 #if LULZBOT_EXTRUDERS == 2 && NONE(LULZBOT_Quiver_TAZPro, LULZBOT_Gladiator_TAZProXT)
   #error "Tool Head Selected is not supported by Printer."
+#endif
+
+#if defined(LULZBOT_LONG_BED) && !defined(LULZBOT_BLTouch)
+    #error LULZBOT_Quiver_TAZPro with LULZBOT_LONG_BED requires LULZBOT_BLTouch to be enabled.
 #endif

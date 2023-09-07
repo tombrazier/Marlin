@@ -82,6 +82,10 @@
   #include "../../feature/backlash.h"
 #endif
 
+#if ENABLED(TOOL_HEAD_ID)
+  #include "../../feature/tool_head_id.h"
+#endif
+
 #if HAS_LEVELING
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
@@ -1194,6 +1198,10 @@ namespace ExtUI {
     TERN(HAS_MEDIA, card.cd(dirname), UNUSED(dirname));
   }
 
+  #if ENABLED(TOOL_HEAD_ID)
+    uint8_t getToolHeadId()                 { return tool_head.id; }
+    void setToolHeadId(const uint16_t value) { tool_head.id = constrain(value, 0, 10); }
+  #endif
 } // namespace ExtUI
 
 // At the moment we hook into MarlinUI methods, but this could be cleaned up in the future

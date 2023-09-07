@@ -36,7 +36,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V88"
+#define EEPROM_VERSION "V89"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -112,6 +112,10 @@
 
 #if ENABLED(BACKLASH_COMPENSATION)
   #include "../feature/backlash.h"
+#endif
+
+#if ENABLED(TOOL_HEAD_ID)
+  #include "../feature/tool_head_id.h"
 #endif
 
 #if ENABLED(FT_MOTION)
@@ -525,6 +529,11 @@ typedef struct SettingsDataStruct {
     uint8_t backlash_correction;                        // M425 F
     float backlash_smoothing_mm;                        // M425 S
   #endif
+
+  //
+  // TOOL_HEAD_ID
+  //
+  uint8_t tool_head_id;                                   // M891 T
 
   //
   // EXTENSIBLE_UI
@@ -1588,6 +1597,14 @@ void MarlinSettings::postprocess() {
     }
     #endif // NUM_AXES
 
+    //
+    // TOOL_HEAD_ID
+    //
+    {
+      const uint8_t &tool_head_id = tool_head.id;
+      EEPROM_WRITE(tool_head_id);
+    }
+    
     //
     // Extensible UI User Data
     //
@@ -2653,6 +2670,14 @@ void MarlinSettings::postprocess() {
       #endif // NUM_AXES
 
       //
+      // TOOL_HEAD_ID
+      //
+      {
+        uint8_t &tool_head_id = tool_head.id;
+        EEPROM_READ(tool_head_id);
+      }
+
+      //
       // Extensible UI User Data
       //
       #if ENABLED(EXTENSIBLE_UI)
@@ -3169,6 +3194,13 @@ void MarlinSettings::reset() {
     #endif
   #endif
 
+  //
+  // TOOL_HEAD_ID
+  //
+  #if ENABLED(TOOL_HEAD_ID)
+    tool_head.id = TOOL_HEAD_ID;
+  #endif
+  
   TERN_(DWIN_CREALITY_LCD_JYERSUI, jyersDWIN.resetSettings());
 
   //
@@ -3904,6 +3936,11 @@ void MarlinSettings::reset() {
     //
     TERN_(BACKLASH_GCODE, gcode.M425_report(forReplay));
 
+    //
+    // TOOL_HEAD_ID
+    //
+    TERN_(TOOL_HEAD_ID, gcode.M891_report(forReplay));
+    
     //
     // Filament Runout Sensor
     //
