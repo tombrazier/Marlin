@@ -17,7 +17,7 @@
 
 #include "../../../inc/MarlinConfig.h"
 
-#if ENABLED(TOOL_HEAD_ID)
+#if ENABLED(SHOW_TOOL_HEAD_ID)
 
 #include "../../gcode.h"
 #include "../../../feature/tool_head_id.h"

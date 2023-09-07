@@ -22,14 +22,14 @@
 
 #include "../inc/MarlinConfigPre.h"
 
-#if ENABLED(TOOL_HEAD_ID)
+#if ENABLED(SHOW_TOOL_HEAD_ID)
 
 #include "tool_head_id.h"
 
 #include "../module/motion.h"
 #include "../module/planner.h"
 
-#if ENABLED(TOOL_HEAD_ID)
+#if ENABLED(SHOW_TOOL_HEAD_ID)
   #ifdef TOOL_HEAD_ID
     uint8_t Tool_head::id = TOOL_HEAD_ID;
   #endif

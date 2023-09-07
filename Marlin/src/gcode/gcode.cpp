@@ -1051,7 +1051,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 869: M869(); break;                                  // M869: Report axis error
       #endif
 
-      #if ENABLED(TOOL_HEAD_ID)
+      #if ENABLED(SHOW_TOOL_HEAD_ID)
         case 891: M891(); break;                                  // M891: Set Tool Head ID
       #endif
 

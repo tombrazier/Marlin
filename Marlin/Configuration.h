@@ -21,7 +21,7 @@
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
 
 /************** Uncomment Options for Printer From Below *********************/
-#define SHOW_TOOLHEAD_NAME
+//define SHOW_TOOLHEAD_NAME
 #define LULZBOT_FILAMENT_RUNOUT
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LongBed

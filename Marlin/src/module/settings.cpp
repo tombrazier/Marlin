@@ -114,7 +114,7 @@
   #include "../feature/backlash.h"
 #endif
 
-#if ENABLED(TOOL_HEAD_ID)
+#if ENABLED(SHOW_TOOL_HEAD_ID)
   #include "../feature/tool_head_id.h"
 #endif
 
@@ -533,8 +533,9 @@ typedef struct SettingsDataStruct {
   //
   // TOOL_HEAD_ID
   //
-  uint8_t tool_head_id;                                   // M891 T
-
+  #if ENABLED(SHOW_TOOL_HEAD_ID)
+    uint8_t tool_head_id;                                   // M891 T
+  #endif
   //
   // EXTENSIBLE_UI
   //
@@ -1600,10 +1601,12 @@ void MarlinSettings::postprocess() {
     //
     // TOOL_HEAD_ID
     //
+    #if ENABLED(SHOW_TOOL_HEAD_ID)
     {
       const uint8_t &tool_head_id = tool_head.id;
       EEPROM_WRITE(tool_head_id);
     }
+    #endif
     
     //
     // Extensible UI User Data
@@ -2672,10 +2675,12 @@ void MarlinSettings::postprocess() {
       //
       // TOOL_HEAD_ID
       //
+      #if ENABLED(SHOW_TOOL_HEAD_ID)
       {
         uint8_t &tool_head_id = tool_head.id;
         EEPROM_READ(tool_head_id);
       }
+      #endif
 
       //
       // Extensible UI User Data
@@ -3197,7 +3202,7 @@ void MarlinSettings::reset() {
   //
   // TOOL_HEAD_ID
   //
-  #if ENABLED(TOOL_HEAD_ID)
+  #if ENABLED(SHOW_TOOL_HEAD_ID)
     tool_head.id = TOOL_HEAD_ID;
   #endif
   
@@ -3939,8 +3944,9 @@ void MarlinSettings::reset() {
     //
     // TOOL_HEAD_ID
     //
-    TERN_(TOOL_HEAD_ID, gcode.M891_report(forReplay));
-    
+    #if ENABLED(SHOW_TOOL_HEAD_ID)
+      TERN_(TOOL_HEAD_ID, gcode.M891_report(forReplay));
+    #endif
     //
     // Filament Runout Sensor
     //
