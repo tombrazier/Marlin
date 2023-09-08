@@ -45,13 +45,13 @@ void AboutScreen::onRedraw(draw_mode_t) {
      .cmd(COLOR_RGB(bg_text_enabled))
      .tag(0);
 
-  draw_text_box(cmd, BTN_POS(1,2), BTN_SIZE(4,5), F(
+  draw_text_box(cmd, BTN_POS(1,1), BTN_SIZE(4,6), F(
       #if defined(LULZBOT_LONG_BED)
-        ""LULZBOT_LCD_MACHINE_NAME"\nWith Long Bed"
+        "" LULZBOT_LCD_MACHINE_NAME " \nWith Long Bed"
       #elif defined(LULZBOT_BLTouch) && !defined(LULZBOT_LONG_BED)
-        ""LULZBOT_LCD_MACHINE_NAME"\nWith BLTouch"
+        "" LULZBOT_LCD_MACHINE_NAME " \nWith BLTouch"
       #else
-        ""LULZBOT_LCD_MACHINE_NAME"\n"
+        "" LULZBOT_LCD_MACHINE_NAME "\n"
       #endif
   ), OPT_CENTER, font_xxlarge);
 
@@ -61,14 +61,14 @@ void AboutScreen::onRedraw(draw_mode_t) {
   ), OPT_CENTER, font_xlarge);
 
   draw_text_box(cmd, BTN_POS(1,10), BTN_SIZE(4,2), F(
-         ""LULZBOT_M115_EXTRUDER_TYPE""
-  ), OPT_CENTER, font_xlarge);
-
-  draw_text_box(cmd, BTN_POS(1,13), BTN_SIZE(4,3), F(
-    "Tool Head:"
+         "" LULZBOT_M115_EXTRUDER_TYPE ""
   ), OPT_CENTER, font_xlarge);
 
   #if ENABLED(TOOLHEAD_Galaxy_Series, SHOW_TOOLHEAD_NAME)
+    draw_text_box(cmd, BTN_POS(1,13), BTN_SIZE(4,3), F(
+      "Tool Head:"
+    ), OPT_CENTER, font_xlarge);
+    
     switch(getToolHeadId()){
       case 1:
       draw_text_box(cmd, BTN_POS(1,16), BTN_SIZE(4,2), F(
@@ -131,7 +131,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
   ), OPT_CENTER, font_xlarge);
 
   draw_text_box(cmd, BTN_POS(1,22), BTN_SIZE(4,2), F(
-    "Marlin "SHORT_BUILD_VERSION""
+    "Marlin " SHORT_BUILD_VERSION ""
   ), OPT_CENTER, font_xlarge);
 
   draw_text_box(cmd, BTN_POS(1,24), BTN_SIZE(4,2), F(

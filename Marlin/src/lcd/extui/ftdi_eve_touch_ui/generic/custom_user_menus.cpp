@@ -43,16 +43,16 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
   }
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define GRID_ROWS 11
-    #define GRID_COLS 1
-    #define USER_ITEM_POS(N) BTN_POS((1+((N-1)/10)), ((N-1) % 10 + 1)), BTN_SIZE(1,1)
-    #define BACK_POS         BTN_POS(1,11), BTN_SIZE(1,1)
-  #else
     #if defined(TOOLHEAD_Legacy_Universal)
       #define GRID_ROWS 9
     #else
-      #define GRID_ROWS 8
+      #define GRID_ROWS 7
     #endif
+    #define GRID_COLS 1
+    #define USER_ITEM_POS(N) BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
+    #define BACK_POS         BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
+  #else
+    #define GRID_ROWS 9
     #define GRID_COLS 1
     #define USER_ITEM_POS(N) BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
     #define BACK_POS         BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
@@ -60,7 +60,7 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
 
   if (what & FOREGROUND) {
     CommandProcessor cmd;
-    cmd.colors(normal_btn)
+    cmd.colors(accent_btn)
        .font(Theme::font_medium)
        #if defined(MAIN_MENU_ITEM_1_DESC)
         //_USER_ITEM(1)

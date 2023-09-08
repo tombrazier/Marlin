@@ -126,6 +126,7 @@ namespace Theme {
     constexpr uint32_t logo_bg_rgb          = accent_color_4;
     constexpr uint32_t logo_fill_rgb        = accent_color_3;
     constexpr uint32_t logo_stroke_rgb      = 0x000000;
+    constexpr uint32_t lulzbot_accent       = 0xA8A845;
 
     constexpr uint32_t bed_mesh_lines_rgb   = 0xFFFFFF;
     constexpr uint32_t bed_mesh_shadow_rgb  = 0x444444;
@@ -179,6 +180,7 @@ namespace Theme {
 
   constexpr btn_colors disabled_btn         = {.bg = bg_color,      .grad = fg_disabled, .fg = fg_disabled,  .rgb = fg_disabled };
   constexpr btn_colors normal_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = 0xFFFFFF };
+  constexpr btn_colors accent_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = lulzbot_accent,    .rgb = 0xFFFFFF };
   constexpr btn_colors action_btn           = {.bg = bg_color,      .grad = 0xFFFFFF,    .fg = fg_action,    .rgb = 0xFFFFFF };
   constexpr btn_colors red_btn              = {.bg = 0xFF5555,      .grad = 0xFFFFFF,    .fg = 0xFF0000,     .rgb = 0xFFFFFF };
   constexpr btn_colors ui_slider            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,   .rgb = accent_color_3 };

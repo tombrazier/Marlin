@@ -4086,7 +4086,7 @@
 
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
       #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\nM906E" E_CURRENT_LGX285 "\nM900 K0.05\nM500\nM117 AST-2.85|0.50mm|GM STEEL"
-#else
+    #else
       #define MAIN_MENU_ITEM_1_DESC "Park for Tool Head Swap"
       #define MAIN_MENU_ITEM_1_GCODE"G28O\nG0 X100 Y283 Z200"
 
@@ -4098,9 +4098,9 @@
 
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
       #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\nM907E" E_CURRENT_LGX285 "\nM900 K0.05\nM500\nM117 AST-2.85|0.50mm|GM STEEL"
- #endif
+    #endif
 
-  #elif defined(TOOLHEAD_Universal_ToolHead)
+  #elif defined(TOOLHEAD_Legacy_Universal)
     #if ANY(Mini2, TAZPro, TAZProXT)
       #define MAIN_MENU_ITEM_1_DESC "Park for Tool Head Swap"
       #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"

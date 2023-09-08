@@ -7,8 +7,8 @@
 
 /************** Uncomment a Tool Head Option From Below *********************/
 
-#define TOOLHEAD_Legacy_Universal
-//#define TOOLHEAD_Galaxy_Series
+//#define TOOLHEAD_Legacy_Universal
+#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
@@ -224,13 +224,13 @@
   #define LULZBOT_WIPE
 #elif ENABLED(TAZPro)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ Pro"
-  #define LULZBOT_LCD_MACHINE_NAME "TAZ Pro"
+  #define LULZBOT_LCD_MACHINE_NAME "LulzBot TAZ Pro"
   #define MACHINE_UUID "a952577d-8722-483a-999d-acdc9e772b7b" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
 #elif ENABLED(TAZProXT)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ ProXT"
-  #define LULZBOT_LCD_MACHINE_NAME "TAZ ProXT"
+  #define LULZBOT_LCD_MACHINE_NAME "LulzBot TAZ ProXT"
   #define MACHINE_UUID "28ac1ce7-ca05-4f8e-8f1f-1d2f4496a1eb" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
