@@ -89,7 +89,7 @@ void AdvancedSettingsMenu::onRedraw(draw_mode_t what) {
     cmd.colors(normal_btn)
        .font(Theme::font_medium)
       .enabled(ENABLED(HAS_BED_PROBE))
-      .tag(2) .button(ZPROBE_ZOFFSET_POS,     GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
+      .tag(2) .button(ZPROBE_ZOFFSET_POS,     GET_TEXT_F(MSG_ZOFFSET))
       .enabled(ENABLED(CASE_LIGHT_ENABLE))
       .tag(16).button(CASE_LIGHT_POS,         GET_TEXT_F(MSG_CASE_LIGHT))
       .tag(3) .button(STEPS_PER_MM_POS,       GET_TEXT_F(MSG_STEPS_PER_MM))
