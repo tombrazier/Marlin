@@ -64,6 +64,19 @@ BaseNumericAdjustmentScreen::widgets_t::widgets_t(draw_mode_t what) : _what(what
     GET_TEXT_F(MSG_BUTTON_DONE), true, true
   );
 
+  if (!ExtUI::isPrinting()) { // making sure the Tool Head Swap Position ia not avalible while printing    
+    cmd.font(font_medium);
+    cmd.colors(normal_btn);
+    _button(cmd, 100,
+      #if defined(TOUCH_UI_PORTRAIT)
+          BTN_POS(1,9), BTN_SIZE(13,1),
+      #else
+        BTN_POS(15,7), BTN_SIZE(4,1),
+      #endif
+      GET_TEXT_F(MSG_FILAMENT_TOOL_HEAD_SWAP), true, true
+    );
+  }
+
   _line = 1;
   _units = F("");
 }
@@ -370,6 +383,7 @@ void BaseNumericAdjustmentScreen::onEntry() {
 bool BaseNumericAdjustmentScreen::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:           GOTO_PREVIOUS(); return true;
+    case 100:           SpinnerDialogBox::enqueueAndWait(F("G28O\nG0 X100 Y283 Z200"));
     case 240 ... 245: mydata.increment = tag; break;
     default:          return current_screen.onTouchHeld(tag);
   }
