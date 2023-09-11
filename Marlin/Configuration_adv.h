@@ -1411,7 +1411,7 @@
       #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
-    #elif defined(LULZBOT_LongBed)
+    #elif defined(LULZBOT_LONG_BED)
       #define CALIBRATION_OBJECT_CENTER     {260,-18,-2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  10.0, 10.0} //  mm
     #else

@@ -24,7 +24,7 @@
 //define SHOW_TOOLHEAD_NAME
 #define LULZBOT_FILAMENT_RUNOUT
 //#define LULZBOT_BLTouch
-//#define LULZBOT_LongBed
+//#define LULZBOT_LONG_BED
 //#define TazDualZ
 
 /**
@@ -248,7 +248,7 @@
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
 #endif
 
-#if defined LULZBOT_LongBed
+#if defined LULZBOT_LONG_BED
   #define LULZBOT_BED_TYPE " LONGBED"
 #else
   #define LULZBOT_BED_TYPE " STANDARD"
@@ -1746,7 +1746,7 @@
 #elif ENABLED(TAZ6)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 1600, LULZBOT_E_STEPS }
 #elif ANY(Workhorse, TAZPro, TAZProXT)
-  #if defined(LULZBOT_LongBed)
+  #if defined(LULZBOT_LONG_BED)
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 160, 500, LULZBOT_E_STEPS }
   #else
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 500, LULZBOT_E_STEPS }
@@ -2462,7 +2462,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed  
-  #elif defined(LULZBOT_LongBed)
+  #elif defined(LULZBOT_LONG_BED)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570 
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -2504,7 +2504,7 @@
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed   
-  #elif defined(LULZBOT_LongBed)
+  #elif defined(LULZBOT_LONG_BED)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570 
     // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -2859,7 +2859,7 @@
 #if ANY(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #if defined (LULZBOT_LongBed)
+  #if defined (LULZBOT_LONG_BED)
     #define GRID_MAX_POINTS_X 4  //4x8 grid to account for entire long bed printable area
     #define GRID_MAX_POINTS_Y 8
   #else
@@ -4426,7 +4426,7 @@
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
 
-#if defined(LULZBOT_LongBed) && !defined(LULZBOT_BLTouch)
+#if defined(LULZBOT_LONG_BED) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
 #elif ENABLED(LULZBOT_BLTouch, SWITCHING_NOZZLE)
   #error The BLTouch and dual servo motors are not compatible
