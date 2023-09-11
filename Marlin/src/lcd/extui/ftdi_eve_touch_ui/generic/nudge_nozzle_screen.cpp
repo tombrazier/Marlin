@@ -70,7 +70,7 @@ void NudgeNozzleScreen::onRedraw(draw_mode_t what) {
         dtostrf(getZOffset_mm(), 4, 2, str);
         strcat(str, " ");
         strcat_P(str, GET_TEXT(MSG_UNITS_MM));
-        w.text_field(0, GET_TEXT_F(MSG_ZPROBE_ZOFFSET), str);
+        w.text_field(0, GET_TEXT_F(MSG_ZOFFSET), str);
       #endif
 
       #if HAS_MULTI_HOTEND
