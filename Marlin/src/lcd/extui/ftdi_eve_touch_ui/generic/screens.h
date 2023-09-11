@@ -144,6 +144,7 @@ enum {
 #include "endstop_state_screen.h"
 #include "display_tuning_screen.h"
 #include "media_player_screen.h"
+#include "flow_percent_screen.h"
 
 #if ENABLED(PRINTCOUNTER)
   #include "statistics_screen.h"

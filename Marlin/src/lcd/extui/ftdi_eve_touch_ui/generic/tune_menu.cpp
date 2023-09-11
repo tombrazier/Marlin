@@ -48,7 +48,7 @@ void TuneMenu::onRedraw(draw_mode_t what) {
     #define SPEED_POS       BTN_POS(1,5), BTN_SIZE(2,1)
     #define PAUSE_POS       BTN_POS(1,6), BTN_SIZE(2,1)
     #define STOP_POS        BTN_POS(1,7), BTN_SIZE(2,1)
-    #define CASE_LIGHT_POS  BTN_POS(1,8), BTN_SIZE(2,1)
+    #define FLOW_POS        BTN_POS(1,8), BTN_SIZE(2,1)
     #define ADVANCED_SETTINGS_POS BTN_POS(1,9), BTN_SIZE(1,1)
     #define BACK_POS        BTN_POS(2,9), BTN_SIZE(1,1)
   #else
@@ -59,7 +59,7 @@ void TuneMenu::onRedraw(draw_mode_t what) {
     #define PAUSE_POS       BTN_POS(1,3), BTN_SIZE(1,1)
     #define STOP_POS        BTN_POS(2,3), BTN_SIZE(1,1)
     #define FILAMENT_POS    BTN_POS(1,4), BTN_SIZE(1,1)
-    #define CASE_LIGHT_POS  BTN_POS(2,4), BTN_SIZE(1,1)
+    #define FLOW_POS        BTN_POS(2,4), BTN_SIZE(1,1)
     #define ADVANCED_SETTINGS_POS BTN_POS(1,5), BTN_SIZE(1,1)
     #define BACK_POS        BTN_POS(2,5), BTN_SIZE(1,1)
   #endif
@@ -79,7 +79,7 @@ void TuneMenu::onRedraw(draw_mode_t what) {
        #if ENABLED(BABYSTEPPING) && HAS_MULTI_HOTEND
          .tag(4).button(NUDGE_NOZ_POS, GET_TEXT_F(MSG_NUDGE_NOZZLE))
        #elif ALL(HAS_LEVELING, HAS_BED_PROBE)
-         .tag(4).button(NUDGE_NOZ_POS, GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
+         .tag(4).button(NUDGE_NOZ_POS, GET_TEXT_F(MSG_ZOFFSET))
        #endif
        .tag(5).button(SPEED_POS, GET_TEXT_F(MSG_PRINT_SPEED))
        .enabled(sdOrHostPrinting)
@@ -87,8 +87,7 @@ void TuneMenu::onRedraw(draw_mode_t what) {
        .button(PAUSE_POS, sdOrHostPaused ? GET_TEXT_F(MSG_RESUME_PRINT) : GET_TEXT_F(MSG_PAUSE_PRINT))
        .enabled(sdOrHostPrinting)
        .tag(8).button(STOP_POS, GET_TEXT_F(MSG_STOP_PRINT))
-       .enabled(ENABLED(CASE_LIGHT_ENABLE))
-       .tag(10).button(CASE_LIGHT_POS, GET_TEXT_F(MSG_CASE_LIGHT))
+       .tag(10).button(FLOW_POS, GET_TEXT_F(MSG_FLOW))
        .tag(11).button(ADVANCED_SETTINGS_POS, GET_TEXT_F(MSG_ADVANCED_SETTINGS))
        .tag(1).colors(action_btn)
              .button(BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
@@ -120,9 +119,7 @@ bool TuneMenu::onTouchEnd(uint8_t tag) {
     #if ANY(LIN_ADVANCE, FILAMENT_RUNOUT_SENSOR)
     case  9: GOTO_SCREEN(FilamentMenu); break;
     #endif
-    #if ENABLED(CASE_LIGHT_ENABLE)
-    case 10: GOTO_SCREEN(CaseLightScreen); break;
-    #endif
+    case 10: GOTO_SCREEN(FlowPercentScreen); break;
     case 11: GOTO_SCREEN(AdvancedSettingsMenu); break;
     default:
       return false;
