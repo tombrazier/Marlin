@@ -207,13 +207,13 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
     {
       char str[30];
       format_temp(str, LOW_TEMP);
-      cmd.tag(2) .TOG_STYLE(tog2).button (LOW_TEMP_POS, str);
+      cmd.tag(2) .TOG_STYLE(tog2).button (LOW_TEMP_POS,  F( STRINGIFY(LOW_TEMP)  "C (PLA)"));
 
       format_temp(str, MED_TEMP);
-      cmd.tag(3) .TOG_STYLE(tog3).button (MED_TEMP_POS, str);
+      cmd.tag(3) .TOG_STYLE(tog3).button (MED_TEMP_POS, F( STRINGIFY(MED_TEMP)  "C (TPU)"));
 
       format_temp(str, HIGH_TEMP);
-      cmd.tag(4) .TOG_STYLE(tog4).button (HIG_TEMP_POS, str);
+      cmd.tag(4) .TOG_STYLE(tog4).button (HIG_TEMP_POS, F( STRINGIFY(HIGH_TEMP) "C (ABS)"));
     }
 
     cmd.cmd(COLOR_RGB(t_ok ? bg_text_enabled : bg_text_disabled))
