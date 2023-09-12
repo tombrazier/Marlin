@@ -66,7 +66,7 @@ void MainMenu::onRedraw(draw_mode_t what) {
     #if ENABLED(CUSTOM_MENU_MAIN)
       #define TEMPERATURE_POS     BTN_POS(1,4), BTN_SIZE(2,1)
       #define FILAMENTCHANGE_POS  BTN_POS(3,4), BTN_SIZE(2,1)
-      #define CUSTOM_MENU_POS BTN_POS(5,4), BTN_SIZE(2,1)
+      #define CUSTOM_MENU_POS     BTN_POS(5,4), BTN_SIZE(2,1)
     #else
       #define TEMPERATURE_POS     BTN_POS(1,4), BTN_SIZE(3,1)
       #define FILAMENTCHANGE_POS  BTN_POS(4,4), BTN_SIZE(3,1)
@@ -111,7 +111,7 @@ bool MainMenu::onTouchEnd(uint8_t tag) {
     case 1:  SaveSettingsDialogBox::promptToSaveSettings();           break;
     case 2:  SpinnerDialogBox::enqueueAndWait(F("G28"));            break;
     #if ENABLED(NOZZLE_CLEAN_FEATURE)
-      case 3: injectCommands(F("G12")); GOTO_SCREEN(StatusScreen); break;
+      case 3: injectCommands(F("G28O\nG12")); GOTO_SCREEN(StatusScreen); break;
     #endif
     case 4:  GOTO_SCREEN(MoveAxisScreen);                             break;
     case 5:  injectCommands(F("M84"));                           break;
