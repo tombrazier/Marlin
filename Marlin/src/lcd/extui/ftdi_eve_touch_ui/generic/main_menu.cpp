@@ -79,28 +79,27 @@ void MainMenu::onRedraw(draw_mode_t what) {
     CommandProcessor cmd;
     cmd.colors(normal_btn)
        .font(Theme::font_medium)
-       .tag( 2).button(AUTO_HOME_POS,       GET_TEXT_F(MSG_AUTO_HOME))
-               .enabled(ENABLED(NOZZLE_CLEAN_FEATURE))
-       .tag( 3).button(CLEAN_NOZZLE_POS,    GET_TEXT_F(MSG_CLEAN_NOZZLE))
-       .tag( 4).button(MOVE_AXIS_POS,       GET_TEXT_F(MSG_MOVE_AXIS))
-       .tag( 5).button(DISABLE_STEPPERS_POS,GET_TEXT_F(MSG_DISABLE_STEPPERS))
-       .tag( 6).button(TEMPERATURE_POS,     GET_TEXT_F(MSG_TEMPERATURE))
-               .enabled(DISABLED(TOUCH_UI_LULZBOT_BIO))
-       .tag( 7).button(FILAMENTCHANGE_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE))
+       .tag( 2).button(AUTO_HOME_POS,         GET_TEXT_F(MSG_AUTO_HOME))
+          .enabled(ENABLED(NOZZLE_CLEAN_FEATURE))
+       .tag( 3).button(CLEAN_NOZZLE_POS,      GET_TEXT_F(MSG_CLEAN_NOZZLE))
+       .tag( 4).button(MOVE_AXIS_POS,         GET_TEXT_F(MSG_MOVE_AXIS))
+       .tag( 5).button(DISABLE_STEPPERS_POS,  GET_TEXT_F(MSG_DISABLE_STEPPERS))
+       .tag( 6).button(TEMPERATURE_POS,       GET_TEXT_F(MSG_TEMPERATURE))
+          .enabled(DISABLED(TOUCH_UI_LULZBOT_BIO))
+       .tag( 7).button(FILAMENTCHANGE_POS,    GET_TEXT_F(MSG_FILAMENTCHANGE))
        .tag( 8).button(ADVANCED_SETTINGS_POS, GET_TEXT_F(MSG_ADVANCED_SETTINGS))
-               .enabled(ENABLED(HAS_LEVELING))
-       .tag( 9).button(LEVELING_POS,        GET_TEXT_F(MSG_LEVELING))
-       .tag(10).button(ABOUT_PRINTER_POS,   GET_TEXT_F(MSG_INFO_MENU))
+          .enabled(ENABLED(HAS_LEVELING))
+       .tag( 9).button(LEVELING_POS,          GET_TEXT_F(MSG_LEVELING))
+       .tag(10).button(ABOUT_PRINTER_POS,     GET_TEXT_F(MSG_INFO_MENU))
        #if ENABLED(CUSTOM_MENU_MAIN)
-        .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_COMMANDS))
-        #ifndef CUSTOM_MENU_MAIN_TITLE
-          .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_COMMANDS))
-        #else
-          .tag(11).button(CUSTOM_MENU_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
-        #endif
+          #ifndef CUSTOM_MENU_MAIN_TITLE
+            .tag(11).button(CUSTOM_MENU_POS,  GET_TEXT_F(MSG_CUSTOM_COMMANDS))
+          #else
+            .tag(11).button(CUSTOM_MENU_POS,  GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
+          #endif
        #endif
        .colors(action_btn)
-       .tag(1).button(BACK_POS,             GET_TEXT_F(MSG_BUTTON_DONE));
+       .tag(1).button(BACK_POS,               GET_TEXT_F(MSG_BUTTON_DONE));
   }
 }
 
@@ -108,22 +107,22 @@ bool MainMenu::onTouchEnd(uint8_t tag) {
   using namespace ExtUI;
 
   switch (tag) {
-    case 1:  SaveSettingsDialogBox::promptToSaveSettings();           break;
-    case 2:  SpinnerDialogBox::enqueueAndWait(F("G28"));            break;
+    case 1:  SaveSettingsDialogBox::promptToSaveSettings();              break;
+    case 2:  SpinnerDialogBox::enqueueAndWait(F("G28"));                 break;
     #if ENABLED(NOZZLE_CLEAN_FEATURE)
       case 3: injectCommands(F("G28O\nG12")); GOTO_SCREEN(StatusScreen); break;
     #endif
-    case 4:  GOTO_SCREEN(MoveAxisScreen);                             break;
-    case 5:  injectCommands(F("M84"));                           break;
-    case 6:  GOTO_SCREEN(TemperatureScreen);                          break;
-    case 7:  GOTO_SCREEN(ChangeFilamentScreen);                       break;
-    case 8:  GOTO_SCREEN(AdvancedSettingsMenu);                       break;
+    case 4:  GOTO_SCREEN(MoveAxisScreen);                                break;
+    case 5:  injectCommands(F("M84"));                                   break;
+    case 6:  GOTO_SCREEN(TemperatureScreen);                             break;
+    case 7:  GOTO_SCREEN(ChangeFilamentScreen);                          break;
+    case 8:  GOTO_SCREEN(AdvancedSettingsMenu);                          break;
     #if HAS_LEVELING
-      case 9:  GOTO_SCREEN(LevelingMenu);                             break;
+      case 9:  GOTO_SCREEN(LevelingMenu);                                break;
     #endif
-    case 10: GOTO_SCREEN(AboutScreen);                                break;
+    case 10: GOTO_SCREEN(AboutScreen);                                   break;
     #if ENABLED(CUSTOM_MENU_MAIN)
-      case 11: GOTO_SCREEN(CustomUserMenus);                          break;
+      case 11: GOTO_SCREEN(CustomUserMenus);                             break;
     #endif
 
     default:
