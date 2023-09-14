@@ -4059,10 +4059,6 @@
   #define CUSTOM_MENU_MAIN_SCRIPT_RETURN   // Return to status screen after a script
   #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Only show custom menu when the machine is idle
 
-  #define SK_DEFAULT_PID   "26.90I2.41D75.19"
-  #define TAZ6_DEFAULT_PID "P28.79I1.91D108.51"
-  #define DEFAULT_PID      "P21.0I1.78D61.93"
-
   #if defined(Workhorse) //conversion to digipot units = ((mA-750)/5+135)
     #define E_CURRENT_Aero "M907 E160" //((875-750)/5+135) = 160
     #define E_CURRENT_Std  "M907 E135" //((750-750)/5+135) = 135
