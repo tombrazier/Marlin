@@ -383,7 +383,7 @@ void BaseNumericAdjustmentScreen::onEntry() {
 bool BaseNumericAdjustmentScreen::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:           GOTO_PREVIOUS(); return true;
-    case 100:           SpinnerDialogBox::enqueueAndWait(F("G28O\nG0 X100 Y283 Z200"));
+    case 100:           SpinnerDialogBox::enqueueAndWait(F("G28O\nG0 X100 Y283 Z200 F3000"));
     case 240 ... 245: mydata.increment = tag; break;
     default:          return current_screen.onTouchHeld(tag);
   }
