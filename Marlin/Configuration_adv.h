@@ -3319,7 +3319,7 @@
    */
   #if HAS_STEALTHCHOP
     //#define STEALTHCHOP_XY
-    #define STEALTHCHOP_Z
+    //#define STEALTHCHOP_Z
     //#define STEALTHCHOP_I
     //#define STEALTHCHOP_J
     //#define STEALTHCHOP_K
