@@ -940,7 +940,7 @@
 #define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
 #define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
-//#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
+#define HOMING_BACKOFF_POST_MM { 5, 5, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 //#define XY_COUNTERPART_BACKOFF_MM 0         // (mm) Backoff X after homing Y, and vice-versa
 
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
@@ -3454,12 +3454,12 @@
   #if ANY(SENSORLESS_HOMING, SENSORLESS_PROBING)
     // TMC2209: 0...255. TMC2130: -64...63
     #if ANY(TAZPro, TAZProXT)
-      #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_UNIVERSAL_X_SERIES)
+      #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
         #define X_STALL_SENSITIVITY  3
-        #define Y_STALL_SENSITIVITY  5
+        #define Y_STALL_SENSITIVITY  4
       #else      
-        #define X_STALL_SENSITIVITY  5
-        #define Y_STALL_SENSITIVITY  5 
+        #define X_STALL_SENSITIVITY  4
+        #define Y_STALL_SENSITIVITY  4 
       #endif
     #elif ANY(MiniV2)
       #define X_STALL_SENSITIVITY  3

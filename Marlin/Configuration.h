@@ -2136,7 +2136,7 @@
   #elif ENABLED(Workhorse)
     #define PROBING_MARGIN -10
   #elif ANY(TAZPro, TAZProXT)
-    #define PROBING_MARGIN -9
+    #define PROBING_MARGIN -10
   #endif
 #endif
 
