@@ -46,7 +46,7 @@ void PrintStats::draw() {
   char str[30] = "";
   constexpr int8_t MRG = 30;
 
-  title.showCaption(GET_TEXT_F(MSG_INFO_STATS_MENU));
+  title.showCaption(GET_TEXT_F(MSG_INFO_PRINTER_STATS_MENU));
   DWINUI::clearMainArea();
   drawPopupBkgd();
   DWINUI::drawButton(BTN_Continue, 86, 250);

@@ -138,14 +138,19 @@ void AboutScreen::onRedraw(draw_mode_t) {
       "www.lulzbot.com"
   ), OPT_CENTER, font_xlarge);
 
-  cmd.font(font_medium).colors(action_btn).tag(1).button(BTN_POS(2,27), BTN_SIZE(2,3), F("Okay"));
+  cmd.font(font_medium).colors(action_btn).tag(1).button(BTN_POS(1,27), BTN_SIZE(2,3), GET_TEXT_F(MSG_INFO_STATS_MENU));
+
+  cmd.font(font_medium).colors(action_btn).tag(2).button(BTN_POS(3,27), BTN_SIZE(2,3), F("Okay"));
+
+  cmd.tag(3);
 }
 
 bool AboutScreen::onTouchEnd(uint8_t tag) {
   switch(tag) {
-    case 1: GOTO_PREVIOUS();            return true;
+    case 1: GOTO_SCREEN(StatisticsScreen);    break;
+    case 2: GOTO_PREVIOUS();            return true;
 #if ENABLED(DEVELOPER_SCREENS)
-    case 2: GOTO_SCREEN(DeveloperMenu); return true;
+    case 3: GOTO_SCREEN(DeveloperMenu); return true;
 #endif
     default:                            return false;
   }

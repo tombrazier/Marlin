@@ -3112,7 +3112,7 @@ void drawAdvancedSettingsMenu() {
       MENU_ITEM_F(ICON_esDiag, "End-stops diag.", onDrawSubMenu, drawEndStopDiag);
     #endif
     #if ENABLED(PRINTCOUNTER)
-      MENU_ITEM(ICON_PrintStats, MSG_INFO_STATS_MENU, onDrawSubMenu, gotoPrintStats);
+      MENU_ITEM(ICON_PrintStats, MSG_INFO_PRINTER_STATS_MENU, onDrawSubMenu, gotoPrintStats);
       MENU_ITEM(ICON_PrintStatsReset, MSG_INFO_PRINT_COUNT_RESET, onDrawSubMenu, printStatsReset);
     #endif
     #if HAS_LOCKSCREEN
