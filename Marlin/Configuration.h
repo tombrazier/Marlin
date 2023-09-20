@@ -92,7 +92,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.2"
+#define LULZBOT_FW_VERSION "2.1.3.0.3"
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -2217,6 +2217,7 @@
 #define Z_CLEARANCE_DEPLOY_PROBE    5 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
+#define Z_PROBE_TOLERANCE           4 // Farthest distance above the trigger-point without failed probe
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 #if defined(LULZBOT_BLTouch)
