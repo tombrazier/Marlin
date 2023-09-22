@@ -55,7 +55,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
       #endif
   ), OPT_CENTER, font_xxlarge);
 
-  //cmd.tag(2);
+  cmd.tag(3);
   draw_text_box(cmd, BTN_POS(1,7), BTN_SIZE(4,3), F(
         "Firmware:"
   ), OPT_CENTER, font_xlarge);
@@ -134,25 +134,19 @@ void AboutScreen::onRedraw(draw_mode_t) {
     "Marlin " SHORT_BUILD_VERSION ""
   ), OPT_CENTER, font_xlarge);
 
-  draw_text_box(cmd, BTN_POS(1,24), BTN_SIZE(4,2), F(
-      "www.lulzbot.com"
-  ), OPT_CENTER, font_xlarge);
 
-  cmd.font(font_medium).colors(action_btn).tag(1).button(BTN_POS(1,27), BTN_SIZE(2,3), GET_TEXT_F(MSG_INFO_STATS_MENU));
+  cmd.font(font_medium).colors(normal_btn).tag(1).button(BTN_POS(1,24), BTN_SIZE(4,3), GET_TEXT_F(MSG_INFO_PRINTER_STATS_MENU));
 
-  cmd.font(font_medium).colors(action_btn).tag(2).button(BTN_POS(3,27), BTN_SIZE(2,3), F("Okay"));
+  cmd.font(font_medium).colors(action_btn).tag(2).button(BTN_POS(1,27), BTN_SIZE(4,3), F("Okay"));
 
-  cmd.tag(3);
 }
 
 bool AboutScreen::onTouchEnd(uint8_t tag) {
   switch(tag) {
     case 1: GOTO_SCREEN(StatisticsScreen);    break;
     case 2: GOTO_PREVIOUS();            return true;
-#if ENABLED(DEVELOPER_SCREENS)
     case 3: GOTO_SCREEN(DeveloperMenu); return true;
-#endif
-    default:                            return false;
+    default:                           return false;
   }
 }
 
