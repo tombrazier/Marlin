@@ -1,8 +1,8 @@
 /*                       LulzBot 3D Printers
 *
-*        To Build firmware, make sure to uncomment the Tool Head 
-*           as well as any options that apply to the printer. 
-* 
+*        To Build firmware, make sure to uncomment the Tool Head
+*           as well as any options that apply to the printer.
+*
 */
 
 /************** Uncomment a Tool Head Option From Below *********************/
