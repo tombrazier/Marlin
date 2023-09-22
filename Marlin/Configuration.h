@@ -2125,7 +2125,7 @@
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #if defined (LULZBOT_BLTouch)
-  #define PROBING_MARGIN 20 
+  #define PROBING_MARGIN 20
 #else
   #if ENABLED(MiniV2)
     #define PROBING_MARGIN -4
@@ -2136,7 +2136,7 @@
   #elif ENABLED(Workhorse)
     #define PROBING_MARGIN -10
   #elif ANY(TAZPro, TAZProXT)
-    #define PROBING_MARGIN -10
+    #define PROBING_MARGIN -8
   #endif
 #endif
 
@@ -2447,7 +2447,7 @@
     #define X_BED_SIZE 281
     #define Y_BED_SIZE 283
     // Travel limits (mm) after homing, corresponding to endstop positions.
-    #define LULZBOT_X_MIN_POS -6// <-- changed
+    #define LULZBOT_X_MIN_POS -7// <-- changed
     #define LULZBOT_Y_MIN_POS -13 // <-- changed
     #define LULZBOT_X_MAX_POS 308 // <-- changed
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
@@ -4452,7 +4452,7 @@
   #error "Please select a Tool Head. See top of configuration.h for more information."
 #endif
 
-#if LULZBOT_EXTRUDERS == 2 && NONE(LULZBOT_Quiver_TAZPro, LULZBOT_Gladiator_TAZProXT)
+#if LULZBOT_EXTRUDERS == 2 && NONE(TAZPro, TAZProXT)
   #error "Tool Head Selected is not supported by Printer."
 #endif
 

@@ -1394,7 +1394,7 @@
     #define CALIBRATION_MEASURE_BACK
   #elif ENABLED(Workhorse)
     #define CALIBRATION_OBJECT_CENTER     { 266, -17.0,-2.0 } // mm True location is -22 in y but object size is accounting for location change
-    #define CALIBRATION_OBJECT_DIMENSIONS { 10.0, 4.0,  10.0 } // mm 
+    #define CALIBRATION_OBJECT_DIMENSIONS { 10.0, 4.0,  10.0 } // mm
 
     // Comment out any sides which are unreachable by the probe. For best
     // auto-calibration results, all sides must be reachable.
@@ -1404,7 +1404,7 @@
     #define CALIBRATION_MEASURE_BACK
   #elif ANY(TAZPro, TAZProXT)
     #if defined(TOOLHEAD_Quiver_DualExtruder)
-      #define CALIBRATION_OBJECT_CENTER     {261.5, -18, -2.0} //  mm
+      #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
     #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
@@ -1424,18 +1424,18 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
-  
+
     #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nT0\nM218 T1 X43 Y0 Z0\nG28\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
-     /* Status message */ 
-     /* Switch to first nozzle */ 
-     /* Restore default nozzle offset */ 
-     /* Auto-Home */ 
-     /* Wipe the Nozzles */ 
-     /* Status message */ 
-     /* Calibrate Nozzles */ 
-     /* Save settings */ 
      /* Status message */
-      
+     /* Switch to first nozzle */
+     /* Restore default nozzle offset */
+     /* Auto-Home */
+     /* Wipe the Nozzles */
+     /* Status message */
+     /* Calibrate Nozzles */
+     /* Save settings */
+     /* Status message */
+
   #endif
 
   //#define CALIBRATION_MEASURE_IMIN
