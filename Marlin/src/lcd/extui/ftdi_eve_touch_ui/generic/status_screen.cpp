@@ -104,20 +104,21 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 }
 
 #undef GRID_COLS
-#define GRID_COLS TERN(TOUCH_UI_PORTRAIT, 8, 12)
+#define GRID_COLS 6
 
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1 BTN_POS(1,1), BTN_SIZE(4,4)
-  #define TEMP_RECT_2 BTN_POS(1,1), BTN_SIZE(8,2)
-  #define NOZ_1_POS   BTN_POS(1,1), BTN_SIZE(4,2)
-  #define NOZ_2_POS   BTN_POS(5,1), BTN_SIZE(4,2)
-  #define BED_POS     BTN_POS(1,3), BTN_SIZE(4,2)
-  #define FAN_POS     BTN_POS(5,3), BTN_SIZE(4,2)
+  #define TEMP_RECT_1  BTN_POS(1,1), BTN_SIZE(3,4)
+  #define TEMP_RECT_E0 BTN_POS(1,1), BTN_SIZE(3,2)
+  #define TEMP_RECT_E1 BTN_POS(4,1), BTN_SIZE(3,2)
+  #define NOZ_1_POS    BTN_POS(1,1), BTN_SIZE(3,2)
+  #define NOZ_2_POS    BTN_POS(4,1), BTN_SIZE(3,2)
+  #define BED_POS      BTN_POS(1,3), BTN_SIZE(3,2)
+  #define FAN_POS      BTN_POS(4,3), BTN_SIZE(3,2)
 
-  #define _ICON_POS(x,y,w,h) x, y, w/4, h
-  #define _TEXT_POS(x,y,w,h) x + w/4, y, w - w/4, h
+  #define _ICON_POS(x,y,w,h) x, y, w/3, h
+  #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
   #define ICON_POS(pos) _ICON_POS(pos)
   #define TEXT_POS(pos) _TEXT_POS(pos)
 
@@ -125,9 +126,15 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
 
   if (what & BACKGROUND) {
     cmd.font(Theme::font_small)
+       
        .tag(5)
-       .fgcolor(temp)     .button(TEMP_RECT_1, F(""), OPT_FLAT)
-                          .button(TEMP_RECT_2, F(""), OPT_FLAT)
+       .fgcolor(temp).button(TEMP_RECT_1, F(""), OPT_FLAT)
+       .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
+       #if HAS_MULTI_EXTRUDER
+        .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
+       #else
+        .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
+       #endif 
        .fgcolor(fan_speed).button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
@@ -183,10 +190,16 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
 
     cmd.tag(5)
        .font(font_medium)
-       .text(TEXT_POS(NOZ_1_POS), e0_str)
-       .text(TEXT_POS(NOZ_2_POS), e1_str)
-       .text(TEXT_POS(BED_POS), bed_str)
-       .text(TEXT_POS(FAN_POS), fan_str);
+       .fgcolor(temp_button)
+       .button(TEXT_POS(NOZ_1_POS), e0_str)
+       .enabled(ENABLED(HAS_MULTI_HOTEND))
+       .button(TEXT_POS(NOZ_2_POS), e1_str);
+    cmd.tag(5)
+       .font(font_medium)
+       .fgcolor(temp_button)
+       .button(TEXT_POS(BED_POS), bed_str)
+       .fgcolor(fan_speed_button)
+       .button(TEXT_POS(FAN_POS), fan_str);
   }
 }
 

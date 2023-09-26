@@ -164,7 +164,9 @@ namespace Theme {
     constexpr uint32_t temp                 = hsl_to_rgb(343, 1.0, 0.23);
   #else
     constexpr uint32_t fan_speed            = hsl_to_rgb(204, 0.47, 0.41);
-    constexpr uint32_t temp                 = hsl_to_rgb(311, 0.51, 0.35);
+    constexpr uint32_t fan_speed_button     = hsl_to_rgb(204, 0.47, 0.41);
+    constexpr uint32_t temp                 = hsl_to_rgb(100, 0.70, 0.25);
+    constexpr uint32_t temp_button          = hsl_to_rgb(100, 1.00, 0.35);
   #endif
 
   constexpr uint32_t disabled_icon          = gray_color_1;
