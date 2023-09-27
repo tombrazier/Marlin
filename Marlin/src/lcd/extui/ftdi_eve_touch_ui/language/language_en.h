@@ -39,6 +39,7 @@ namespace Language_en {
   LSTR MSG_BUTTON_OKAY              = u8"Okay";
   LSTR MSG_BUTTON_MENU              = u8"Menu";
   LSTR MSG_BUTTON_MEDIA             = u8"Media";
+  LSTR MSG_BUTTON_USB               = u8"USB";
   LSTR MSG_BUTTON_OPEN              = u8"Open";
   LSTR MSG_CLEAN_NOZZLE             = u8"Clean Nozzle";
   LSTR MSG_VMAX_X                   = u8"Max X Speed";

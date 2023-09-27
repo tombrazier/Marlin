@@ -84,6 +84,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_Z_PROBE                        = _UxGT("Z Probe");
   LSTR MSG_HOMING                         = _UxGT("Homing");
   LSTR MSG_AUTO_HOME                      = _UxGT("Auto Home");
+  LSTR MSG_HOME_ALL                       = _UxGT("Home All");
   LSTR MSG_AUTO_HOME_A                    = _UxGT("Home @");
   LSTR MSG_AUTO_HOME_X                    = _UxGT("Home X");
   LSTR MSG_AUTO_HOME_Y                    = _UxGT("Home Y");

@@ -31,19 +31,24 @@
 using namespace FTDI;
 using namespace Theme;
 
-#define GRID_COLS 3
+#define GRID_COLS 6
 #define GRID_ROWS 16
 
 void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
-    #define Y_LBL_POS  BTN_POS(1,11), BTN_SIZE(1,2)
-    #define Z_LBL_POS  BTN_POS(1,13), BTN_SIZE(1,2)
-    #define X_VAL_POS  BTN_POS(2, 9), BTN_SIZE(2,2)
-    #define Y_VAL_POS  BTN_POS(2,11), BTN_SIZE(2,2)
-    #define Z_VAL_POS  BTN_POS(2,13), BTN_SIZE(2,2)
+    #define HOME_ALL_POS          BTN_POS(1, 9), BTN_SIZE(3,2)
+    #define DISABLE_STEPPERS_POS  BTN_POS(4, 9), BTN_SIZE(3,2)
+    #define X_LBL_POS             BTN_POS(1,11), BTN_SIZE(2,2)
+    #define Y_LBL_POS             BTN_POS(3,11), BTN_SIZE(2,2)
+    #define Z_LBL_POS             BTN_POS(5,11), BTN_SIZE(2,2)
+    #define X_VAL_POS             BTN_POS(1,13), BTN_SIZE(2,2)
+    #define Y_VAL_POS             BTN_POS(3,13), BTN_SIZE(2,2)
+    #define Z_VAL_POS             BTN_POS(5,13), BTN_SIZE(2,2)
+    #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
+    #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
+    #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
   #else
     #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
     #define Y_LBL_POS  BTN_POS(2, 9), BTN_SIZE(1,2)
@@ -57,21 +62,32 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
   if (what & BACKGROUND) {
-    cmd.tag(6)
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+       .tag(9).button(DISABLE_STEPPERS_POS, GET_TEXT_F(MSG_DISABLE_STEPPERS));
+    cmd.colors(text_x_axis_btn)
+       .cmd (BITMAP_SOURCE(Home_icon_Info))
+       .cmd (BITMAP_LAYOUT(Home_icon_Info))
+       .cmd (BITMAP_SIZE  (Home_icon_Info))
+       .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+       .colors(normal_btn)
+       .icon(Home_X_POS, Home_icon_Info, icon_scale);
+    cmd.colors(text_y_axis_btn)
+       .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+       .colors(normal_btn)
+       .icon(Home_Y_POS, Home_icon_Info, icon_scale);
+    cmd.colors(text_z_axis_btn)
+       .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
+       .colors(normal_btn)
+       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
+    cmd.colors(normal_btn)
        .fgcolor(Theme::axis_label)
-       .font(Theme::font_large)
-                               .button(UNION_POS(X_LBL_POS, X_VAL_POS), F(""), OPT_FLAT)
-                               .button(UNION_POS(Y_LBL_POS, Y_VAL_POS), F(""), OPT_FLAT)
-                               .button(UNION_POS(Z_LBL_POS, Z_VAL_POS), F(""), OPT_FLAT)
        .font(Theme::font_medium)
-       .fgcolor(Theme::x_axis) .button(X_VAL_POS, F(""), OPT_FLAT)
-       .fgcolor(Theme::y_axis) .button(Y_VAL_POS, F(""), OPT_FLAT)
-       .fgcolor(Theme::z_axis) .button(Z_VAL_POS, F(""), OPT_FLAT)
-       .font(Theme::font_small)
-                               .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-                               .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-                               .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-       .colors(normal_btn);
+       .tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
+       .tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
+       .tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
+       
   }
 
   if (what & FOREGROUND) {
@@ -116,6 +132,9 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   #define NOZ_2_POS    BTN_POS(4,1), BTN_SIZE(3,2)
   #define BED_POS      BTN_POS(1,3), BTN_SIZE(3,2)
   #define FAN_POS      BTN_POS(4,3), BTN_SIZE(3,2)
+  #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
+  #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
+  #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -160,6 +179,13 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .cmd (BITMAP_SIZE  (Fan_Icon_Info))
        .icon(ICON_POS(FAN_POS), Fan_Icon_Info, icon_scale);
 
+    /*cmd.cmd (BITMAP_SOURCE(Home_icon_Info))
+       .cmd (BITMAP_LAYOUT(Home_icon_Info))
+       .cmd (BITMAP_SIZE  (Home_icon_Info))
+       .icon(Home_X_POS, Home_icon_Info, icon_scale)
+       .icon(Home_Y_POS, Home_icon_Info, icon_scale)
+       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
+*/
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
   }
 
@@ -319,7 +345,7 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
        .font(Theme::font_medium)
        .colors(has_media ? action_btn : normal_btn)
        .enabled(has_media && !isPrinting())
-       .tag(3).button(MEDIA_BTN_POS, isPrinting() ? GET_TEXT_F(MSG_PRINTING) : GET_TEXT_F(MSG_BUTTON_MEDIA))
+       .tag(3).button(MEDIA_BTN_POS, isPrinting() ? GET_TEXT_F(MSG_PRINTING) : GET_TEXT_F(MSG_BUTTON_USB))
        .colors(!has_media ? action_btn : normal_btn)
        .tag(4).button(MENU_BTN_POS, GET_TEXT_F(MSG_BUTTON_MENU));
   }
@@ -393,6 +419,7 @@ void StatusScreen::loadBitmaps() {
   CLCD::mem_write_pgm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
   CLCD::mem_write_pgm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
   CLCD::mem_write_pgm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
+  CLCD::mem_write_pgm(base + Home_icon_Info.RAMG_offset,     Home_icon,     sizeof(Home_icon));
 
   // Load fonts for internationalization
   #if ENABLED(TOUCH_UI_USE_UTF8)
@@ -457,6 +484,11 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       }
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
+    case 8:  injectCommands(F("G28")); break;
+    case 9:  injectCommands(F("M18")); break;
+    case 10:  injectCommands(F("G28X")); break;
+    case 11:  injectCommands(F("G28Y")); break;
+    case 12:  injectCommands(F("G28Z")); break;
     default:
       return true;
   }

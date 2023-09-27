@@ -165,8 +165,8 @@ namespace Theme {
   #else
     constexpr uint32_t fan_speed            = hsl_to_rgb(204, 0.47, 0.41);
     constexpr uint32_t fan_speed_button     = hsl_to_rgb(204, 0.47, 0.41);
-    constexpr uint32_t temp                 = hsl_to_rgb(100, 0.70, 0.25);
-    constexpr uint32_t temp_button          = hsl_to_rgb(100, 1.00, 0.35);
+    constexpr uint32_t temp                 = hsl_to_rgb(accent_hue, accent_sat, 0.30);
+    constexpr uint32_t temp_button          = hsl_to_rgb(accent_hue, accent_sat, 0.39);
   #endif
 
   constexpr uint32_t disabled_icon          = gray_color_1;
@@ -187,6 +187,10 @@ namespace Theme {
   constexpr btn_colors red_btn              = {.bg = 0xFF5555,      .grad = 0xFFFFFF,    .fg = 0xFF0000,     .rgb = 0xFFFFFF };
   constexpr btn_colors ui_slider            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,   .rgb = accent_color_3 };
   constexpr btn_colors ui_toggle            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,   .rgb = 0xFFFFFF };
+  constexpr btn_colors text_x_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = x_axis };
+  constexpr btn_colors text_y_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = y_axis };
+  constexpr btn_colors text_z_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = z_axis };
+
 
   // Temperature color scale
 
