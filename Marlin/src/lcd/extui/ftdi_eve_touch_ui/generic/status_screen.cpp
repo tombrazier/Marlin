@@ -46,9 +46,9 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     #define X_VAL_POS             BTN_POS(1,13), BTN_SIZE(2,2)
     #define Y_VAL_POS             BTN_POS(3,13), BTN_SIZE(2,2)
     #define Z_VAL_POS             BTN_POS(5,13), BTN_SIZE(2,2)
-    #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
-    #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
-    #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
+    #define Home_X_POS            BTN_POS(1,11), BTN_SIZE(1,2)
+    #define Home_Y_POS            BTN_POS(3,11), BTN_SIZE(1,2)
+    #define Home_Z_POS            BTN_POS(5,11), BTN_SIZE(1,2)
   #else
     #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
     #define Y_LBL_POS  BTN_POS(2, 9), BTN_SIZE(1,2)
@@ -72,15 +72,15 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        .cmd (BITMAP_SIZE  (Home_icon_Info))
        .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
        .colors(normal_btn)
-       .icon(Home_X_POS, Home_icon_Info, icon_scale);
+       .icon(Home_X_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
     cmd.colors(text_y_axis_btn)
        .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
        .colors(normal_btn)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale);
+       .icon(Home_Y_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
     cmd.colors(text_z_axis_btn)
        .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
        .colors(normal_btn)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
+       .icon(Home_Z_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
     cmd.colors(normal_btn)
        .fgcolor(Theme::axis_label)
        .font(Theme::font_medium)
@@ -125,13 +125,13 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1  BTN_POS(1,1), BTN_SIZE(3,4)
-  #define TEMP_RECT_E0 BTN_POS(1,1), BTN_SIZE(3,2)
-  #define TEMP_RECT_E1 BTN_POS(4,1), BTN_SIZE(3,2)
-  #define NOZ_1_POS    BTN_POS(1,1), BTN_SIZE(3,2)
-  #define NOZ_2_POS    BTN_POS(4,1), BTN_SIZE(3,2)
-  #define BED_POS      BTN_POS(1,3), BTN_SIZE(3,2)
-  #define FAN_POS      BTN_POS(4,3), BTN_SIZE(3,2)
+  #define TEMP_RECT_1  BTN_POS(1,1),  BTN_SIZE(3,4)
+  #define TEMP_RECT_E0 BTN_POS(1,1),  BTN_SIZE(3,2)
+  #define TEMP_RECT_E1 BTN_POS(4,1),  BTN_SIZE(3,2)
+  #define NOZ_1_POS    BTN_POS(1,1),  BTN_SIZE(3,2)
+  #define NOZ_2_POS    BTN_POS(4,1),  BTN_SIZE(3,2)
+  #define BED_POS      BTN_POS(1,3),  BTN_SIZE(3,2)
+  #define FAN_POS      BTN_POS(4,3),  BTN_SIZE(3,2)
   #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
   #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
   #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
@@ -158,7 +158,6 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .tag(0);
 
     // Draw Extruder Bitmap on Extruder Temperature Button
-
     cmd.tag(5)
        .cmd (BITMAP_SOURCE(Extruder_Icon_Info))
        .cmd (BITMAP_LAYOUT(Extruder_Icon_Info))
@@ -173,19 +172,11 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .icon(ICON_POS(BED_POS), Bed_Heat_Icon_Info, icon_scale);
 
     // Draw Fan Percent Bitmap on Bed Heat Button
-
     cmd.cmd (BITMAP_SOURCE(Fan_Icon_Info))
        .cmd (BITMAP_LAYOUT(Fan_Icon_Info))
        .cmd (BITMAP_SIZE  (Fan_Icon_Info))
        .icon(ICON_POS(FAN_POS), Fan_Icon_Info, icon_scale);
 
-    /*cmd.cmd (BITMAP_SOURCE(Home_icon_Info))
-       .cmd (BITMAP_LAYOUT(Home_icon_Info))
-       .cmd (BITMAP_SIZE  (Home_icon_Info))
-       .icon(Home_X_POS, Home_icon_Info, icon_scale)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
-*/
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
   }
 
@@ -239,6 +230,9 @@ void StatusScreen::_format_time(char *outstr, uint32_t time) {
     sprintf_P(outstr, PSTR("%02d:%02ds"), min, sec);
 }
 
+//constexpr static ConfirmStartPrintDialogBoxData &mydata = screen_data.ConfirmStartPrintDialogBox;
+
+
 void StatusScreen::draw_progress(draw_mode_t what) {
   using namespace ExtUI;
   using namespace Theme;
@@ -246,9 +240,24 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   CommandProcessor cmd;
 
   #undef GRID_COLS
+  #define GRID_COLS 3
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define GRID_COLS 3
-    #define PROGRESSZONE_POS BTN_POS(1,5), BTN_SIZE(3,2)
+  #define PROGRESSZONE_POS BTN_POS(1,5), BTN_SIZE(3,2)
+/*
+  if (what & BACKGROUND) {
+    FileList files;
+    files.seek(mydata.file_index, true);
+    *filename = files.filename();
+
+    char buffer[strlen(filename)];
+    sprintf_P(buffer, filename);
+    cmd.tag(0).font(font_medium)
+      .fgcolor(progress).button(PROGRESSZONE_POS, buffer, OPT_FLAT);
+  }
+
+}
+*/
+    
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
     #define REMAINING_POS_X  BTN_X(2)
@@ -500,12 +509,12 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
 
 void StatusScreen::onMediaInserted() {
   if (AT_SCREEN(StatusScreen))
-    setStatusMessage(GET_TEXT_F(MSG_MEDIA_INSERTED));
+    setStatusMessage(GET_TEXT_F(MSG_USB_INSERTED));
 }
 
 void StatusScreen::onMediaRemoved() {
   if (AT_SCREEN(StatusScreen) || ExtUI::isPrintingFromMedia())
-    setStatusMessage(GET_TEXT_F(MSG_MEDIA_REMOVED));
+    setStatusMessage(GET_TEXT_F(MSG_USB_REMOVED));
 }
 
 #endif // FTDI_STATUS_SCREEN

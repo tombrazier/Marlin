@@ -43,6 +43,7 @@
 #undef en
 
 #define MEDIA_TYPE_EN "Media"
+#define USB_TYPE_EN "USB"
 
 #ifndef PREHEAT_1_LABEL
   #define PREHEAT_1_LABEL ""
@@ -70,6 +71,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_MEDIA_USB_FAILED               = _UxGT("USB start failed");
   LSTR MSG_MEDIA_SORT                     = _UxGT("Sort ") MEDIA_TYPE_EN;
   LSTR MSG_MEDIA_UPDATE                   = MEDIA_TYPE_EN _UxGT(" Update");
+  LSTR MSG_USB_INSERTED                   = USB_TYPE_EN _UxGT(" Inserted");
+  LSTR MSG_USB_REMOVED                    = USB_TYPE_EN _UxGT(" Removed");
   LSTR MSG_KILL_SUBCALL_OVERFLOW          = _UxGT("Subcall Overflow");
   LSTR MSG_LCD_ENDSTOPS                   = _UxGT("Endstops"); // Max length 8 characters
   LSTR MSG_LCD_SOFT_ENDSTOPS              = _UxGT("Soft Endstops");
