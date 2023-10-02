@@ -40,7 +40,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define HOME_ALL_POS          BTN_POS(1,5), BTN_SIZE(3,2)
-    #define TOOL_HEAD_POS  BTN_POS(4,5), BTN_SIZE(3,2)
+    #define TOOL_HEAD_POS         BTN_POS(4,5), BTN_SIZE(3,2)
     #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(2,2)
     #define Y_LBL_POS             BTN_POS(3,7), BTN_SIZE(2,2)
     #define Z_LBL_POS             BTN_POS(5,7), BTN_SIZE(2,2)
@@ -77,26 +77,29 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     }
 
     cmd.colors(text_x_axis_btn)
-       .cmd (BITMAP_SOURCE(Home_icon_Info))
-       .cmd (BITMAP_LAYOUT(Home_icon_Info))
-       .cmd (BITMAP_SIZE  (Home_icon_Info))
-       .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-       .colors(normal_btn)
-       .icon(Home_X_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+       .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
     cmd.colors(text_y_axis_btn)
-       .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-       .colors(normal_btn)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+       .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
     cmd.colors(text_z_axis_btn)
-       .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-       .colors(normal_btn)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+       .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
     cmd.colors(normal_btn)
        .fgcolor(Theme::axis_label)
        .font(Theme::font_medium)
        .tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
        .tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
        .tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
+    if (!ExtUI::isPrinting()) {
+      cmd.colors(normal_btn)
+         .cmd (BITMAP_SOURCE(Home_icon_Info))
+         .cmd (BITMAP_LAYOUT(Home_icon_Info))
+         .cmd (BITMAP_SIZE  (Home_icon_Info))
+         .icon(Home_X_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+      cmd.colors(normal_btn)
+         .icon(Home_Y_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+      cmd.colors(normal_btn)
+         .icon(Home_Z_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+    }
+
        
   }
 
@@ -260,7 +263,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define REMAINING_POS_W  BTN_W(1)
     #define PROGRESS_POS_X   BTN_X(3)
     #define PROGRESS_POS_W   BTN_W(1)
-    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(5)
+    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(11)
     #define PROGRESSBAR_POS  BTN_POS(1,12), BTN_SIZE(3,1)
   #else
     #define GRID_COLS 6
@@ -496,10 +499,12 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  injectCommands(F("G28")); break;
-    case 9:  GOTO_SCREEN(CustomUserMenus);                             break;
+    case 9:  GOTO_SCREEN(CustomUserMenus); break;
+    if (!ExtUI::isPrinting()) {
     case 10: injectCommands(F("G28X")); break;
     case 11: injectCommands(F("G28Y")); break;
     case 12: injectCommands(F("G28Z")); break;
+    }
     case 13: GOTO_SCREEN(ChangeFilamentScreen);  break;
     default:
       return true;
