@@ -5,6 +5,7 @@
 /****************************************************************************
  *   Written By Mark Pelletier  2017 - Aleph Objects, Inc.                  *
  *   Written By Marcio Teixeira 2018 - Aleph Objects, Inc.                  *
+ *   Written By Brian Kahl      2023 - FAME3D.                              *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -38,17 +39,17 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define HOME_ALL_POS          BTN_POS(1, 9), BTN_SIZE(3,2)
-    #define DISABLE_STEPPERS_POS  BTN_POS(4, 9), BTN_SIZE(3,2)
-    #define X_LBL_POS             BTN_POS(1,11), BTN_SIZE(2,2)
-    #define Y_LBL_POS             BTN_POS(3,11), BTN_SIZE(2,2)
-    #define Z_LBL_POS             BTN_POS(5,11), BTN_SIZE(2,2)
-    #define X_VAL_POS             BTN_POS(1,13), BTN_SIZE(2,2)
-    #define Y_VAL_POS             BTN_POS(3,13), BTN_SIZE(2,2)
-    #define Z_VAL_POS             BTN_POS(5,13), BTN_SIZE(2,2)
-    #define Home_X_POS            BTN_POS(1,11), BTN_SIZE(1,2)
-    #define Home_Y_POS            BTN_POS(3,11), BTN_SIZE(1,2)
-    #define Home_Z_POS            BTN_POS(5,11), BTN_SIZE(1,2)
+    #define HOME_ALL_POS          BTN_POS(1,5), BTN_SIZE(3,2)
+    #define TOOL_HEAD_POS  BTN_POS(4,5), BTN_SIZE(3,2)
+    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(2,2)
+    #define Y_LBL_POS             BTN_POS(3,7), BTN_SIZE(2,2)
+    #define Z_LBL_POS             BTN_POS(5,7), BTN_SIZE(2,2)
+    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(2,2)
+    #define Y_VAL_POS             BTN_POS(3,9), BTN_SIZE(2,2)
+    #define Z_VAL_POS             BTN_POS(5,9), BTN_SIZE(2,2)
+    #define Home_X_POS            BTN_POS(1,7), BTN_SIZE(1,2)
+    #define Home_Y_POS            BTN_POS(3,7), BTN_SIZE(1,2)
+    #define Home_Z_POS            BTN_POS(5,7), BTN_SIZE(1,2)
   #else
     #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
     #define Y_LBL_POS  BTN_POS(2, 9), BTN_SIZE(1,2)
@@ -62,10 +63,19 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
   if (what & BACKGROUND) {
-    cmd.colors(normal_btn)
-       .font(font_medium)
-       .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-       .tag(9).button(DISABLE_STEPPERS_POS, GET_TEXT_F(MSG_DISABLE_STEPPERS));
+    if (!ExtUI::isPrinting()) {
+      cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE)); 
+    }
+    else{
+      cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(6).button(HOME_ALL_POS, GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
+        .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_PRINT_SPEED));
+    }
+
     cmd.colors(text_x_axis_btn)
        .cmd (BITMAP_SOURCE(Home_icon_Info))
        .cmd (BITMAP_LAYOUT(Home_icon_Info))
@@ -132,9 +142,9 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   #define NOZ_2_POS    BTN_POS(4,1),  BTN_SIZE(3,2)
   #define BED_POS      BTN_POS(1,3),  BTN_SIZE(3,2)
   #define FAN_POS      BTN_POS(4,3),  BTN_SIZE(3,2)
-  #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
-  #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
-  #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
+  #define Home_X_POS   BTN_POS(1,7), BTN_SIZE(1,2)
+  #define Home_Y_POS   BTN_POS(3,7), BTN_SIZE(1,2)
+  #define Home_Z_POS   BTN_POS(5,7), BTN_SIZE(1,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -242,21 +252,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   #undef GRID_COLS
   #define GRID_COLS 3
   #if ENABLED(TOUCH_UI_PORTRAIT)
-  #define PROGRESSZONE_POS BTN_POS(1,5), BTN_SIZE(3,2)
-/*
-  if (what & BACKGROUND) {
-    FileList files;
-    files.seek(mydata.file_index, true);
-    *filename = files.filename();
-
-    char buffer[strlen(filename)];
-    sprintf_P(buffer, filename);
-    cmd.tag(0).font(font_medium)
-      .fgcolor(progress).button(PROGRESSZONE_POS, buffer, OPT_FLAT);
-  }
-
-}
-*/
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
     
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
@@ -265,7 +261,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESS_POS_X   BTN_X(3)
     #define PROGRESS_POS_W   BTN_W(1)
     #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(5)
-    #define PROGRESSBAR_POS  BTN_POS(1,6), BTN_SIZE(3,1)
+    #define PROGRESSBAR_POS  BTN_POS(1,12), BTN_SIZE(3,1)
   #else
     #define GRID_COLS 6
     #define PROGRESSZONE_POS BTN_POS(5,1), BTN_SIZE(2,4)
@@ -278,58 +274,64 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESS_POS     BTN_POS(5,3), BTN_SIZE(2,2)
     #define PROGRESSBAR_POS  BTN_POS(5,2), BTN_SIZE(2,2)
   #endif
-
-  if (what & BACKGROUND) {
-    cmd.tag(0).font(font_medium)
-       .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
-  }
-
-  if (what & FOREGROUND) {
-    const uint32_t elapsed = getProgress_seconds_elapsed();
-    char elapsed_str[10];
-    _format_time(elapsed_str, elapsed);
-
-    #if ENABLED(SHOW_REMAINING_TIME)
-      const uint32_t remaining = getProgress_seconds_remaining();
-      char remaining_str[10];
-      _format_time(remaining_str, remaining);
-    #endif
-
-    const uint16_t current_progress = TERN(HAS_PRINT_PROGRESS_PERMYRIAD, getProgress_permyriad(), getProgress_percent() * 100);
-    constexpr uint16_t progress_range = 10000U;
-
-    const bool show_progress_bar = current_progress > 0 && current_progress < progress_range + 1;
-    if (show_progress_bar) {
+  if (ExtUI::isPrinting()) {
+    if (what & BACKGROUND) {
       cmd.tag(0).font(font_medium)
-        .bgcolor(progress)
-        .progress(PROGRESSBAR_POS, current_progress, progress_range, OPT_FLAT);
+        .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
     }
 
-    char progress_str[10];
-    sprintf_P(progress_str,
-      #if ENABLED(PRINT_PROGRESS_SHOW_DECIMALS)
-        PSTR("%3d.%02d%%"), uint8_t(current_progress / 100), current_progress % 100
-      #else
-        PSTR("%3d%%"), uint8_t(current_progress / 100)
-      #endif
-    );
+    if (what & FOREGROUND) {
+      const uint32_t elapsed = getProgress_seconds_elapsed();
+      char elapsed_str[10];
+      _format_time(elapsed_str, elapsed);
 
-    #if ENABLED(TOUCH_UI_PORTRAIT)
-      const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(1)) : (BTN_H(2));
-      cmd.font(font_medium)
-         .tag(7).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
-         #if ENABLED(SHOW_REMAINING_TIME)
-           .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
-         #endif
-         .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
-    #else
-      cmd.font(font_medium)
-         .tag(7).text(TIME_POS, elapsed_str)
-         #if ENABLED(SHOW_REMAINING_TIME)
-           .text(REMAINING_POS, remaining_str)
-         #endif
-         .text(PROGRESS_POS, progress_str);
-    #endif
+      #if ENABLED(SHOW_REMAINING_TIME)
+        const uint32_t remaining = getProgress_seconds_remaining();
+        char remaining_str[10];
+        _format_time(remaining_str, remaining);
+      #endif
+
+      const uint16_t current_progress = TERN(HAS_PRINT_PROGRESS_PERMYRIAD, getProgress_permyriad(), getProgress_percent() * 100);
+      constexpr uint16_t progress_range = 10000U;
+
+      const bool show_progress_bar = current_progress > 0 && current_progress < progress_range + 1;
+      if (show_progress_bar) {
+        cmd.tag(0).font(font_medium)
+          .bgcolor(progress)
+          .progress(PROGRESSBAR_POS, current_progress, progress_range, OPT_FLAT);
+      }
+
+      char progress_str[10];
+      sprintf_P(progress_str,
+        #if ENABLED(PRINT_PROGRESS_SHOW_DECIMALS)
+          PSTR("%3d.%02d%%"), uint8_t(current_progress / 100), current_progress % 100
+        #else
+          PSTR("%3d%%"), uint8_t(current_progress / 100)
+        #endif
+      );
+
+      #if ENABLED(TOUCH_UI_PORTRAIT)
+        const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(1)) : (BTN_H(2));
+        cmd.font(font_medium)
+          .tag(7).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
+          #if ENABLED(SHOW_REMAINING_TIME)
+            .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
+          #endif
+          .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
+      #else
+        cmd.font(font_medium)
+          .tag(7).text(TIME_POS, elapsed_str)
+          #if ENABLED(SHOW_REMAINING_TIME)
+            .text(REMAINING_POS, remaining_str)
+          #endif
+          .text(PROGRESS_POS, progress_str);
+      #endif
+    }
+  }
+  else {
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(13).button(PROGRESSZONE_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE));
   }
 }
 
@@ -365,7 +367,7 @@ void StatusScreen::draw_status_message(draw_mode_t what, const char *message) {
   #define GRID_COLS 1
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define STATUS_POS  BTN_POS(1,7), BTN_SIZE(1,2)
+    #define STATUS_POS  BTN_POS(1,13), BTN_SIZE(1,2)
   #else
     #define STATUS_POS  BTN_POS(1,5), BTN_SIZE(1,4)
   #endif
@@ -494,10 +496,11 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  injectCommands(F("G28")); break;
-    case 9:  injectCommands(F("M18")); break;
-    case 10:  injectCommands(F("G28X")); break;
-    case 11:  injectCommands(F("G28Y")); break;
-    case 12:  injectCommands(F("G28Z")); break;
+    case 9:  GOTO_SCREEN(CustomUserMenus);                             break;
+    case 10: injectCommands(F("G28X")); break;
+    case 11: injectCommands(F("G28Y")); break;
+    case 12: injectCommands(F("G28Z")); break;
+    case 13: GOTO_SCREEN(ChangeFilamentScreen);  break;
     default:
       return true;
   }
