@@ -2217,7 +2217,7 @@
 #define Z_CLEARANCE_DEPLOY_PROBE    5 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-#define Z_PROBE_TOLERANCE           4 // Farthest distance above the trigger-point without failed probe
+#define Z_PROBE_TOLERANCE           6 // Farthest distance above the trigger-point without failed probe
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 #if defined(LULZBOT_BLTouch)
@@ -2482,7 +2482,7 @@
     #define LULZBOT_X_MAX_POS 313
     #define LULZBOT_Y_MAX_POS 318
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 297
+    #define LULZBOT_Z_MAX_POS 299
   #endif
 #elif ENABLED(TAZProXT)
     #if defined(TOOLHEAD_Quiver_DualExtruder)
@@ -3277,14 +3277,14 @@
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
-    #define NOZZLE_CLEAN_START_POINT { 300, 95, 1 }
-    #define NOZZLE_CLEAN_END_POINT   { 300, 25, 1 }
+    #define NOZZLE_CLEAN_START_POINT { 300, 95, 0 }
+    #define NOZZLE_CLEAN_END_POINT   { 300, 25, 0 }
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
-    #define NOZZLE_CLEAN_START_POINT {{ -17, 95, 1 }, { 297, 95, 1 }}
-    #define NOZZLE_CLEAN_END_POINT   {{ -17, 25, 1 }, { 297, 25, 1 }}
+    #define NOZZLE_CLEAN_START_POINT {{ -17, 95, 0 }, { 297, 95, 0 }}
+    #define NOZZLE_CLEAN_END_POINT   {{ -17, 25, 0 }, { 297, 25, 0 }}
   #else
-    #define NOZZLE_CLEAN_START_POINT {  -17, 95, 1 }
-    #define NOZZLE_CLEAN_END_POINT   { -17, 25, 1 }
+    #define NOZZLE_CLEAN_START_POINT { -17, 95, 0 }
+    #define NOZZLE_CLEAN_END_POINT   { -17, 25, 0 }
   #endif
 
   #if ENABLED(NOZZLE_CLEAN_PATTERN_CIRCLE)
@@ -3314,7 +3314,7 @@
   #elif ENABLED(Workhorse)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
-    #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
+    #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z-1 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285) 
     #define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nT0\nG1 Z-1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
   #endif
