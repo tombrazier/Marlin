@@ -86,7 +86,7 @@ void TuneMenu::onRedraw(draw_mode_t what) {
        .tag(sdOrHostPaused ? 7 : 6)
        .button(PAUSE_POS, sdOrHostPaused ? GET_TEXT_F(MSG_RESUME_PRINT) : GET_TEXT_F(MSG_PAUSE_PRINT))
        .enabled(sdOrHostPrinting)
-       .tag(8).button(STOP_POS, GET_TEXT_F(MSG_STOP_PRINT))
+       .tag(8).button(STOP_POS, GET_TEXT_F(MSG_CANCEL_PRINT))
        .tag(10).button(FLOW_POS, GET_TEXT_F(MSG_FLOW))
        .tag(11).button(ADVANCED_SETTINGS_POS, GET_TEXT_F(MSG_ADVANCED_SETTINGS))
        .tag(1).colors(action_btn)
