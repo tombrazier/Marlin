@@ -4049,7 +4049,7 @@
  * Up to 25 may be defined, but the actual number is LCD-dependent.
  */
 #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
-  #define CUSTOM_MENU_MAIN
+  //#define CUSTOM_MENU_MAIN
 #endif
  #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
 #if ENABLED(CUSTOM_MENU_MAIN)
