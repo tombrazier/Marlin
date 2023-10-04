@@ -72,10 +72,6 @@ void menu_motion();
 void menu_temperature();
 void menu_configuration();
 
-#if ENABLED(CUSTOM_MENU_MAIN)
-  void menu_user();
-#endif
-
 #if HAS_POWER_MONITOR
   void menu_power_monitor();
 #endif
@@ -112,6 +108,123 @@ void menu_configuration();
   void menu_language();
 #endif
 
+#if ENABLED(CUSTOM_MENU_MAIN)
+
+  void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
+    queue.inject(fstr);
+    TERN_(CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK, ui.completion_feedback());
+    TERN_(CUSTOM_MENU_MAIN_SCRIPT_RETURN, ui.return_to_status());
+  }
+
+  void custom_menus_main() {
+    START_MENU();
+    BACK_ITEM(MSG_MAIN_MENU);
+
+    #define HAS_CUSTOM_ITEM_MAIN(N) (defined(MAIN_MENU_ITEM_##N##_DESC) && defined(MAIN_MENU_ITEM_##N##_GCODE))
+
+    #ifdef CUSTOM_MENU_MAIN_SCRIPT_DONE
+      #define _DONE_SCRIPT "\n" CUSTOM_MENU_MAIN_SCRIPT_DONE
+    #else
+      #define _DONE_SCRIPT ""
+    #endif
+    #define GCODE_LAMBDA_MAIN(N) []{ _lcd_custom_menu_main_gcode(F(MAIN_MENU_ITEM_##N##_GCODE _DONE_SCRIPT)); }
+    #define _CUSTOM_ITEM_MAIN(N) ACTION_ITEM_F(F(MAIN_MENU_ITEM_##N##_DESC), GCODE_LAMBDA_MAIN(N));
+    #define _CUSTOM_ITEM_MAIN_CONFIRM(N)          \
+      SUBMENU_F(F(MAIN_MENU_ITEM_##N##_DESC), []{ \
+          MenuItem_confirm::confirm_screen(       \
+            GCODE_LAMBDA_MAIN(N), nullptr,        \
+            F(MAIN_MENU_ITEM_##N##_DESC "?")      \
+          );                                      \
+        })
+
+    #define CUSTOM_ITEM_MAIN(N) do{ \
+      constexpr char c = MAIN_MENU_ITEM_##N##_GCODE[strlen(MAIN_MENU_ITEM_##N##_GCODE) - 1]; \
+      static_assert(c != '\n' && c != '\r', "MAIN_MENU_ITEM_" STRINGIFY(N) "_GCODE cannot have a newline at the end. Please remove it."); \
+      if (ENABLED(MAIN_MENU_ITEM_##N##_CONFIRM)) \
+        _CUSTOM_ITEM_MAIN_CONFIRM(N); \
+      else \
+        _CUSTOM_ITEM_MAIN(N); \
+    }while(0)
+
+    #if HAS_CUSTOM_ITEM_MAIN(1)
+      CUSTOM_ITEM_MAIN(1);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(2)
+      CUSTOM_ITEM_MAIN(2);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(3)
+      CUSTOM_ITEM_MAIN(3);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(4)
+      CUSTOM_ITEM_MAIN(4);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(5)
+      CUSTOM_ITEM_MAIN(5);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(6)
+      CUSTOM_ITEM_MAIN(6);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(7)
+      CUSTOM_ITEM_MAIN(7);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(8)
+      CUSTOM_ITEM_MAIN(8);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(9)
+      CUSTOM_ITEM_MAIN(9);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(10)
+      CUSTOM_ITEM_MAIN(10);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(11)
+      CUSTOM_ITEM_MAIN(11);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(12)
+      CUSTOM_ITEM_MAIN(12);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(13)
+      CUSTOM_ITEM_MAIN(13);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(14)
+      CUSTOM_ITEM_MAIN(14);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(15)
+      CUSTOM_ITEM_MAIN(15);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(16)
+      CUSTOM_ITEM_MAIN(16);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(17)
+      CUSTOM_ITEM_MAIN(17);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(18)
+      CUSTOM_ITEM_MAIN(18);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(19)
+      CUSTOM_ITEM_MAIN(19);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(20)
+      CUSTOM_ITEM_MAIN(20);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(21)
+      CUSTOM_ITEM_MAIN(21);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(22)
+      CUSTOM_ITEM_MAIN(22);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(23)
+      CUSTOM_ITEM_MAIN(23);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(24)
+      CUSTOM_ITEM_MAIN(24);
+    #endif
+    #if HAS_CUSTOM_ITEM_MAIN(25)
+      CUSTOM_ITEM_MAIN(25);
+    #endif
+    END_MENU();
+  }
+
+#endif // CUSTOM_MENU_MAIN
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   // This menu item is last with an encoder. Otherwise, somewhere in the middle.
@@ -244,10 +357,6 @@ void menu_main() {
   #endif
 
   SUBMENU(MSG_CONFIGURATION, menu_configuration);
-
-  #if ENABLED(CUSTOM_MENU_MAIN)
-    MENU_ITEM(submenu, MSG_CUSTOM_MENU_MAIN_TITLE, menu_user);
-  #endif
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE) && DISABLED(DISABLE_ENCODER)
     FILAMENT_CHANGE_ITEM();
