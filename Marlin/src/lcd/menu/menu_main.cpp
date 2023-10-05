@@ -358,6 +358,10 @@ void menu_main() {
 
   SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
+  #if ENABLED(CUSTOM_MENU_MAIN)
+    SUBMENU(MSG_CUSTOM_MENU_MAIN_TITLE, custom_menus_main);
+  #endif
+
   #if ENABLED(ADVANCED_PAUSE_FEATURE) && DISABLED(DISABLE_ENCODER)
     FILAMENT_CHANGE_ITEM();
   #endif

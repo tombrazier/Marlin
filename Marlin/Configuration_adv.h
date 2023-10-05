@@ -2482,7 +2482,7 @@
   #elif ENABLED(Workhorse)
     #define G29_RECOVER_COMMANDS "M104 S170\nG28 Z0\nG28\nG12\nM109 R160\nM400\nM117 Probing bed"
   #elif ANY(TAZProXT, TAZPro)
-    #define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nG0 Z5 F6000\nG0 X150 F9999\nG28 Z0\nG28\nG12\nM109 R160\nM400\nM117 Probing bed"
+    #define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nG0 Z5 F6000\nG0 X150 F9999\nG28 Z0\nG28\n" WIPE_SEQUENCE_COMMANDS "\nM109 R160\nM400\nM117 Probing bed"  //only wipe nozzle 1
   #endif
   #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nG0 E0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nG4 S1"
 #endif
@@ -4051,7 +4051,7 @@
 #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
   #define CUSTOM_MENU_MAIN
 #endif
- #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
+ #define CUSTOM_MENU_MAIN_TITLE "Tool Heads (TH)"
 #if ENABLED(CUSTOM_MENU_MAIN)
 
   //#define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 Toolhead Changed"
@@ -4073,7 +4073,7 @@
   #endif
 
 
-  #define MAIN_MENU_ITEM_1_DESC "Park for Tool Head Swap"
+  #define MAIN_MENU_ITEM_1_DESC "Park for TH Swap"
   #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"
 
   #if defined(TOOLHEAD_Galaxy_Series)
@@ -4083,13 +4083,13 @@
     #define MAIN_MENU_ITEM_3_DESC "MET285|NKL-PL BRASS"
     #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\n" E_CURRENT_LGX285 "\nM900 K0\nM500\nM117 MET-2.85|0.50mm|NKL-PL BRASS"
 
-    #if NONE(Mini2, Sidekick_289) // Mini2 and 289 do not have the power to supply 100w to the tool head
+    #if NONE(MiniV2, Sidekick_289) // Mini2 and 289 do not have the power to supply 100w to the tool head
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
       #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\n" E_CURRENT_LGX285 "\nM900 K0.05\nM500\nM117 AST-2.85|0.50mm|GM STEEL"
     #endif
 
   #elif defined(TOOLHEAD_Legacy_Universal)
-    #if ANY(Mini2, Workhorse, TAZPro, TAZProXT)
+    #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT)
       #define MAIN_MENU_ITEM_2_DESC "M175v2|0.50mm|CRB CU"
       #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM301P" charM175_DEFAULT_Kp "I" charM175_DEFAULT_Ki "D" charM175_DEFAULT_Kd "\n" E_CURRENT_BMG "\nM500\nM117 M175v2|0.50mm|CRB CU"
 
