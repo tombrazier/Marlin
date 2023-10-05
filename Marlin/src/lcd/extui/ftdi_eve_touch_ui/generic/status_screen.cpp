@@ -67,7 +67,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
       cmd.colors(normal_btn)
         .font(font_medium)
         .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-          .enabled(ENABLED(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+          .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
         .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     }
     else{
