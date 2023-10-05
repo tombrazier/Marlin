@@ -52,7 +52,11 @@ void GcodeSuite::G12() {
 
   #ifdef WIPE_SEQUENCE_COMMANDS
     if (!parser.seen_any()) {
-      process_subcommands_now(F(WIPE_SEQUENCE_COMMANDS));
+      #if (HOTENDS == 1)
+        process_subcommands_now(F(WIPE_SEQUENCE_COMMANDS));
+      #else
+        process_subcommands_now(F(WIPE_SEQUENCE_COMMANDS"\n"WIPE_SEQUENCE_2_COMMANDS));
+      #endif
       return;
     }
   #endif

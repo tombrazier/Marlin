@@ -67,7 +67,8 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
       cmd.colors(normal_btn)
         .font(font_medium)
         .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE)); 
+          .enabled(ENABLED(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     }
     else{
       cmd.colors(normal_btn)
@@ -100,7 +101,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
          .icon(Home_Z_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
     }
 
-       
+
   }
 
   if (what & FOREGROUND) {
@@ -158,7 +159,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
 
   if (what & BACKGROUND) {
     cmd.font(Theme::font_small)
-       
+
        .tag(5)
        .fgcolor(temp).button(TEMP_RECT_1, F(""), OPT_FLAT)
        .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
@@ -166,7 +167,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
         .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #else
         .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
-       #endif 
+       #endif
        .fgcolor(fan_speed).button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
@@ -256,7 +257,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   #define GRID_COLS 3
   #if ENABLED(TOUCH_UI_PORTRAIT)
   #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
-    
+
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
     #define REMAINING_POS_X  BTN_X(2)
@@ -499,7 +500,9 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  injectCommands(F("G28")); break;
-    case 9:  GOTO_SCREEN(CustomUserMenus); break;
+    #if ENABLED (TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+      case 9:  GOTO_SCREEN(CustomUserMenus); break;
+    #endif
     if (!ExtUI::isPrinting()) {
     case 10: injectCommands(F("G28X")); break;
     case 11: injectCommands(F("G28Y")); break;
