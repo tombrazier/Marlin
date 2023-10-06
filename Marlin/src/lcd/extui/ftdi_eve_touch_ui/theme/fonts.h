@@ -42,6 +42,7 @@ namespace Theme {
       constexpr int16_t  font_xxlarge  = 32;
     #endif
     constexpr float      icon_scale    = 1.0;
+    constexpr float      icon_scale_lg = 2.0;
   #elif defined(TOUCH_UI_480x272)
     #if ENABLED(TOUCH_UI_PORTRAIT)
     constexpr int16_t  font_tiny     = 26;

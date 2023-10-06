@@ -32,24 +32,23 @@
 using namespace FTDI;
 using namespace Theme;
 
-#define GRID_COLS 6
+#define GRID_COLS 9
 #define GRID_ROWS 16
 
 void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define HOME_ALL_POS          BTN_POS(1,5), BTN_SIZE(3,2)
-    #define TOOL_HEAD_POS         BTN_POS(4,5), BTN_SIZE(3,2)
-    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(2,2)
-    #define Y_LBL_POS             BTN_POS(3,7), BTN_SIZE(2,2)
-    #define Z_LBL_POS             BTN_POS(5,7), BTN_SIZE(2,2)
-    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(2,2)
-    #define Y_VAL_POS             BTN_POS(3,9), BTN_SIZE(2,2)
-    #define Z_VAL_POS             BTN_POS(5,9), BTN_SIZE(2,2)
-    #define Home_X_POS            BTN_POS(1,7), BTN_SIZE(1,2)
-    #define Home_Y_POS            BTN_POS(3,7), BTN_SIZE(1,2)
-    #define Home_Z_POS            BTN_POS(5,7), BTN_SIZE(1,2)
+    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(3,2)
+    #define Y_LBL_POS             BTN_POS(4,7), BTN_SIZE(3,2)
+    #define Z_LBL_POS             BTN_POS(7,7), BTN_SIZE(3,2)
+    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(3,2)
+    #define Y_VAL_POS             BTN_POS(4,9), BTN_SIZE(3,2)
+    #define Z_VAL_POS             BTN_POS(7,9), BTN_SIZE(3,2)
+    #define ALL_VAL_POS           BTN_POS(1,9), BTN_SIZE(9,2)
+    #define Home_X_POS            BTN_POS(2,7), BTN_SIZE(1,2)
+    #define Home_Y_POS            BTN_POS(5,7), BTN_SIZE(1,2)
+    #define Home_Z_POS            BTN_POS(8,7), BTN_SIZE(1,2)
   #else
     #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
     #define Y_LBL_POS  BTN_POS(2, 9), BTN_SIZE(1,2)
@@ -63,21 +62,9 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
   if (what & BACKGROUND) {
-    if (!ExtUI::isPrinting()) {
-      cmd.colors(normal_btn)
-        .font(font_medium)
-        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-          .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
-        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
-    }
-    else{
-      cmd.colors(normal_btn)
-        .font(font_medium)
-        .tag(6).button(HOME_ALL_POS, GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
-        .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_PRINT_SPEED));
-    }
 
     cmd.colors(text_x_axis_btn)
+       .font(font_medium)
        .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
     cmd.colors(text_y_axis_btn)
        .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
@@ -86,19 +73,20 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     cmd.colors(normal_btn)
        .fgcolor(Theme::axis_label)
        .font(Theme::font_medium)
-       .tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
-       .tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
-       .tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
+       .tag(6).button(ALL_VAL_POS, F(""));
+       //.tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
+       //.tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
+       //.tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
     if (!ExtUI::isPrinting()) {
       cmd.colors(normal_btn)
          .cmd (BITMAP_SOURCE(Home_icon_Info))
          .cmd (BITMAP_LAYOUT(Home_icon_Info))
          .cmd (BITMAP_SIZE  (Home_icon_Info))
-         .icon(Home_X_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+         .tag(10).icon(Home_X_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
       cmd.colors(normal_btn)
-         .icon(Home_Y_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+         .tag(11).icon(Home_Y_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
       cmd.colors(normal_btn)
-         .icon(Home_Z_POS, Home_icon_Info, icon_scale); // Draw Home icon next to axis
+         .tag(12).icon(Home_Z_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
     }
 
 
@@ -139,16 +127,15 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1  BTN_POS(1,1),  BTN_SIZE(3,4)
-  #define TEMP_RECT_E0 BTN_POS(1,1),  BTN_SIZE(3,2)
-  #define TEMP_RECT_E1 BTN_POS(4,1),  BTN_SIZE(3,2)
-  #define NOZ_1_POS    BTN_POS(1,1),  BTN_SIZE(3,2)
-  #define NOZ_2_POS    BTN_POS(4,1),  BTN_SIZE(3,2)
-  #define BED_POS      BTN_POS(1,3),  BTN_SIZE(3,2)
-  #define FAN_POS      BTN_POS(4,3),  BTN_SIZE(3,2)
-  #define Home_X_POS   BTN_POS(1,7), BTN_SIZE(1,2)
-  #define Home_Y_POS   BTN_POS(3,7), BTN_SIZE(1,2)
-  #define Home_Z_POS   BTN_POS(5,7), BTN_SIZE(1,2)
+  #define TEMP_RECT_1   BTN_POS(1,1), BTN_SIZE(3,4)
+  #define TEMP_RECT_E0  BTN_POS(1,1), BTN_SIZE(3,2)
+  #define TEMP_RECT_E1  BTN_POS(4,1), BTN_SIZE(3,2)
+  #define NOZ_1_POS     BTN_POS(1,1), BTN_SIZE(3,2)
+  #define NOZ_2_POS     BTN_POS(4,1), BTN_SIZE(3,2)
+  #define BED_POS       BTN_POS(1,3), BTN_SIZE(3,2)
+  #define FAN_POS       BTN_POS(4,3), BTN_SIZE(3,2)
+  #define HOME_ALL_POS  BTN_POS(1,5), BTN_SIZE(3,2)
+  #define TOOL_HEAD_POS BTN_POS(4,5), BTN_SIZE(3,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -192,6 +179,20 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .icon(ICON_POS(FAN_POS), Fan_Icon_Info, icon_scale);
 
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
+
+    if (!ExtUI::isPrinting()) {
+      cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+          .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
+    }
+    else{
+      cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(6).button(HOME_ALL_POS, GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
+        .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_PRINT_SPEED));
+    }
   }
 
   if (what & FOREGROUND) {
@@ -500,7 +501,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  injectCommands(F("G28")); break;
-    #if ENABLED (TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+    #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
       case 9:  GOTO_SCREEN(CustomUserMenus); break;
     #endif
     if (!ExtUI::isPrinting()) {
