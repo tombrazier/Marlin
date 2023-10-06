@@ -2234,7 +2234,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 0.8
+#define MANUAL_Z_HOME_POS 0.7
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
@@ -2308,8 +2308,8 @@
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
     #define XZ_DIAG_AC 56.41
     #define XZ_DIAG_BD 56.86
-    #define YZ_DIAG_AC 56.71
-    #define YZ_DIAG_BD 56.24
+    #define YZ_DIAG_AC 56.9
+    #define YZ_DIAG_BD 56.06
     #define YZ_SIDE_AD 39.9
 
     // Or, set the Z skew factors directly:
