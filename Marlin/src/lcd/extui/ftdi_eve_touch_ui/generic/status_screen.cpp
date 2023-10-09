@@ -179,20 +179,20 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .icon(ICON_POS(FAN_POS), Fan_Icon_Info, icon_scale);
 
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
+  }
 
-    if (!ExtUI::isPrinting()) {
-      cmd.colors(normal_btn)
-        .font(font_medium)
-        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-          .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
-        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
-    }
-    else{
-      cmd.colors(normal_btn)
+  if (ExtUI::isPrinting()) {
+    cmd.colors(normal_btn)
         .font(font_medium)
         .tag(6).button(HOME_ALL_POS, GET_TEXT_F(MSG_ZPROBE_ZOFFSET))
         .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_PRINT_SPEED));
-    }
+  }
+  else{
+    cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+        .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
   }
 
   if (what & FOREGROUND) {
