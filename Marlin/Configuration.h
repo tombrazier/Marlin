@@ -15,7 +15,7 @@
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
 //#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
