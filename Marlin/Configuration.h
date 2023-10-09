@@ -15,7 +15,7 @@
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
 //#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
@@ -3319,7 +3319,16 @@
     #define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nT0\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
     #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT1\nG1 X296 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nM400"
   #endif
+
+  //Adapt clean nozzle gocde string to number of extruders
+  #ifdef WIPE_SEQUENCE_2_COMMANDS
+    #define CLEAN_NOZZLE_BUTTON_COMMANDS "M117 Wiping Nozzle\nG28\nM104 S170 T1\nM109 R170 T0\nM109 R170 T1\nG12\nM104 S0 T0\nM104 S0 T1\nM117 Wipe Complete"
+  #else
+    #define CLEAN_NOZZLE_BUTTON_COMMANDS "M117 Wiping Nozzle\nG28\nM109 R170\nG12\nM104 S0\nM117 Wipe Complete"
+  #endif
+
 #endif
+
 
 // @section host
 

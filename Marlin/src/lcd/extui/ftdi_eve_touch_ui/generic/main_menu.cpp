@@ -110,7 +110,7 @@ bool MainMenu::onTouchEnd(uint8_t tag) {
     case 1:  SaveSettingsDialogBox::promptToSaveSettings();              break;
     case 2:  SpinnerDialogBox::enqueueAndWait(F("G28"));                 break;
     #if ENABLED(NOZZLE_CLEAN_FEATURE)
-      case 3: injectCommands(F("G28\nM109 R170\nG12\nM104 S0")); GOTO_SCREEN(StatusScreen); break;
+      case 3: injectCommands(F(CLEAN_NOZZLE_BUTTON_COMMANDS)); GOTO_SCREEN(StatusScreen); break;
     #endif
     case 4:  GOTO_SCREEN(MoveAxisScreen);                                break;
     case 5:  injectCommands(F("M84"));                                   break;
