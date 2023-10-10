@@ -69,35 +69,33 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        //.tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
        //.tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
        //.tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
-    if (!ExtUI::isPrinting()) {
-      cmd.colors(text_x_axis_btn)
-         .font(font_medium)
-         .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
-      cmd.colors(text_y_axis_btn)
-         .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
-      cmd.colors(text_z_axis_btn)
-         .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
-      cmd.colors(normal_btn)
-         .cmd (BITMAP_SOURCE(Home_icon_Info))
-         .cmd (BITMAP_LAYOUT(Home_icon_Info))
-         .cmd (BITMAP_SIZE  (Home_icon_Info))
-         .tag(11).icon(Home_X_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-      cmd.colors(normal_btn)
-         .tag(12).icon(Home_Y_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-      cmd.colors(normal_btn)
-         .tag(13).icon(Home_Z_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-    }
-    else{
-      cmd.colors(text_x_axis)
-         .tag(0).font(font_medium)
-         .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
-      cmd.colors(text_y_axis)
-         .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
-      cmd.colors(text_z_axis)
-         .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
-    }
-
-
+  }
+  if (!ExtUI::isPrinting()) {
+    cmd.colors(text_x_axis_btn)
+        .font(font_medium)
+        .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
+    cmd.colors(text_y_axis_btn)
+        .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
+    cmd.colors(text_z_axis_btn)
+        .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+    cmd.colors(normal_btn)
+        .cmd (BITMAP_SOURCE(Home_icon_Info))
+        .cmd (BITMAP_LAYOUT(Home_icon_Info))
+        .cmd (BITMAP_SIZE  (Home_icon_Info))
+        .tag(11).icon(Home_X_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
+    cmd.colors(normal_btn)
+        .tag(12).icon(Home_Y_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
+    cmd.colors(normal_btn)
+        .tag(13).icon(Home_Z_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
+  }
+  else{
+    cmd.colors(text_x_axis)
+        .tag(0).font(font_medium)
+        .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
+    cmd.colors(text_y_axis)
+        .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
+    cmd.colors(text_z_axis)
+        .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
   }
 
   if (what & FOREGROUND) {
@@ -122,6 +120,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
       strcpy_P(z_str, PSTR("?"));
 
     cmd.tag(6)
+       .colors(normal_btn)
        .font(Theme::font_medium)
        .text(X_VAL_POS, x_str)
        .text(Y_VAL_POS, y_str)
