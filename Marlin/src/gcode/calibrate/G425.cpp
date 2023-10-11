@@ -830,6 +830,8 @@ inline void calibrate_all() {
   // Do a slow and precise calibration of the toolheads
   calibrate_all_toolheads(m, CALIBRATION_MEASUREMENT_UNCERTAIN);
 
+  current_position.z = current_position.z + 5;
+  calibration_move();         // Move up before going to center, to clear mag bed handles.
   current_position.x = X_CENTER;
   calibration_move();         // Park nozzle away from calibration object
 }
