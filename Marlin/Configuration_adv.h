@@ -945,7 +945,7 @@
 #endif
 
 #define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
-#define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#define HOMING_BUMP_DIVISOR { 1, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
 #define HOMING_BACKOFF_POST_MM { 5, 5, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 //#define XY_COUNTERPART_BACKOFF_MM 0         // (mm) Backoff X after homing Y, and vice-versa
@@ -1821,7 +1821,7 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  #define EVENT_GCODE_SD_ABORT "G0 Z" charLULZBOT_Z_MAX_POS "F2500\nG27\nM524"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G0 Z" charLULZBOT_Z_MAX_POS "F2500\nG27\nM524\nM104 S0"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -3487,11 +3487,11 @@
     // TMC2209: 0...255. TMC2130: -64...63
     #if ANY(TAZPro, TAZProXT)
       #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
-        #define X_STALL_SENSITIVITY  3
-        #define Y_STALL_SENSITIVITY  4
-      #else      
         #define X_STALL_SENSITIVITY  4
-        #define Y_STALL_SENSITIVITY  4 
+        #define Y_STALL_SENSITIVITY  4
+      #else
+        #define X_STALL_SENSITIVITY  4
+        #define Y_STALL_SENSITIVITY  4
       #endif
     #elif ANY(MiniV2)
       #define X_STALL_SENSITIVITY  3
