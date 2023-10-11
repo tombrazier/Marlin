@@ -146,6 +146,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(2,2)
   #define PRINT_SPEED_POS     BTN_POS(3,5), BTN_SIZE(2,2)
   #define FILAMENT_SENSOR_POS BTN_POS(5,5), BTN_SIZE(2,2)
+  #define BLANKSPACE_5_6_POS  BTN_POS(1,5), BTN_SIZE(6,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -192,6 +193,8 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   }
 
   if (ExtUI::isPrinting()) {
+    cmd.colors(disabled_btn)
+       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
         .tag(6).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
@@ -199,6 +202,8 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
         .tag(8).button(FILAMENT_SENSOR_POS, GET_TEXT_F(MSG_SENSOR));
   }
   else{
+    cmd.colors(disabled_btn)
+       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
         .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
@@ -292,8 +297,10 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   #endif
   if (ExtUI::isPrinting()) {
     if (what & BACKGROUND) {
+      cmd.colors(disabled_btn)
+         .tag(0).button(PROGRESSZONE_POS, F(""));
       cmd.tag(0).font(font_medium)
-        .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
+         .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
     }
 
     if (what & FOREGROUND) {
@@ -328,6 +335,8 @@ void StatusScreen::draw_progress(draw_mode_t what) {
 
       #if ENABLED(TOUCH_UI_PORTRAIT)
         const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(1)) : (BTN_H(2));
+        cmd.colors(normal_btn)
+           .tag(0).button(PROGRESSZONE_POS, F(""));
         cmd.font(font_medium)
           .tag(7).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
           #if ENABLED(SHOW_REMAINING_TIME)
@@ -345,6 +354,8 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     }
   }
   else {
+    cmd.colors(disabled_btn)
+       .tag(0).button(PROGRESSZONE_POS, F(""));
     cmd.colors(normal_btn)
        .font(font_medium)
        .tag(14).button(PROGRESSZONE_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE));
