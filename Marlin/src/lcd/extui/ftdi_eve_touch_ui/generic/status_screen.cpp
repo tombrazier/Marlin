@@ -73,11 +73,11 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   if (!ExtUI::isPrinting()) {
     cmd.colors(text_x_axis_btn)
         .font(font_medium)
-        .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
+        .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
     cmd.colors(text_y_axis_btn)
-        .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
+        .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
     cmd.colors(text_z_axis_btn)
-        .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+        .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
     cmd.colors(normal_btn)
         .cmd (BITMAP_SOURCE(Home_icon_Info))
         .cmd (BITMAP_LAYOUT(Home_icon_Info))
