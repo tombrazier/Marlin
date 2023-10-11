@@ -8,14 +8,14 @@
 /************** Uncomment a Tool Head Option From Below *********************/
 
 //#define TOOLHEAD_Legacy_Universal
-//#define TOOLHEAD_Galaxy_Series
+#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
 //#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
@@ -2488,7 +2488,7 @@
     #define Y_BED_SIZE 286
     // Travel limits (mm) after homing, corresponding to endstop positions.
     #define LULZBOT_X_MIN_POS -1
-    #define LULZBOT_Y_MIN_POS -9
+    #define LULZBOT_Y_MIN_POS -13.5
     #define LULZBOT_X_MAX_POS 313
     #define LULZBOT_Y_MAX_POS 318
     #define LULZBOT_Z_MIN_POS -9
