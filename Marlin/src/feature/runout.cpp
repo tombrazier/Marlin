@@ -133,7 +133,7 @@ void event_filament_runout(const uint8_t extruder) {
 
   #ifdef FILAMENT_RUNOUT_SCRIPT
     if (run_runout_script) {
-      #if MULTI_FILAMENT_SENSOR
+      #if ENABLED(MULTI_FILAMENT_SENSOR, TOOL_SPECIFIC_SCRIPT)
         MString<strlen(FILAMENT_RUNOUT_SCRIPT)> script;
         script.setf(F(FILAMENT_RUNOUT_SCRIPT), AS_CHAR(tool));
         #if ENABLED(FILAMENT_RUNOUT_SENSOR_DEBUG)
