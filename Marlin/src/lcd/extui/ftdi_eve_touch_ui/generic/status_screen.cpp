@@ -271,9 +271,13 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   CommandProcessor cmd;
 
   #undef GRID_COLS
-  #define GRID_COLS 3
+
   #if ENABLED(TOUCH_UI_PORTRAIT)
+    #define GRID_COLS 3
   #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+
+    #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
 
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
@@ -282,7 +286,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESS_POS_X   BTN_X(3)
     #define PROGRESS_POS_W   BTN_W(1)
     #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(11)
-    #define PROGRESSBAR_POS  BTN_POS(1,12), BTN_SIZE(3,1)
+    #define PROGRESSBAR_POS  BTN_POS(1,11), BTN_SIZE(3,2)
   #else
     #define GRID_COLS 6
     #define PROGRESSZONE_POS BTN_POS(5,1), BTN_SIZE(2,4)
@@ -334,18 +338,18 @@ void StatusScreen::draw_progress(draw_mode_t what) {
       );
 
       #if ENABLED(TOUCH_UI_PORTRAIT)
-        const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(1)) : (BTN_H(2));
+        const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(2)) : (BTN_H(2));
         cmd.colors(normal_btn)
            .tag(0).button(PROGRESSZONE_POS, F(""));
         cmd.font(font_medium)
-          .tag(7).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
+          .tag(0).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
           #if ENABLED(SHOW_REMAINING_TIME)
             .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
           #endif
           .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
       #else
         cmd.font(font_medium)
-          .tag(7).text(TIME_POS, elapsed_str)
+          .tag(0).text(TIME_POS, elapsed_str)
           #if ENABLED(SHOW_REMAINING_TIME)
             .text(REMAINING_POS, remaining_str)
           #endif
