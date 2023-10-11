@@ -8,14 +8,14 @@
 /************** Uncomment a Tool Head Option From Below *********************/
 
 //#define TOOLHEAD_Legacy_Universal
-#define TOOLHEAD_Galaxy_Series
+//#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
 //#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
@@ -92,7 +92,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.6"
+#define LULZBOT_FW_VERSION "2.1.3.0.7"
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -631,7 +631,8 @@
 #if ENABLED(SWITCHING_NOZZLE)
   #define SWITCHING_NOZZLE_SERVO_NR 0
   #define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
-  #define SWITCHING_NOZZLE_SERVO_ANGLES LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
+  #define SWITCHING_NOZZLE_SERVO_ANGLES { LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES, LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES }   // A pair of angles for { E0, E1 }.
+                                                    // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 300
 #endif
 
@@ -1050,7 +1051,7 @@
 //#define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
-#define PID_K1 0.95       // Smoothing factor within any PID loop
+#define PID_K1     0.95   // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
   #if LULZBOT_EXTRUDERS > 1
@@ -1980,6 +1981,15 @@
   //#define TOUCH_MI_MANUAL_DEPLOY                // For manual deploy (LCD menu)
 #endif
 
+/**
+ * Bed Distance Sensor
+ *
+ * Measures the distance from bed to nozzle with accuracy of 0.01mm.
+ * For information about this sensor https://github.com/markniu/Bed_Distance_sensor
+ * Uses I2C port, so it requires I2C library markyue/Panda_SoftMasterI2C.
+ */
+//#define BD_SENSOR
+
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 //#define SOLENOID_PROBE
 
@@ -2780,6 +2790,12 @@
 //#define MESH_BED_LEVELING
 
 /**
+ * Commands to execute at the end of G29 probing.
+ * Useful to retract or move the Z probe out of the way.
+ */
+//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+
+/**
  * Normally G28 leaves leveling disabled on completion. Enable one of
  * these options to restore the prior leveling state or to always enable
  * leveling immediately after G28.
@@ -2795,15 +2811,6 @@
   #define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
   #define LEVELING_BED_TEMP     50
 #endif
-
-/**
- * Bed Distance Sensor
- *
- * Measures the distance from bed to nozzle with accuracy of 0.01mm.
- * For information about this sensor https://github.com/markniu/Bed_Distance_sensor
- * Uses I2C port, so it requires I2C library markyue/Panda_SoftMasterI2C.
- */
-//#define BD_SENSOR
 
 /**
  * Enable detailed logging of G28, G29, M48, etc.
@@ -3002,12 +3009,6 @@
    */
   #define BED_TRAMMING_LEVELING_ORDER { LF, RF, RB, LB }
 #endif
-
-/**
- * Commands to execute at the end of G29 probing.
- * Useful to retract or move the Z probe out of the way.
- */
-//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
 
 // @section homing
 
@@ -3852,10 +3853,10 @@
 //#define FYSETC_GENERIC_12864_1_1 // Larger display with basic ON/OFF backlight.
 
 //
-// BigTreeTech Mini 12864 V1.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
-// https://github.com/bigtreetech/MINI-12864/tree/master/mini12864_v1.0
+// BigTreeTech Mini 12864 V1.0 / V2.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+// https://github.com/bigtreetech/MINI-12864
 //
-//#define BTT_MINI_12864_V1
+//#define BTT_MINI_12864
 
 //
 // Factory display for Creality CR-10 / CR-7 / Ender-3

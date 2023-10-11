@@ -180,19 +180,19 @@ namespace Theme {
   constexpr uint32_t transformF             = 0x8010D0;
   constexpr uint32_t transformVal           = 0x104010;
 
-  constexpr btn_colors disabled_btn         = {.bg = bg_color,      .grad = fg_disabled, .fg = fg_disabled,  .rgb = fg_disabled };
-  constexpr btn_colors normal_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = 0xFFFFFF };
-  constexpr btn_colors accent_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = lulzbot_accent,    .rgb = 0xFFFFFF };
-  constexpr btn_colors action_btn           = {.bg = bg_color,      .grad = 0xFFFFFF,    .fg = fg_action,    .rgb = 0xFFFFFF };
-  constexpr btn_colors red_btn              = {.bg = 0xFF5555,      .grad = 0xFFFFFF,    .fg = 0xFF0000,     .rgb = 0xFFFFFF };
-  constexpr btn_colors ui_slider            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,   .rgb = accent_color_3 };
-  constexpr btn_colors ui_toggle            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,   .rgb = 0xFFFFFF };
-  constexpr btn_colors text_x_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = x_axis };
-  constexpr btn_colors text_y_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = y_axis };
-  constexpr btn_colors text_z_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,    .rgb = z_axis };
-  constexpr btn_colors text_x_axis          = {.bg = fg_action,     .grad = fg_normal,    .fg = fg_normal,    .rgb = x_axis };
-  constexpr btn_colors text_y_axis          = {.bg = fg_action,     .grad = fg_normal,    .fg = fg_normal,    .rgb = y_axis };
-  constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,    .fg = fg_normal,    .rgb = z_axis };
+  constexpr btn_colors disabled_btn         = {.bg = bg_color,      .grad = fg_disabled, .fg = fg_disabled,     .rgb = fg_disabled };
+  constexpr btn_colors normal_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = 0xFFFFFF };
+  constexpr btn_colors accent_btn           = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = lulzbot_accent,  .rgb = 0xFFFFFF };
+  constexpr btn_colors action_btn           = {.bg = bg_color,      .grad = 0xFFFFFF,    .fg = fg_action,       .rgb = 0xFFFFFF };
+  constexpr btn_colors red_btn              = {.bg = 0xFF5555,      .grad = 0xFFFFFF,    .fg = 0xFF0000,        .rgb = 0xFFFFFF };
+  constexpr btn_colors ui_slider            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,      .rgb = accent_color_3 };
+  constexpr btn_colors ui_toggle            = {.bg = theme_darkest, .grad = 0xFFFFFF,    .fg = theme_dark,      .rgb = 0xFFFFFF };
+  constexpr btn_colors text_x_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = x_axis };
+  constexpr btn_colors text_y_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = y_axis };
+  constexpr btn_colors text_z_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = z_axis };
+  constexpr btn_colors text_x_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = x_axis };
+  constexpr btn_colors text_y_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = y_axis };
+  constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = z_axis };
 
 
   // Temperature color scale
