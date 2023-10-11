@@ -2690,6 +2690,8 @@
   // NOTE: After 'M412 H1' the host handles filament runout and this script does not apply.
   #define FILAMENT_RUNOUT_SCRIPT "M117 Filament Error\nM600"
 
+  //#define TOOL_SPECIFIC_SCRIPT  // Adding Tool specific commands to runout script
+
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
