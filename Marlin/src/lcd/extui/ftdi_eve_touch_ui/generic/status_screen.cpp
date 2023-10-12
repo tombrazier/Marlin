@@ -61,13 +61,11 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define _UNION_POS(x1,y1,w1,h1,x2,y2,w2,h2) x1,y1,max(x1+w1,x2+w2)-x1,max(y1+h1,y2+h2)-y1
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
-  if (what & BACKGROUND) {
+  if (!ExtUI::isPrinting()) {
     cmd.colors(normal_btn)
-       .fgcolor(Theme::axis_label)
+       //.fgcolor(Theme::axis_label)
        .font(Theme::font_medium)
        .tag(6).button(ALL_VAL_POS, F(""));
-  }
-  if (!ExtUI::isPrinting()) {
     cmd.colors(text_x_axis_btn)
         .font(font_medium)
         .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
@@ -86,13 +84,16 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
         .tag(13).icon(Home_Z_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
   }
   else{
+    cmd.colors(normal_text)
+       .font(Theme::font_medium)
+       .tag(0).button(ALL_VAL_POS, F(""));
     cmd.colors(text_x_axis)
-        .tag(0).font(font_medium)
-        .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
+       .font(font_medium)
+       .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
     cmd.colors(text_y_axis)
-        .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
+       .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
     cmd.colors(text_z_axis)
-        .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+       .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
   }
 
   if (what & FOREGROUND) {
@@ -333,7 +334,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
 
       #if ENABLED(TOUCH_UI_PORTRAIT)
         const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(2)) : (BTN_H(2));
-        cmd.colors(normal_btn)
+        cmd.colors(normal_text)
            .tag(0).button(PROGRESSZONE_POS, F(""));
         cmd.font(font_medium)
           .tag(0).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)

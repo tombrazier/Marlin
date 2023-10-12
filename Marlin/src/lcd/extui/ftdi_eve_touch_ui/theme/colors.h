@@ -190,6 +190,7 @@ namespace Theme {
   constexpr btn_colors text_x_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = x_axis };
   constexpr btn_colors text_y_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = y_axis };
   constexpr btn_colors text_z_axis_btn      = {.bg = fg_action,     .grad = 0xFFFFFF,    .fg = fg_normal,       .rgb = z_axis };
+  constexpr btn_colors normal_text          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = 0xFFFFFF };
   constexpr btn_colors text_x_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = x_axis };
   constexpr btn_colors text_y_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = y_axis };
   constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = z_axis };
