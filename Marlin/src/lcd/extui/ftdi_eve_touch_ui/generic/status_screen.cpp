@@ -66,9 +66,6 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        .fgcolor(Theme::axis_label)
        .font(Theme::font_medium)
        .tag(6).button(ALL_VAL_POS, F(""));
-       //.tag(6).button(X_VAL_POS, F(""), OPT_FLAT)
-       //.tag(6).button(Y_VAL_POS, F(""), OPT_FLAT)
-       //.tag(6).button(Z_VAL_POS, F(""), OPT_FLAT);
   }
   if (!ExtUI::isPrinting()) {
     cmd.colors(text_x_axis_btn)
@@ -260,9 +257,6 @@ void StatusScreen::_format_time(char *outstr, uint32_t time) {
   else
     sprintf_P(outstr, PSTR("%02d:%02ds"), min, sec);
 }
-
-//constexpr static ConfirmStartPrintDialogBoxData &mydata = screen_data.ConfirmStartPrintDialogBox;
-
 
 void StatusScreen::draw_progress(draw_mode_t what) {
   using namespace ExtUI;
