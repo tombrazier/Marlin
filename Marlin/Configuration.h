@@ -2227,7 +2227,7 @@
 #define Z_CLEARANCE_DEPLOY_PROBE    5 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  8 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-#define Z_PROBE_TOLERANCE           6 // Farthest distance above the trigger-point without failed probe
+#define Z_PROBE_TOLERANCE           8 // Farthest distance above the trigger-point without failed probe
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 #if defined(LULZBOT_BLTouch)
