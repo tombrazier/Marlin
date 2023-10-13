@@ -67,6 +67,7 @@ void MainMenu::onRedraw(draw_mode_t what) {
       #define TEMPERATURE_POS     BTN_POS(1,4), BTN_SIZE(2,1)
       #define FILAMENTCHANGE_POS  BTN_POS(3,4), BTN_SIZE(2,1)
       #define CUSTOM_MENU_POS     BTN_POS(5,4), BTN_SIZE(2,1)
+      #define CUSTOM_MENU_POS     BTN_POS(5,4), BTN_SIZE(2,1)
     #else
       #define TEMPERATURE_POS     BTN_POS(1,4), BTN_SIZE(3,1)
       #define FILAMENTCHANGE_POS  BTN_POS(4,4), BTN_SIZE(3,1)

@@ -2224,21 +2224,21 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE    5 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  8 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-#define Z_PROBE_TOLERANCE           8 // Farthest distance above the trigger-point without failed probe
-//#define Z_AFTER_PROBING           5 // Z position after probing is done
+#define Z_CLEARANCE_DEPLOY_PROBE    5 // (mm) Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES  8 // (mm) Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes
+#define Z_PROBE_TOLERANCE           8 // (mm) Farthest distance above the trigger-point without failed probe
+//#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
 #if defined(LULZBOT_BLTouch)
   #define Z_PROBE_LOW_POINT          -9 // Farthest distance below the trigger-point to go before stopping
 #else
-  #define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
+  #define Z_PROBE_LOW_POINT          -4 // (mm) Farthest distance below the trigger-point to go before stopping
 #endif
 
 // For M851 give a range for adjusting the Z probe offset
-#define Z_PROBE_OFFSET_RANGE_MIN -3
-#define Z_PROBE_OFFSET_RANGE_MAX 5
+#define Z_PROBE_OFFSET_RANGE_MIN -3  // (mm)
+#define Z_PROBE_OFFSET_RANGE_MAX  5  // (mm)
 
 // Enable the M48 repeatability test to test probe accuracy
 #define Z_MIN_PROBE_REPEATABILITY_TEST
