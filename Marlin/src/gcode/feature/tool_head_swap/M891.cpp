@@ -48,14 +48,14 @@ void GcodeSuite::M891() {
     #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_175)
       SERIAL_ECHOPGM("12=Twin Nebula 175, 13=Twin Nebual 285");
     #endif
-    SERIAL_ECHOLNPAIR("  Tool Head ID:", tool_head.id);
+    SERIAL_ECHOPGM("  Tool Head ID:", tool_head.id);
   }
 }
 
 void GcodeSuite::M891_report(const bool forReplay/*=true*/) {
   report_heading_etc(forReplay, F(STR_TOOLHEAD_ID));
-  SERIAL_ECHOLNPGM_P(
-    PSTR("  M891 T"), tool_head.id()
+  SERIAL_ECHOPGM(
+    "  M891 T", tool_head.id()
   );
 }
 
