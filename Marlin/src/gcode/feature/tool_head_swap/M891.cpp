@@ -46,7 +46,7 @@ void GcodeSuite::M891() {
     #elif ENABLED(TOOLHEAD_Quiver_DualExtruder)
       SERIAL_ECHOPGM("11=Legacy Dual Extruder");
     #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_175)
-      SERIAL_ECHOPGM("12=Twin Nebula 175, 13=Twin Nebual 285");
+      SERIAL_ECHOPGM("12=Twin Nebula 175, 13=Twin Nebula 285");
     #endif
     SERIAL_ECHOPGM("  Tool Head ID:", tool_head.id);
   }
