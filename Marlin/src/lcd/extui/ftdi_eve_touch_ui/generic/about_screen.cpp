@@ -64,7 +64,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
          "" LULZBOT_M115_EXTRUDER_TYPE ""
   ), OPT_CENTER, font_xlarge);
 
-  #if ENABLED(TOOLHEAD_Galaxy_Series, SHOW_TOOLHEAD_NAME)
+  #if ENABLED(TOOLHEAD_Galaxy_Series, SHOW_TOOL_HEAD_ID)
     draw_text_box(cmd, BTN_POS(1,13), BTN_SIZE(4,3), F(
       "Tool Head:"
     ), OPT_CENTER, font_xlarge);
@@ -86,7 +86,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
       ), OPT_CENTER, font_large);
       break;
     }
-  #elif ENABLED(TOOLHEAD_Legacy_Universal, SHOW_TOOLHEAD_NAME)
+  #elif ENABLED(TOOLHEAD_Legacy_Universal, SHOW_TOOL_HEAD_ID)
     switch(getToolHeadId()){
       case 1:
       draw_text_box(cmd, BTN_POS(1,16), BTN_SIZE(4,2), F(

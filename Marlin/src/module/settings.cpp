@@ -1614,7 +1614,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tool_head_id);
     }
     #endif
-    
+
     //
     // Extensible UI User Data
     //
@@ -3226,7 +3226,7 @@ void MarlinSettings::reset() {
   #if ENABLED(SHOW_TOOL_HEAD_ID)
     tool_head.id = TOOL_HEAD_ID;
   #endif
-  
+
   TERN_(DWIN_CREALITY_LCD_JYERSUI, jyersDWIN.resetSettings());
 
   //
