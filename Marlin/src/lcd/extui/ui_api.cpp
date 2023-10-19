@@ -1160,6 +1160,16 @@ namespace ExtUI {
     #endif
   }
 
+  void onPrintCompleteScreen(FSTR_P const fstr) {
+    #ifdef __AVR__
+      char msg[strlen_P(FTOP(fstr)) + 1];
+      strcpy_P(msg, FTOP(fstr));
+      onPrintCompleteScreen(msg);
+    #else
+      onPrintCompleteScreen(FTOP(fstr));
+    #endif
+  }
+
   // This is for filament continue/pruge more
   void filament_load_prompt(FSTR_P const fstr) {
     #ifdef __AVR__

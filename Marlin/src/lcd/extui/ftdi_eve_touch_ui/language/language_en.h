@@ -108,6 +108,7 @@ namespace Language_en {
   LSTR MSG_CALIBRATION_WARNING      = u8"For best results, unload the filament and clean the hotend prior to starting calibration. Continue?";
   LSTR MSG_START_PRINT_CONFIRMATION = u8"Start printing %s?";
   LSTR MSG_ABORT_WARNING            = u8"Are you sure you want to cancel the print?";
+  LSTR MSG_START_NEXT_PRINT         = u8"Would you like to \n start next print?";
   LSTR MSG_EXTRUDER_SELECTION       = u8"Extruder Selection";
   LSTR MSG_CURRENT_TEMPERATURE      = u8"Current Temp";
   LSTR MSG_REMOVAL_TEMPERATURE      = u8"Removal Temp";

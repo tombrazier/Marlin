@@ -3360,6 +3360,17 @@
  */
 //#define PRINTJOB_TIMER_AUTOSTART
 
+/**
+ * End of Print Screen
+ *
+ * The End of print screen is used for hosts to be able to see when the printer
+ * is ready to start next job. The user can select to either start next print,
+ * or cancel the next queued print.
+ *
+ *   M2 - Go to end print screen
+ */
+#define ALLOW_END_PRINT_SCREEN
+
 // @section stats
 
 /**
