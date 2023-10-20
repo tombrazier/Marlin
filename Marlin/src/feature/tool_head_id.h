@@ -29,7 +29,7 @@ class Tool_head {
 public:
 
     #ifdef TOOL_HEAD_ID
-      static uint8_t id;
+      static uint8_t id_number;
     #endif
 
 };

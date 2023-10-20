@@ -1285,3 +1285,7 @@
 #if defined(REDUNDANT_PART_COOLING_FAN) && !defined(NUM_REDUNDANT_FANS)
   #define NUM_REDUNDANT_FANS 1
 #endif
+
+#if ENABLED(SHOW_TOOL_HEAD_ID)
+  #define HAS_TOOLHEAD_ID 1
+#endif

@@ -23,6 +23,7 @@
 
 #include "../config.h"
 #include "../screens.h"
+#include "../../ui_api.h"
 
 #ifdef FTDI_ABOUT_SCREEN
 

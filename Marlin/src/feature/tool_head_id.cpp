@@ -31,7 +31,7 @@
 
 #if ENABLED(SHOW_TOOL_HEAD_ID)
   #ifdef TOOL_HEAD_ID
-    uint8_t Tool_head::id = TOOL_HEAD_ID;
+    uint8_t Tool_head::id_number = TOOL_HEAD_ID;
   #endif
 #endif
 

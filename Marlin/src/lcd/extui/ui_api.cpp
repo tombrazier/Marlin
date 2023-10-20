@@ -1237,8 +1237,8 @@ namespace ExtUI {
   }
 
   #if ENABLED(SHOW_TOOL_HEAD_ID)
-    uint8_t getToolHeadId()                 { return tool_head.id; }
-    void setToolHeadId(const uint16_t value) { tool_head.id = constrain(value, 0, 20); }
+    uint8_t getToolHeadId()                 { return tool_head.id_number; }
+    void setToolHeadId(const uint16_t value) { tool_head.id_number = constrain(value, 0, 20); }
   #endif
 } // namespace ExtUI
 
