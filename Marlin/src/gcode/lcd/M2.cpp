@@ -29,23 +29,30 @@
 #include "../../inc/MarlinConfig.h"
 #include "../gcode.h"
 
-
 #if ENABLED(EXTENSIBLE_UI)
   #include "../../lcd/extui/ui_api.h"
+  #include "../../lcd/extui/ftdi_eve_touch_ui/screens.h"
 #endif
 
 /**
  * M2: Go to end print screen
+ *
+ *  M2         - sending M2 brings up a screen that displays...
+ *               "Would you like to start next print?"
+ *               Yes and No buttons report back what decision was made.
+ *
+ *  M2 O       - Override the M2 end print page and bring the screen to Status Screen
  */
 void GcodeSuite::M2() {
 
+  if (parser.seen('O')){
+    GOTO_SCREEN(StatusScreen);
+  }
+  else{
   #if ENABLED(EXTENSIBLE_UI)
-    if (parser.string_arg)
-      ExtUI::onPrintCompleteScreen(parser.string_arg); // String in an SRAM buffer
-    else
       ExtUI::onPrintCompleteScreen(GET_TEXT_F(MSG_USERWAIT));
   #endif
-
+  }
 }
 
 #endif // HAS_END_PRINT_SCREEN
