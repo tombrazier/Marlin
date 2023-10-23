@@ -30,19 +30,18 @@
 using namespace ExtUI;
 
 void EndPrintScreenDialogBox::onRedraw(draw_mode_t) {
-  drawMessage(GET_TEXT_F(MSG_START_NEXT_PRINT));
-  drawYesNoButtons();
+  drawStartPrintButtons();
 }
 
 bool EndPrintScreenDialogBox::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:
       GOTO_PREVIOUS();
-      injectCommands(F("M117 START NEXT PRINT"));
+      injectCommands(F("M117 Q60\nM117 Next Print Starting"));
       return true;
     case 2:
       GOTO_PREVIOUS();
-      injectCommands(F("M117 STOP NEXT PRINT"));
+      injectCommands(F("M117 Q60 S\nM117 Printer Ready"));
       return true;
     default:
       return DialogBoxBaseClass::onTouchEnd(tag);

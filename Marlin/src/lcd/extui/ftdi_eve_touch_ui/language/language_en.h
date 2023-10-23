@@ -66,7 +66,9 @@ namespace Language_en {
   LSTR MSG_HOME                     = u8"Home";
   LSTR MSG_PRINT_STARTING           = u8"Print starting";
   LSTR MSG_PRINT_FINISHED           = u8"Print finished";
+  LSTR MSG_PRINT_COMPLETE           = u8"Print Complete!";
   LSTR MSG_PRINT_ERROR              = u8"Print error";
+  LSTR MSG_PRINT_AREA_CLEAR         = u8"Please ensure print area is \n clear and ready to print.";
   LSTR MSG_ABOUT_TOUCH_PANEL_1      = u8"Color Touch Panel";
   LSTR MSG_ABOUT_TOUCH_PANEL_2      = WEBSITE_URL;
   LSTR MSG_LICENSE                  = u8"This program is free software: you can redistribute it and/or modify it under the terms of "
@@ -108,7 +110,7 @@ namespace Language_en {
   LSTR MSG_CALIBRATION_WARNING      = u8"For best results, unload the filament and clean the hotend prior to starting calibration. Continue?";
   LSTR MSG_START_PRINT_CONFIRMATION = u8"Start printing %s?";
   LSTR MSG_ABORT_WARNING            = u8"Are you sure you want to cancel the print?";
-  LSTR MSG_START_NEXT_PRINT         = u8"Would you like to \n start next print?";
+  LSTR MSG_START_NEXT_PRINT         = u8"Start Next Print";
   LSTR MSG_EXTRUDER_SELECTION       = u8"Extruder Selection";
   LSTR MSG_CURRENT_TEMPERATURE      = u8"Current Temp";
   LSTR MSG_REMOVAL_TEMPERATURE      = u8"Removal Temp";
