@@ -37,11 +37,11 @@ bool EndPrintScreenDialogBox::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:
       GOTO_PREVIOUS();
-      injectCommands(F("M117 Q60\nM117 Next Print Starting"));
+      injectCommands(F("M117 Q60"));
       return true;
     case 2:
       GOTO_PREVIOUS();
-      injectCommands(F("M117 Q60 S\nM117 Printer Ready"));
+      injectCommands(F("M117 Q60 S"));
       return true;
     default:
       return DialogBoxBaseClass::onTouchEnd(tag);
