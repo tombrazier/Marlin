@@ -31,7 +31,7 @@
  */
 void GcodeSuite::M891() {
   bool noArgs = true;
-  
+
   if (parser.seen('T')) {
     planner.synchronize();
     tool_head.id = parser.value_linear_units();

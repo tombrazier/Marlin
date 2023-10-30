@@ -1,6 +1,6 @@
-/***************************
- * dialog_box_base_class.h *
- ***************************/
+/**************************************
+ * confirm_abort_print_dialog_box.cpp *
+ **************************************/
 
 /****************************************************************************
  *   Written By Mark Pelletier  2017 - Aleph Objects, Inc.                  *
@@ -20,25 +20,43 @@
  *   location: <https://www.gnu.org/licenses/>.                             *
  ****************************************************************************/
 
-#pragma once
+#include "../config.h"
+#include "../screens.h"
 
-#define FTDI_DIALOG_BOX_BASE_CLASS
-#define FTDI_DIALOG_BOX_BASE_CLASS_CLASS DialogBoxBaseClass
+#ifdef FTDI_END_PRINT_SCREEN
 
-class DialogBoxBaseClass : public BaseScreen {
-  protected:
-    template<typename T> static void drawMessage(T, const int16_t font=0);
-    static void drawMessage(FSTR_P const fstr, const int16_t font=0) { drawMessage(FTOP(fstr), font); }
+#include "../../../../feature/host_actions.h"
 
-    template<typename T> static void drawButton(T);
-    static void drawYesNoButtons(uint8_t default_btn = 0);
-    static void drawStartPrintButtons(uint8_t default_btn = 0);
-    static void drawOkayButton();
-    static void drawFilamentButtons();
+using namespace ExtUI;
 
-    static void onRedraw(draw_mode_t) {}
+void EndPrintScreenDialogBox::onRedraw(draw_mode_t) {
+  drawStartPrintButtons();
+}
 
-  public:
-    static bool onTouchEnd(uint8_t tag);
-    static void onIdle();
-};
+bool EndPrintScreenDialogBox::onTouchEnd(uint8_t tag) {
+  switch (tag) {
+    case 1:
+      GOTO_PREVIOUS();
+      injectCommands(F("M117 Q60"));
+      return true;
+    case 2:
+      GOTO_PREVIOUS();
+      injectCommands(F("M117 Q60 S"));
+      return true;
+    default:
+      return DialogBoxBaseClass::onTouchEnd(tag);
+  }
+}
+
+void EndPrintScreenDialogBox::show(const char *msg) {
+  drawMessage(msg);
+  if (!AT_SCREEN(EndPrintScreenDialogBox))
+    GOTO_SCREEN(EndPrintScreenDialogBox);
+}
+
+void EndPrintScreenDialogBox::hide() {
+  if (AT_SCREEN(EndPrintScreenDialogBox))
+    GOTO_PREVIOUS();
+}
+
+#endif // FTDI_END_PRINT_SCREEN

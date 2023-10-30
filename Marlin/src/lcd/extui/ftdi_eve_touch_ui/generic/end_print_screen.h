@@ -1,6 +1,6 @@
-/***************************
- * dialog_box_base_class.h *
- ***************************/
+/************************************
+ * confirm_abort_print_dialog_box.h *
+ ************************************/
 
 /****************************************************************************
  *   Written By Mark Pelletier  2017 - Aleph Objects, Inc.                  *
@@ -22,23 +22,13 @@
 
 #pragma once
 
-#define FTDI_DIALOG_BOX_BASE_CLASS
-#define FTDI_DIALOG_BOX_BASE_CLASS_CLASS DialogBoxBaseClass
+#define FTDI_END_PRINT_SCREEN
+#define FTDI_END_PRINT_SCREEN_CLASS EndPrintScreenDialogBox
 
-class DialogBoxBaseClass : public BaseScreen {
-  protected:
-    template<typename T> static void drawMessage(T, const int16_t font=0);
-    static void drawMessage(FSTR_P const fstr, const int16_t font=0) { drawMessage(FTOP(fstr), font); }
-
-    template<typename T> static void drawButton(T);
-    static void drawYesNoButtons(uint8_t default_btn = 0);
-    static void drawStartPrintButtons(uint8_t default_btn = 0);
-    static void drawOkayButton();
-    static void drawFilamentButtons();
-
-    static void onRedraw(draw_mode_t) {}
-
+class EndPrintScreenDialogBox : public DialogBoxBaseClass, public UncachedScreen {
   public:
+    static void onRedraw(draw_mode_t);
     static bool onTouchEnd(uint8_t tag);
-    static void onIdle();
+    static void hide();
+    static void show(const char*);
 };
