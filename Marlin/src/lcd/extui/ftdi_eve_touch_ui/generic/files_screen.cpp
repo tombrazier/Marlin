@@ -174,7 +174,7 @@ void FilesScreen::drawFooter() {
   if (mydata.flags.is_root)
     cmd.tag(240).button(BTN2_POS, GET_TEXT_F(MSG_BUTTON_DONE));
   else
-    cmd.tag(245).button(BTN2_POS, F("Up Dir"));
+    cmd.tag(245).button(BTN2_POS, F("Back"));
 
   cmd.enabled(has_selection)
      .colors(has_selection ? action_btn : normal_btn);
