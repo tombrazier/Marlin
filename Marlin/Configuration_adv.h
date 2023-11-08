@@ -3012,7 +3012,7 @@
   #endif
 
   #if AXIS_IS_TMC_CONFIG(E0)
-    #define E0_CURRENT       TERN(VDE_100, 450, 600)
+    #define E0_CURRENT       TERN(VDE_100, 700, 600)
     #define E0_MICROSTEPS    (ENABLED(GEARED_EXTRUDER) ? 8 : ENABLED(VDE_100) ? 2 : 16)
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
@@ -4193,7 +4193,7 @@
   //#define MAX7219_DEBUG_PLANNER_HEAD  2   // Show the planner queue head position on this and the next LED matrix row
   //#define MAX7219_DEBUG_PLANNER_TAIL  4   // Show the planner queue tail position on this and the next LED matrix row
 
-  //#define MAX7219_DEBUG_PLANNER_QUEUE 0   // Show the current planner queue depth on this and the next LED matrix row
+  #define MAX7219_DEBUG_PLANNER_QUEUE 0   // Show the current planner queue depth on this and the next LED matrix row
                                           // If you experience stuttering, reboots, etc. this option can reveal how
                                           // tweaks made to the configuration are affecting the printer in real-time.
   //#define MAX7219_DEBUG_PROFILE       6   // Display the fraction of CPU time spent in profiled code on this LED matrix

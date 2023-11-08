@@ -1226,16 +1226,16 @@
 //#define GEARED_EXTRUDER
 #define VDE_100
 #if ENABLED(GEARED_EXTRUDER)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0*68/7/22.5 * 8 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0*68/7/22.5 * 8 }
 #elif ENABLED(VDE_100)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 8, 200.0/40.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0/1.45 * 2 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 8, 200.0/40.0*(25.0/25.4) * 8, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0/1.55 * 2 }
 #else
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.1 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0/22.5 * 16 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 4, 200.0/22.5 * 16 }
 #endif
 
 /* Notes:
--X axis: 200 steps/rotation = 40 teeth. Belt is 1.1mm per tooth.
--Y axis: 200 steps/rotation = 30 teeth. Belt is 1/25 inch per tooth.
+-X axis: 200 steps/rotation = 45 teeth. Belt is 1.106mm per tooth.
+-Y axis: 200 steps/rotation = 40 teeth. Belt is 1/25 inch per tooth.
 -Z axis: 96 steps/rotation = 18 teeth. Second gear 54 teeth, reducing
  to 27 teeth. Third gear 62 teeth reducing to 28 teeth. Belt is 1mm per
  tooth.
@@ -1247,7 +1247,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 350, 180, 25, 12 }
+#define DEFAULT_MAX_FEEDRATE          { 350, 180, 25, 40 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1260,7 +1260,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 5000, 3000, 1000, 150 }
+#define DEFAULT_MAX_ACCELERATION      { 5000, 3000, 1000, 1000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1558,7 +1558,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.85 }
+#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.75 }
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
 #define PROBING_TOOL 0
@@ -2234,7 +2234,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 0.6
+#define MANUAL_Z_HOME_POS 0.7
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
