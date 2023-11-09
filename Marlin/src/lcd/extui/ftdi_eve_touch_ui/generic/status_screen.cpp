@@ -5,6 +5,7 @@
 /****************************************************************************
  *   Written By Mark Pelletier  2017 - Aleph Objects, Inc.                  *
  *   Written By Marcio Teixeira 2018 - Aleph Objects, Inc.                  *
+ *   Written By Brian Kahl      2023 - FAME3D.                              *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -31,24 +32,23 @@
 using namespace FTDI;
 using namespace Theme;
 
-#define GRID_COLS 6
+#define GRID_COLS 9
 #define GRID_ROWS 16
 
 void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define HOME_ALL_POS          BTN_POS(1, 9), BTN_SIZE(3,2)
-    #define DISABLE_STEPPERS_POS  BTN_POS(4, 9), BTN_SIZE(3,2)
-    #define X_LBL_POS             BTN_POS(1,11), BTN_SIZE(2,2)
-    #define Y_LBL_POS             BTN_POS(3,11), BTN_SIZE(2,2)
-    #define Z_LBL_POS             BTN_POS(5,11), BTN_SIZE(2,2)
-    #define X_VAL_POS             BTN_POS(1,13), BTN_SIZE(2,2)
-    #define Y_VAL_POS             BTN_POS(3,13), BTN_SIZE(2,2)
-    #define Z_VAL_POS             BTN_POS(5,13), BTN_SIZE(2,2)
-    #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
-    #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
-    #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
+    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(3,2)
+    #define Y_LBL_POS             BTN_POS(4,7), BTN_SIZE(3,2)
+    #define Z_LBL_POS             BTN_POS(7,7), BTN_SIZE(3,2)
+    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(3,2)
+    #define Y_VAL_POS             BTN_POS(4,9), BTN_SIZE(3,2)
+    #define Z_VAL_POS             BTN_POS(7,9), BTN_SIZE(3,2)
+    #define ALL_VAL_POS           BTN_POS(1,9), BTN_SIZE(9,2)
+    #define Home_X_POS            BTN_POS(2,7), BTN_SIZE(1,2)
+    #define Home_Y_POS            BTN_POS(5,7), BTN_SIZE(1,2)
+    #define Home_Z_POS            BTN_POS(8,7), BTN_SIZE(1,2)
   #else
     #define X_LBL_POS  BTN_POS(1, 9), BTN_SIZE(1,2)
     #define Y_LBL_POS  BTN_POS(2, 9), BTN_SIZE(1,2)
@@ -63,6 +63,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 
   if (what & BACKGROUND) {
     cmd.tag(6)
+       .colors(normal_btn)
        .fgcolor(Theme::axis_label)
        .font(Theme::font_large)
                                .button(UNION_POS(X_LBL_POS, X_VAL_POS), F(""), OPT_FLAT)
@@ -105,10 +106,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        .text(X_VAL_POS, x_str)
        .text(Y_VAL_POS, y_str)
        .text(Z_VAL_POS, z_str);
-    cmd.colors(normal_btn)
-       .font(font_medium)
-       .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-       .tag(9).button(DISABLE_STEPPERS_POS, GET_TEXT_F(MSG_DISABLE_STEPPERS));
+    
     cmd.colors(text_x_axis_btn)
        .cmd (BITMAP_SOURCE(Home_icon_Info))
        .cmd (BITMAP_LAYOUT(Home_icon_Info))
@@ -133,16 +131,19 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1  BTN_POS(1,1), BTN_SIZE(3,4)
-  #define TEMP_RECT_E0 BTN_POS(1,1), BTN_SIZE(3,2)
-  #define TEMP_RECT_E1 BTN_POS(4,1), BTN_SIZE(3,2)
-  #define NOZ_1_POS    BTN_POS(1,1), BTN_SIZE(3,2)
-  #define NOZ_2_POS    BTN_POS(4,1), BTN_SIZE(3,2)
-  #define BED_POS      BTN_POS(1,3), BTN_SIZE(3,2)
-  #define FAN_POS      BTN_POS(4,3), BTN_SIZE(3,2)
-  #define Home_X_POS   BTN_POS(1,11), BTN_SIZE(1,2)
-  #define Home_Y_POS   BTN_POS(3,11), BTN_SIZE(1,2)
-  #define Home_Z_POS   BTN_POS(5,11), BTN_SIZE(1,2)
+  #define TEMP_RECT_1         BTN_POS(1,1), BTN_SIZE(3,4)
+  #define TEMP_RECT_E0        BTN_POS(1,1), BTN_SIZE(3,2)
+  #define TEMP_RECT_E1        BTN_POS(4,1), BTN_SIZE(3,2)
+  #define NOZ_1_POS           BTN_POS(1,1), BTN_SIZE(3,2)
+  #define NOZ_2_POS           BTN_POS(4,1), BTN_SIZE(3,2)
+  #define BED_POS             BTN_POS(1,3), BTN_SIZE(3,2)
+  #define FAN_POS             BTN_POS(4,3), BTN_SIZE(3,2)
+  #define HOME_ALL_POS        BTN_POS(1,5), BTN_SIZE(3,2)
+  #define TOOL_HEAD_POS       BTN_POS(4,5), BTN_SIZE(3,2)
+  #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(2,2)
+  #define PRINT_SPEED_POS     BTN_POS(3,5), BTN_SIZE(2,2)
+  #define FILAMENT_SENSOR_POS BTN_POS(5,5), BTN_SIZE(2,2)
+  #define BLANKSPACE_5_6_POS  BTN_POS(1,5), BTN_SIZE(6,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -152,8 +153,12 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   CommandProcessor cmd;
 
   if (what & BACKGROUND) {
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+       .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     cmd.font(Theme::font_small)
-       
+
        .tag(5)
        .fgcolor(temp).button(TEMP_RECT_1, F(""), OPT_FLAT)
        .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
@@ -161,12 +166,11 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
         .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #else
         .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
-       #endif 
+       #endif
        .fgcolor(fan_speed).button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
     // Draw Extruder Bitmap on Extruder Temperature Button
-
     cmd.tag(5)
        .cmd (BITMAP_SOURCE(Extruder_Icon_Info))
        .cmd (BITMAP_LAYOUT(Extruder_Icon_Info))
@@ -181,20 +185,31 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .icon(ICON_POS(BED_POS), Bed_Heat_Icon_Info, icon_scale);
 
     // Draw Fan Percent Bitmap on Bed Heat Button
-
     cmd.cmd (BITMAP_SOURCE(Fan_Icon_Info))
        .cmd (BITMAP_LAYOUT(Fan_Icon_Info))
        .cmd (BITMAP_SIZE  (Fan_Icon_Info))
        .icon(ICON_POS(FAN_POS), Fan_Icon_Info, icon_scale);
 
-    /*cmd.cmd (BITMAP_SOURCE(Home_icon_Info))
-       .cmd (BITMAP_LAYOUT(Home_icon_Info))
-       .cmd (BITMAP_SIZE  (Home_icon_Info))
-       .icon(Home_X_POS, Home_icon_Info, icon_scale)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
-*/
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
+  }
+
+  if (ExtUI::isPrinting()) {
+    cmd.colors(disabled_btn)
+       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
+    cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(6).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
+        .tag(7).button(PRINT_SPEED_POS, GET_TEXT_F(MSG_SPEED))
+        .tag(8).button(FILAMENT_SENSOR_POS, GET_TEXT_F(MSG_SENSOR));
+  }
+  else{
+    cmd.colors(disabled_btn)
+       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
+    cmd.colors(normal_btn)
+        .font(font_medium)
+        .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
   }
 
   if (what & FOREGROUND) {
@@ -253,18 +268,23 @@ void StatusScreen::draw_progress(draw_mode_t what) {
 
   CommandProcessor cmd;
 
-  #undef GRID_COLS
+ #undef GRID_COLS
+
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define GRID_COLS 3
-    #define PROGRESSZONE_POS BTN_POS(1,5), BTN_SIZE(3,2)
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+
+    #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
     #define REMAINING_POS_X  BTN_X(2)
     #define REMAINING_POS_W  BTN_W(1)
     #define PROGRESS_POS_X   BTN_X(3)
     #define PROGRESS_POS_W   BTN_W(1)
-    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(5)
-    #define PROGRESSBAR_POS  BTN_POS(1,6), BTN_SIZE(3,1)
+    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(11)
+    #define PROGRESSBAR_POS  BTN_POS(1,11), BTN_SIZE(3,2)
   #else
     #define GRID_COLS 6
     #define PROGRESSZONE_POS BTN_POS(5,1), BTN_SIZE(2,4)
@@ -364,7 +384,7 @@ void StatusScreen::draw_status_message(draw_mode_t what, const char *message) {
   #define GRID_COLS 1
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define STATUS_POS  BTN_POS(1,7), BTN_SIZE(1,2)
+    #define STATUS_POS  BTN_POS(1,13), BTN_SIZE(1,2)
   #else
     #define STATUS_POS  BTN_POS(1,5), BTN_SIZE(1,4)
   #endif
@@ -423,10 +443,10 @@ void StatusScreen::loadBitmaps() {
   // Load the bitmaps for the status screen
   using namespace Theme;
   constexpr uint32_t base = ftdi_memory_map::RAM_G;
-  CLCD::mem_write_pgm(base + TD_Icon_Info.RAMG_offset,       TD_Icon,       sizeof(TD_Icon));
-  CLCD::mem_write_pgm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
-  CLCD::mem_write_pgm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
-  CLCD::mem_write_pgm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
+  CLCD::mem_write_xbm(base + TD_Icon_Info.RAMG_offset,       TD_Icon,       sizeof(TD_Icon));
+  CLCD::mem_write_xbm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
+  CLCD::mem_write_xbm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
+  CLCD::mem_write_xbm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
   CLCD::mem_write_pgm(base + Home_icon_Info.RAMG_offset,     Home_icon,     sizeof(Home_icon));
 
   // Load fonts for internationalization
@@ -508,12 +528,12 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
 
 void StatusScreen::onMediaInserted() {
   if (AT_SCREEN(StatusScreen))
-    setStatusMessage(GET_TEXT_F(MSG_MEDIA_INSERTED));
+    setStatusMessage(GET_TEXT_F(MSG_USB_INSERTED));
 }
 
 void StatusScreen::onMediaRemoved() {
   if (AT_SCREEN(StatusScreen) || ExtUI::isPrintingFromMedia())
-    setStatusMessage(GET_TEXT_F(MSG_MEDIA_REMOVED));
+    setStatusMessage(GET_TEXT_F(MSG_USB_REMOVED));
 }
 
 #endif // FTDI_STATUS_SCREEN
