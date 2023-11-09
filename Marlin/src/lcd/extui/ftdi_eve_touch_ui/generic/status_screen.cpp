@@ -62,22 +62,9 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
   if (what & BACKGROUND) {
-    cmd.tag(6)
-       .colors(normal_btn)
-       .fgcolor(Theme::axis_label)
-       .font(Theme::font_large)
-                               .button(UNION_POS(X_LBL_POS, X_VAL_POS), F(""), OPT_FLAT)
-                               .button(UNION_POS(Y_LBL_POS, Y_VAL_POS), F(""), OPT_FLAT)
-                               .button(UNION_POS(Z_LBL_POS, Z_VAL_POS), F(""), OPT_FLAT)
+    cmd.colors(normal_btn)
        .font(Theme::font_medium)
-       .button(X_VAL_POS, F(""), OPT_FLAT)
-       .button(Y_VAL_POS, F(""), OPT_FLAT)
-       .button(Z_VAL_POS, F(""), OPT_FLAT)
-       .font(Theme::font_small)
-                               .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-                               .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-                               .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-       .colors(normal_btn);
+       .tag(6).button(ALL_VAL_POS, F(""));
   }
 
   if (what & FOREGROUND) {
@@ -106,22 +93,22 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        .text(X_VAL_POS, x_str)
        .text(Y_VAL_POS, y_str)
        .text(Z_VAL_POS, z_str);
-    
+
     cmd.colors(text_x_axis_btn)
        .cmd (BITMAP_SOURCE(Home_icon_Info))
        .cmd (BITMAP_LAYOUT(Home_icon_Info))
        .cmd (BITMAP_SIZE  (Home_icon_Info))
        .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
        .colors(normal_btn)
-       .icon(Home_X_POS, Home_icon_Info, icon_scale);
+       .icon(Home_X_POS, Home_icon_Info, icon_scale_lg);
     cmd.colors(text_y_axis_btn)
        .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
        .colors(normal_btn)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale);
+       .icon(Home_Y_POS, Home_icon_Info, icon_scale_lg);
     cmd.colors(text_z_axis_btn)
        .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
        .colors(normal_btn)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale);
+       .icon(Home_Z_POS, Home_icon_Info, icon_scale_lg);
   }
 }
 
