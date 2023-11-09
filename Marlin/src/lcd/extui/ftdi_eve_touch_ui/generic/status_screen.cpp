@@ -111,15 +111,15 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
        .cmd (BITMAP_SOURCE(Home_icon_Info))
        .cmd (BITMAP_LAYOUT(Home_icon_Info))
        .cmd (BITMAP_SIZE  (Home_icon_Info))
-       .tag(10).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+       .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
        .colors(normal_btn)
        .icon(Home_X_POS, Home_icon_Info, icon_scale);
     cmd.colors(text_y_axis_btn)
-       .tag(11).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+       .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
        .colors(normal_btn)
        .icon(Home_Y_POS, Home_icon_Info, icon_scale);
     cmd.colors(text_z_axis_btn)
-       .tag(12).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
+       .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
        .colors(normal_btn)
        .icon(Home_Z_POS, Home_icon_Info, icon_scale);
   }
@@ -155,8 +155,8 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   if (what & BACKGROUND) {
     cmd.colors(normal_btn)
        .font(font_medium)
-       .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-       .tag(9).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
+       .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+       .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     cmd.font(Theme::font_small)
 
        .tag(5)
@@ -298,57 +298,70 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESSBAR_POS  BTN_POS(5,2), BTN_SIZE(2,2)
   #endif
 
-  if (what & BACKGROUND) {
-    cmd.tag(0).font(font_medium)
-       .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
-  }
-
-  if (what & FOREGROUND) {
-    const uint32_t elapsed = getProgress_seconds_elapsed();
-    char elapsed_str[10];
-    _format_time(elapsed_str, elapsed);
-
-    #if ENABLED(SHOW_REMAINING_TIME)
-      const uint32_t remaining = getProgress_seconds_remaining();
-      char remaining_str[10];
-      _format_time(remaining_str, remaining);
-    #endif
-
-    const uint16_t current_progress = TERN(HAS_PRINT_PROGRESS_PERMYRIAD, getProgress_permyriad(), getProgress_percent() * 100);
-    constexpr uint16_t progress_range = 10000U;
-
-    const bool show_progress_bar = current_progress > 0 && current_progress < progress_range + 1;
-    if (show_progress_bar) {
+  if (ExtUI::isPrinting()) {
+    if (what & BACKGROUND) {
+      cmd.colors(disabled_btn)
+         .tag(0).button(PROGRESSZONE_POS, F(""));
       cmd.tag(0).font(font_medium)
-        .bgcolor(progress)
-        .progress(PROGRESSBAR_POS, current_progress, progress_range, OPT_FLAT);
+         .fgcolor(progress).button(PROGRESSZONE_POS, F(""), OPT_FLAT);
     }
 
-    char progress_str[10];
-    sprintf_P(progress_str,
-      #if ENABLED(PRINT_PROGRESS_SHOW_DECIMALS)
-        PSTR("%3d.%02d%%"), uint8_t(current_progress / 100), current_progress % 100
-      #else
-        PSTR("%3d%%"), uint8_t(current_progress / 100)
-      #endif
-    );
+    if (what & FOREGROUND) {
+      const uint32_t elapsed = getProgress_seconds_elapsed();
+      char elapsed_str[10];
+      _format_time(elapsed_str, elapsed);
 
-    #if ENABLED(TOUCH_UI_PORTRAIT)
-      const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(1)) : (BTN_H(2));
-      cmd.font(font_medium)
-         .tag(7).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
-         #if ENABLED(SHOW_REMAINING_TIME)
-           .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
-         #endif
-         .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
-    #else
-      cmd.font(font_medium)
-         .tag(7).text(TIME_POS, elapsed_str)
-         #if ENABLED(SHOW_REMAINING_TIME)
-           .text(REMAINING_POS, remaining_str)
-         #endif
-         .text(PROGRESS_POS, progress_str);
-    #endif
+      #if ENABLED(SHOW_REMAINING_TIME)
+        const uint32_t remaining = getProgress_seconds_remaining();
+        char remaining_str[10];
+        _format_time(remaining_str, remaining);
+      #endif
+
+      const uint16_t current_progress = TERN(HAS_PRINT_PROGRESS_PERMYRIAD, getProgress_permyriad(), getProgress_percent() * 100);
+      constexpr uint16_t progress_range = 10000U;
+
+      const bool show_progress_bar = current_progress > 0 && current_progress < progress_range + 1;
+      if (show_progress_bar) {
+        cmd.tag(0).font(font_medium)
+          .bgcolor(progress)
+          .progress(PROGRESSBAR_POS, current_progress, progress_range, OPT_FLAT);
+      }
+
+      char progress_str[10];
+      sprintf_P(progress_str,
+        #if ENABLED(PRINT_PROGRESS_SHOW_DECIMALS)
+          PSTR("%3d.%02d%%"), uint8_t(current_progress / 100), current_progress % 100
+        #else
+          PSTR("%3d%%"), uint8_t(current_progress / 100)
+        #endif
+      );
+
+      #if ENABLED(TOUCH_UI_PORTRAIT)
+        const uint16_t texts_pos_h = show_progress_bar ? (BTN_H(2)) : (BTN_H(2));
+        cmd.colors(normal_text)
+           .tag(0).button(PROGRESSZONE_POS, F(""));
+        cmd.font(font_medium)
+          .tag(0).text(TIME_POS_X, PROGRESSZONE_FIRSTLINE_Y, TIME_POS_W, texts_pos_h, elapsed_str)
+          #if ENABLED(SHOW_REMAINING_TIME)
+            .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
+          #endif
+          .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
+      #else
+        cmd.font(font_medium)
+          .tag(0).text(TIME_POS, elapsed_str)
+          #if ENABLED(SHOW_REMAINING_TIME)
+            .text(REMAINING_POS, remaining_str)
+          #endif
+          .text(PROGRESS_POS, progress_str);
+      #endif
+    }
+  }
+  else {
+    cmd.colors(disabled_btn)
+       .tag(0).button(PROGRESSZONE_POS, F(""));
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(14).button(PROGRESSZONE_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE));
   }
 }
 
@@ -512,11 +525,17 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
       }
       break;
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
-    case 8:  injectCommands(F("G28")); break;
-    case 9:  injectCommands(F("M18")); break;
-    case 10:  injectCommands(F("G28X")); break;
-    case 11:  injectCommands(F("G28Y")); break;
-    case 12:  injectCommands(F("G28Z")); break;
+    case 8:  GOTO_SCREEN(FilamentRunoutScreen); break;
+    case 9:  injectCommands(F("G28")); break;
+    #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+      case 10:  GOTO_SCREEN(CustomUserMenus); break;
+    #endif
+    if (!ExtUI::isPrinting()) {
+    case 11: injectCommands(F("G28X")); break;
+    case 12: injectCommands(F("G28Y")); break;
+    case 13: injectCommands(F("G28Z")); break;
+    }
+    case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
     default:
       return true;
   }
