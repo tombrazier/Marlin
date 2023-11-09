@@ -62,9 +62,18 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
   if (what & BACKGROUND) {
-    cmd.colors(normal_btn)
+    cmd.tag(6)
+       .colors(normal_btn)
        .font(Theme::font_medium)
-       .tag(6).button(ALL_VAL_POS, F(""));
+       .button(X_VAL_POS, F(""), OPT_FLAT)
+       .button(Y_VAL_POS, F(""), OPT_FLAT)
+       .button(Z_VAL_POS, F(""), OPT_FLAT)
+       .button(ALL_VAL_POS, F(""))
+       .font(Theme::font_small)
+                               .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+                               .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+                               .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
+       .colors(normal_btn);
   }
 
   if (what & FOREGROUND) {
