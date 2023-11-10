@@ -2240,7 +2240,7 @@
 //#define PROBE_OFFSET_XMAX  50   // (mm)
 //#define PROBE_OFFSET_YMIN -50   // (mm)
 //#define PROBE_OFFSET_YMAX  50   // (mm)
-#define PROBE_OFFSET_ZMIN -3    // (mm)
+#define PROBE_OFFSET_ZMIN -4    // (mm)
 #define PROBE_OFFSET_ZMAX  5    // (mm)
 
 // Enable the M48 repeatability test to test probe accuracy
@@ -3373,7 +3373,9 @@
  *
  *   M2 - Go to end print screen
  */
-#define ALLOW_END_PRINT_SCREEN
+#if ENABLED(TAZPro, TAZProXT)
+  #define ALLOW_END_PRINT_SCREEN
+#endif
 
 // @section stats
 
