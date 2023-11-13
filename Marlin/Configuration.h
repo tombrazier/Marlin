@@ -4456,6 +4456,8 @@
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
 
+#define ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE 1000 // <-- changed
+
 #if defined(LULZBOT_LONG_BED) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
 #elif ENABLED(LULZBOT_BLTouch, SWITCHING_NOZZLE)
