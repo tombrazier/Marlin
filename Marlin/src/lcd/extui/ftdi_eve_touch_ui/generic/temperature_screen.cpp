@@ -30,6 +30,7 @@ using namespace Theme;
 using namespace ExtUI;
 
 void TemperatureScreen::onRedraw(draw_mode_t what) {
+  CommandProcessor cmd;
   widgets_t w(what);
   #if TOUCH_UI_LCD_TEMP_SCALING == 10
     w.precision(1, DEFAULT_MIDRANGE)
@@ -71,6 +72,17 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
     w.adjuster(    10, GET_TEXT_F(MSG_FAN_SPEED), getTargetFan_percent(FAN0));
   #endif
   w.increments();
+
+  if (what & FOREGROUND) {
+    #define GRID_COLS 2
+    #define GRID_ROWS 10
+    cmd.font(Theme::font_medium)
+       .colors(normal_btn)
+       .tag(31).button(BTN_POS(1,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_1))
+       .tag(32).button(BTN_POS(2,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_2))
+       .tag(33).button(BTN_POS(1,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_3));
+
+  }
 }
 
 bool TemperatureScreen::onTouchHeld(uint8_t tag) {
@@ -104,6 +116,9 @@ bool TemperatureScreen::onTouchHeld(uint8_t tag) {
       coolDown();
       TERN_(HAS_HEATED_CHAMBER, setTargetTemp_celsius(0, CHAMBER));
       break;
+    case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(StatusScreen); break;
     default:
       return false;
   }

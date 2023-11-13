@@ -130,6 +130,9 @@ namespace LanguageNarrow_en {
   LSTR MSG_PREHEAT_1_BEDONLY              = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Bed");
   LSTR MSG_PREHEAT_1_SETTINGS             = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Conf");
 
+  LSTR MSG_PREHEAT_2                      = _UxGT("Preheat ") PREHEAT_2_LABEL;
+  LSTR MSG_PREHEAT_3                      = _UxGT("Preheat ") PREHEAT_3_LABEL;
+
   LSTR MSG_PREHEAT_M                      = _UxGT("Preheat $");
   LSTR MSG_PREHEAT_M_H                    = _UxGT("Preheat $ ~");
   LSTR MSG_PREHEAT_M_END                  = _UxGT("Preheat $ End");
