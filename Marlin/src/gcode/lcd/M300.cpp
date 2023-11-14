@@ -21,7 +21,7 @@
  */
 
 #include "../../inc/MarlinConfig.h"
-#include "../../lcd/extui/ftdi_eve_touch_ui/screens.h"
+
 #if HAS_SOUND
 
 #include "../gcode.h"
@@ -29,8 +29,12 @@
 #include "../../lcd/marlinui.h" // i2c-based BUZZ
 #include "../../libs/buzzer.h"  // Buzzer, if possible
 
+#if ENABLED(TOUCH_UI_FTDI_EVE)
+  #include "../../lcd/extui/ftdi_eve_touch_ui/screens.h"
+
   using namespace FTDI;
   using namespace Theme;
+#endif
 
 /**
  * M300: Play a Tone / Add a tone to the queue
@@ -57,15 +61,20 @@ void GcodeSuite::M300() {
 
   // Limits the tone duration to 0-5 seconds.
   NOMORE(duration, 5000U);
-  if (parser.seen('C')) {
-    sound.play(chimes, PLAY_ASYNCHRONOUS);
-  }
-  else if (parser.seen('T')) {
-    sound.play(twinkle, PLAY_ASYNCHRONOUS);
-  }
-  else{
+
+  #if ENABLED(TOUCH_UI_FTDI_EVE)
+    if (parser.seen('C')) {
+      sound.play(chimes, PLAY_ASYNCHRONOUS);
+    }
+    else if (parser.seen('T')) {
+      sound.play(twinkle, PLAY_ASYNCHRONOUS);
+    }
+    else{
+      BUZZ(duration, frequency);
+    }
+  #else
     BUZZ(duration, frequency);
-  }
+  #endif
 }
 
 #endif // HAS_SOUND
