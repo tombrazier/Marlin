@@ -92,7 +92,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.12"
+#define LULZBOT_FW_VERSION "2.1.3.0.13"
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -4470,9 +4470,11 @@
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
+
 #if ANY(TAZPro, TAZProXT)
-  #define ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE 1000 // <-- changed
+  #define ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE 1000
 #endif
+
 #if defined(LULZBOT_LONG_BED) && !defined(LULZBOT_BLTouch)
   #error The Longbed requires a BLTouch to probe the bed surface
 #elif ENABLED(LULZBOT_BLTouch, SWITCHING_NOZZLE)
