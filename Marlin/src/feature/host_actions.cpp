@@ -164,7 +164,6 @@ void HostUI::action(FSTR_P const fstr, const bool eol) {
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void HostUI::filament_load_prompt() {
-      SERIAL_ECHO_MSG("DEBUG: FILAMENT LOAD PROMPT"); // TAKEOUT
       const bool disable_to_continue = TERN0(HAS_FILAMENT_SENSOR, runout.filament_ran_out);
       prompt_do(PROMPT_FILAMENT_RUNOUT, F("Paused"), F("PurgeMore"),
         disable_to_continue ? F("DisableRunout") : FPSTR(CONTINUE_STR)
@@ -194,7 +193,6 @@ void HostUI::action(FSTR_P const fstr, const bool eol) {
 
           case 1: // "Continue" / "Disable Runout" button
             #if ALL(M600_PURGE_MORE_RESUMABLE, ADVANCED_PAUSE_FEATURE)
-              SERIAL_ECHO_MSG("DEBUG: PAUSE_RESPONSE_RESUME HostUI"); // TAKEOUT
               pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;  // Simulate menu selection
             #endif
             #if HAS_FILAMENT_SENSOR

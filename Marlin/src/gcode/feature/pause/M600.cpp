@@ -152,7 +152,6 @@ void GcodeSuite::M600() {
   if (pause_print(retract, park_point, true, unload_length DXC_PASS)) {
     if (standardM600) {
       wait_for_confirmation(true, beep_count DXC_PASS);
-      SERIAL_ECHO_MSG("DEBUG: M600 pause and resume print was called"); // TAKEOUT
       resume_print(
         true,
         FILAMENT_CHANGE_SLOW_LOAD_LENGTH,

@@ -51,7 +51,6 @@
  * M24: Start or Resume SD Print
  */
 void GcodeSuite::M24() {
-  SERIAL_ECHO_MSG("DEBUG: M24 CALLED"); // TAKEOUT
   #if DGUS_LCD_UI_MKS
     if ((print_job_timer.isPaused() || print_job_timer.isRunning()) && !parser.seen("ST"))
       MKS_resume_print_move();
@@ -64,7 +63,6 @@ void GcodeSuite::M24() {
 
   #if ENABLED(PARK_HEAD_ON_PAUSE)
     if (did_pause_print) {
-      SERIAL_ECHO_MSG("DEBUG: DID_PAUSE_PRINT: resume_print()"); // TAKEOUT
       resume_print(); // will call print_job_timer.start()
       return;
     }
@@ -78,10 +76,8 @@ void GcodeSuite::M24() {
 
   #if ENABLED(HOST_ACTION_COMMANDS)
     #ifdef ACTION_ON_RESUME
-      SERIAL_ECHO_MSG("DEBUG: Action on resume"); // TAKEOUT
       hostui.resume();
     #endif
-    SERIAL_ECHO_MSG("DEBUG: Resuming SD Prompt"); // TAKEOUT
     TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_open(PROMPT_INFO, F("Resuming SD"), FPSTR(DISMISS_STR)));
   #endif
 

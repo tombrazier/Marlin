@@ -67,7 +67,6 @@ void GcodeSuite::M125() {
 
   if(!print_job_timer.isPaused())
   {
-      SERIAL_ECHO_MSG("DEBUG: M125 - Was Running, now pausing"); // TAKEOUT
       xyz_pos_t park_point = NOZZLE_PARK_POINT;
 
       // Move to filament change position or given position
@@ -105,13 +104,8 @@ void GcodeSuite::M125() {
       {
         if ((ENABLED(HAS_DISPLAY) || ALL(EMERGENCY_PARSER, HOST_PROMPT_SUPPORT) || !sd_printing || show_lcd) && DISABLED(TOUCH_UI_FTDI_EVE)) 
         {
-          SERIAL_ECHO_MSG("DEBUG: M125 - Waiting for confirmation"); // TAKEOUT
           wait_for_confirmation(false, 0);
           resume_print(false, 0, 0, -retract, 0);
-        }
-        else
-        {
-          SERIAL_ECHO_MSG("DEBUG: M125 - NOT Waiting for confirmation"); // TAKEOUT
         }
       }   
   }
@@ -119,11 +113,9 @@ void GcodeSuite::M125() {
   {
       if(ENABLED(TOUCH_UI_FTDI_EVE))
       {
-        SERIAL_ECHO_MSG("DEBUG: M125 - Was paused, now running"); // TAKEOUT
         resume_print(false, 0, 0, -retract, 0);
       }
   }
- 
 }
 
 #endif // PARK_HEAD_ON_PAUSE
