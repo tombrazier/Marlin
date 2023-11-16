@@ -38,6 +38,7 @@ void FilamentPromptBox::onRedraw(draw_mode_t mode) {
 
 bool FilamentPromptBox::onTouchEnd(uint8_t tag) {
   SERIAL_ECHOLNPGM("Touch End Tag: ", tag);
+  SERIAL_ECHO_MSG("DEBUG: TOUCH END"); // TAKEOUT
   switch (tag) {
     case 1:
       pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;

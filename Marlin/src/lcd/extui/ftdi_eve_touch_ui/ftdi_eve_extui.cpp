@@ -126,6 +126,7 @@ namespace ExtUI {
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void filament_load_prompt(const char * const msg) {
+      SERIAL_ECHO_MSG("DEBUG: FTDI_EVE_EXTUI filament_load_promt() called"); // TAKEOUT
       if (msg)
         FilamentPromptBox::show();
       else

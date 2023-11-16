@@ -152,7 +152,9 @@ void GcodeSuite::M600() {
   if (pause_print(retract, park_point, true, unload_length DXC_PASS)) {
     if (standardM600) {
       wait_for_confirmation(true, beep_count DXC_PASS);
+      SERIAL_ECHO_MSG("DEBUG: M600 pause and resume print was called"); // TAKEOUT
       resume_print(
+        true,
         FILAMENT_CHANGE_SLOW_LOAD_LENGTH,
         ABS(parser.axisunitsval('L', E_AXIS, fc_settings[active_extruder].load_length)),
         ADVANCED_PAUSE_PURGE_LENGTH,
@@ -164,7 +166,7 @@ void GcodeSuite::M600() {
     else {
       #if ENABLED(MMU2_MENUS)
         mmu2_M600();
-        resume_print(0, 0, 0, beep_count, 0 DXC_PASS);
+        resume_print(true, 0, 0, 0, beep_count, 0 DXC_PASS);
       #endif
     }
   }
