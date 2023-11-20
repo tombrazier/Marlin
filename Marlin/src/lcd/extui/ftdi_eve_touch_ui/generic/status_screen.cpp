@@ -204,7 +204,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
     cmd.colors(normal_btn)
         .font(font_medium)
         .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-        .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
+        .enabled(ENABLED(CUSTOM_MENU_MAIN))
         .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
   }
 
@@ -529,7 +529,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  GOTO_SCREEN(FilamentRunoutScreen); break;
     case 9:  injectCommands(F("G28")); break;
-    #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+    #if ENABLED(CUSTOM_MENU_MAIN)
       case 10:  GOTO_SCREEN(CustomUserMenus); break;
     #endif
     if (!ExtUI::isPrinting()) {
