@@ -8,14 +8,14 @@
 /************** Uncomment a Tool Head Option From Below *********************/
 
 //#define TOOLHEAD_Legacy_Universal
-// #define TOOLHEAD_Galaxy_Series
+#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Twin_Nebula_175                // TAZ Pro X-Series Dual Extruder 1.75mm
 //#define TOOLHEAD_Twin_Nebula_285                // TAZ Pro X-Series Dual Extruder 2.85mm
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
@@ -3181,13 +3181,13 @@
 #define PREHEAT_1_LABEL       "PLA"
 #define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     70
-#define PREHEAT_1_TEMP_CHAMBER 35
+#define PREHEAT_1_TEMP_CHAMBER  0
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 245
 #define PREHEAT_2_TEMP_BED    110
-#define PREHEAT_2_TEMP_CHAMBER 35
+#define PREHEAT_2_TEMP_CHAMBER  0
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_3_LABEL       "TPU"
@@ -3196,15 +3196,24 @@
 #define PREHEAT_3_TEMP_CHAMBER 35
 #define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
 
+#define PREHEAT_4_LABEL       "Cold Pull"
+#define PREHEAT_4_TEMP_HOTEND 145
+#define PREHEAT_4_TEMP_BED      0
+#define PREHEAT_4_TEMP_CHAMBER  0
+#define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
+
 #define charPREHEAT_1_TEMP_HOTEND STRINGIFY(PREHEAT_1_TEMP_HOTEND)
 #define charPREHEAT_2_TEMP_HOTEND STRINGIFY(PREHEAT_2_TEMP_HOTEND)
 #define charPREHEAT_3_TEMP_HOTEND STRINGIFY(PREHEAT_3_TEMP_HOTEND)
+#define charPREHEAT_4_TEMP_HOTEND STRINGIFY(PREHEAT_4_TEMP_HOTEND)
 #define charPREHEAT_1_TEMP_BED STRINGIFY(PREHEAT_1_TEMP_BED)
 #define charPREHEAT_2_TEMP_BED STRINGIFY(PREHEAT_2_TEMP_BED)
 #define charPREHEAT_3_TEMP_BED STRINGIFY(PREHEAT_3_TEMP_BED)
+#define charPREHEAT_4_TEMP_BED STRINGIFY(PREHEAT_4_TEMP_BED)
 #define PREHEAT_1_COMMAND "M104 S" charPREHEAT_1_TEMP_HOTEND "\nM140 S" charPREHEAT_1_TEMP_BED ""
 #define PREHEAT_2_COMMAND "M104 S" charPREHEAT_2_TEMP_HOTEND "\nM140 S" charPREHEAT_2_TEMP_BED ""
 #define PREHEAT_3_COMMAND "M104 S" charPREHEAT_3_TEMP_HOTEND "\nM140 S" charPREHEAT_3_TEMP_BED ""
+#define PREHEAT_4_COMMAND "M104 S" charPREHEAT_4_TEMP_HOTEND ""
 // @section motion
 
 /**

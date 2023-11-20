@@ -80,7 +80,9 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
        .colors(normal_btn)
        .tag(31).button(BTN_POS(1,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_1))
        .tag(32).button(BTN_POS(2,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_2))
-       .tag(33).button(BTN_POS(1,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_3));
+       .tag(33).button(BTN_POS(1,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_3))
+       .colors(cold_pull_btn)
+       .tag(34).button(BTN_POS(2,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_4));
 
   }
 }
@@ -116,9 +118,10 @@ bool TemperatureScreen::onTouchHeld(uint8_t tag) {
       coolDown();
       TERN_(HAS_HEATED_CHAMBER, setTargetTemp_celsius(0, CHAMBER));
       break;
-    case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(StatusScreen); break;
-    case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(StatusScreen); break;
-    case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
+    case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
+    case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
+    case 34: injectCommands_P(PSTR(PREHEAT_4_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
     default:
       return false;
   }

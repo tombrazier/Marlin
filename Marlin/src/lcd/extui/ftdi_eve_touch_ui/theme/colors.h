@@ -155,6 +155,7 @@ namespace Theme {
   constexpr uint32_t e_axis                 = axis_label;
   constexpr uint32_t feedrate               = axis_label;
   constexpr uint32_t other                  = axis_label;
+  constexpr uint32_t cold_pull              = hsl_to_rgb(190, 0.5, 0.50);
 
   // Status screen
   constexpr uint32_t progress               = axis_label;
@@ -194,6 +195,7 @@ namespace Theme {
   constexpr btn_colors text_x_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = x_axis };
   constexpr btn_colors text_y_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = y_axis };
   constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = z_axis };
+  constexpr btn_colors cold_pull_btn        = {.bg = fg_action,     .grad = fg_normal,   .fg = cold_pull,       .rgb = 0xFFFFFF };
 
 
   // Temperature color scale

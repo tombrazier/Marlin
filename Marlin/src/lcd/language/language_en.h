@@ -132,6 +132,7 @@ namespace LanguageNarrow_en {
 
   LSTR MSG_PREHEAT_2                      = _UxGT("Preheat ") PREHEAT_2_LABEL;
   LSTR MSG_PREHEAT_3                      = _UxGT("Preheat ") PREHEAT_3_LABEL;
+  LSTR MSG_PREHEAT_4                      = PREHEAT_4_LABEL;
 
   LSTR MSG_PREHEAT_M                      = _UxGT("Preheat $");
   LSTR MSG_PREHEAT_M_H                    = _UxGT("Preheat $ ~");
