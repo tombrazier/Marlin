@@ -1712,7 +1712,7 @@ void MarlinUI::host_notify(const char * const cstr) {
       pause_show_message(PAUSE_MESSAGE_PARKING, PAUSE_MODE_PAUSE_PRINT); // Show message immediately to let user know about pause in progress
       if(ENABLED(TOUCH_UI_FTDI_EVE))
       {
-        queue.inject(F("M25\nM118\nM118\nM118"));
+        queue.inject(F("M25"));
       }
       else
       {

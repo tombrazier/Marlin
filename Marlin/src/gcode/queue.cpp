@@ -335,6 +335,11 @@ FORCE_INLINE bool is_M29(const char * const cmd) {  // matches "M29" & "M29 ", b
   return m29 && !NUMERIC(m29[3]);
 }
 
+FORCE_INLINE bool is_M24(const char * const cmd) {  // matches "M24" & "M24 ", but not "M240", etc
+  const char * const m24 = strstr_P(cmd, PSTR("M24"));
+  return m24 && !NUMERIC(m24[3]);
+}
+
 #define PS_NORMAL 0
 #define PS_EOL    1
 #define PS_QUOTED 2
@@ -639,6 +644,52 @@ void GCodeQueue::exhaust() {
   planner.synchronize();
 }
 
+void GCodeQueue::execute_command(GCodeQueue::CommandLine& command) {
+    // Assuming GCodeQueue::CommandLine is the type of your command in the ring buffer
+    // and queue is an instance of your ring buffer
+
+    PORT_REDIRECT(SERIAL_PORTMASK(command.port));
+
+    TERN_(POWER_LOSS_RECOVERY, recovery.queue_index_r = queue.ring_buffer.index_r);
+
+    if (DEBUGGING(ECHO)) {
+        SERIAL_ECHO_START();
+        SERIAL_ECHOLN(command.buffer);
+        #if ENABLED(M100_FREE_MEMORY_DUMPER)
+            SERIAL_ECHOPGM("slot:", queue.ring_buffer.index_r);
+            M100_dump_routine(F("   Command Queue:"), (const char*)&queue.ring_buffer, sizeof(queue.ring_buffer));
+        #endif
+    }
+
+    // Parse the command
+    parser.parse(command.buffer);
+    gcode.process_parsed_command();
+}
+
+void GCodeQueue::search_and_execute_command(RingBuffer& ring_buffer, const char* target_cmd) {
+    uint8_t original_index_r = ring_buffer.index_r;
+    // Iterate through the ring buffer
+    for (uint8_t i = 0; i < ring_buffer.length; ++i) {
+        // Check if the current command matches the target command
+        if (is_M24(ring_buffer.peek_next_command_string())) {
+            // Execute the command
+            execute_command(ring_buffer.peek_next_command());
+            // Remove the command from the ring buffer
+            // Advance the read pointer and decrement the length
+            ring_buffer.advance_pos(ring_buffer.index_r, -1);
+
+            // Break the loop after executing the command
+            break;
+        }
+
+        // Advance to the next command in the ring buffer
+        ring_buffer.advance_pos(ring_buffer.index_r, 1);
+    }
+
+    // Reset the read index to its original position
+    ring_buffer.index_r = original_index_r;
+}
+
 /**
  * Get the next command in the queue, optionally log it to SD, then dispatch it
  */
@@ -669,51 +720,66 @@ void GCodeQueue::advance() {
 
   #if HAS_MEDIA
     #ifdef TOUCH_UI_FTDI_EVE
-    if(!print_job_timer.isPaused())
-    #else
-    if(1)
-    #endif
+    if (print_job_timer.isPaused()) 
     {
-      if (card.flag.saving) {
-      char * const cmd = ring_buffer.peek_next_command_string();
-      if (is_M29(cmd)) {
-        // M29 closes the file
-        card.closefile();
-        SERIAL_ECHOLNPGM(STR_FILE_SAVED);
-
-        #if !defined(__AVR__) || !defined(USBCON)
-          #if ENABLED(SERIAL_STATS_DROPPED_RX)
-            SERIAL_ECHOLNPGM("Dropped bytes: ", MYSERIAL1.dropped());
-          #endif
-          #if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
-            SERIAL_ECHOLNPGM("Max RX Queue Size: ", MYSERIAL1.rxMaxEnqueued());
-          #endif
-        #endif
-
-        ok_to_send();
-      }
-      else {
-        // Write the string from the read buffer to SD
-        card.write_command(cmd);
-        if (card.flag.logging)
-          gcode.process_next_command(); // The card is saving because it's logging
-        else
-          ok_to_send();
-      }
+      search_and_execute_command(ring_buffer, "M24");
     }
     else
-      gcode.process_next_command();
+    {
+    #else
+    if(1)
+    {
+    #endif
+        if (card.flag.saving) {
+        char * const cmd = ring_buffer.peek_next_command_string();
+        if (is_M29(cmd)) {
+          // M29 closes the file
+          card.closefile();
+          SERIAL_ECHOLNPGM(STR_FILE_SAVED);
 
+          #if !defined(__AVR__) || !defined(USBCON)
+            #if ENABLED(SERIAL_STATS_DROPPED_RX)
+              SERIAL_ECHOLNPGM("Dropped bytes: ", MYSERIAL1.dropped());
+            #endif
+            #if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
+              SERIAL_ECHOLNPGM("Max RX Queue Size: ", MYSERIAL1.rxMaxEnqueued());
+            #endif
+          #endif
+
+          ok_to_send();
+        }
+        else {
+          // Write the string from the read buffer to SD
+          card.write_command(cmd);
+          if (card.flag.logging)
+            gcode.process_next_command(); // The card is saving because it's logging
+          else
+            ok_to_send();
+        }
+      }
+      else
+      {
+        gcode.process_next_command();
+      }
+      
+      #ifdef TOUCH_UI_FTDI_EVE
+      if (!print_job_timer.isPaused()) 
+      {
+        ring_buffer.advance_pos(ring_buffer.index_r, -1);
+      }
+      #else
+      ring_buffer.advance_pos(ring_buffer.index_r, -1);
+      #endif
     }
     
   #else
 
     gcode.process_next_command();
+      // The queue may be reset by a command handler or by code invoked by idle() within a handler
+    ring_buffer.advance_pos(ring_buffer.index_r, -1);
 
   #endif // HAS_MEDIA
 
-  // The queue may be reset by a command handler or by code invoked by idle() within a handler
-  ring_buffer.advance_pos(ring_buffer.index_r, -1);
 }
 
 #if ENABLED(BUFFER_MONITORING)
