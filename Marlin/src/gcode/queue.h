@@ -176,6 +176,10 @@ public:
    */
   static void exhaust();
 
+  static void execute_command(CommandLine& command);
+
+  static void search_and_execute_command(RingBuffer& ring_buffer, const char* target_cmd);
+  
   /**
    * Add to the circular command queue the next command from:
    *  - The command-injection queue (injected_commands_P)

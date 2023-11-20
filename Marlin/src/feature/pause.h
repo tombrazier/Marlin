@@ -94,6 +94,7 @@ void wait_for_confirmation(
 );
 
 void resume_print(
+  const bool      loading_filament=false,                     // if true, give screen to load filament
   const_float_t   slow_load_length=0,                         // (mm) Slow Load Length for finishing move
   const_float_t   fast_load_length=0,                         // (mm) Fast Load Length for initial move
   const_float_t   extrude_length=ADVANCED_PAUSE_PURGE_LENGTH, // (mm) Purge length

@@ -51,7 +51,6 @@
  * M24: Start or Resume SD Print
  */
 void GcodeSuite::M24() {
-
   #if DGUS_LCD_UI_MKS
     if ((print_job_timer.isPaused() || print_job_timer.isRunning()) && !parser.seen("ST"))
       MKS_resume_print_move();
