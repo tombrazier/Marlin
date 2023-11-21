@@ -81,14 +81,15 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
   if (what & FOREGROUND) {
     #define GRID_COLS 2
     #define GRID_ROWS (9+EXTRUDERS)
-    cmd.font(Theme::font_medium)
-       .colors(normal_btn)
-       .tag(31).button(PREHEAT_1_POS, GET_TEXT_F(MSG_PREHEAT_1))
-       .tag(32).button(PREHEAT_2_POS, GET_TEXT_F(MSG_PREHEAT_2))
-       .tag(33).button(PREHEAT_3_POS, GET_TEXT_F(MSG_PREHEAT_3))
-       .colors(cold_pull_btn)
-       .tag(34).button(PREHEAT_4_POS, GET_TEXT_F(MSG_PREHEAT_4));
-
+    if (!ExtUI::isPrinting()) {
+      cmd.font(Theme::font_medium)
+          .colors(normal_btn)
+          .tag(31).button(PREHEAT_1_POS, GET_TEXT_F(MSG_PREHEAT_1))
+          .tag(32).button(PREHEAT_2_POS, GET_TEXT_F(MSG_PREHEAT_2))
+          .tag(33).button(PREHEAT_3_POS, GET_TEXT_F(MSG_PREHEAT_3))
+          .colors(cold_pull_btn)
+          .tag(34).button(PREHEAT_4_POS, GET_TEXT_F(MSG_PREHEAT_4));
+    }
   }
 }
 
@@ -123,10 +124,10 @@ bool TemperatureScreen::onTouchHeld(uint8_t tag) {
       coolDown();
       TERN_(HAS_HEATED_CHAMBER, setTargetTemp_celsius(0, CHAMBER));
       break;
-    case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
-    case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
-    case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
-    case 34: injectCommands_P(PSTR(PREHEAT_4_COMMAND)); GOTO_SCREEN(ChangeFilamentScreen); break;
+    case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(StatusScreen); break;
+    case 34: injectCommands_P(PSTR(PREHEAT_4_COMMAND)); GOTO_SCREEN(StatusScreen); break;
     default:
       return false;
   }
