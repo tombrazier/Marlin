@@ -43,7 +43,7 @@ bool ConfirmAbortPrintDialogBox::onTouchEnd(uint8_t tag) {
       #ifdef ACTION_ON_CANCEL
         else hostui.cancel();
       #endif
-      injectCommands(F("M104 S0"));
+      injectCommands(F("G28\nM104 S0"));
       return true;
     default:
       return DialogBoxBaseClass::onTouchEnd(tag);
