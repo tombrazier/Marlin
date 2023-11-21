@@ -1409,7 +1409,7 @@
       #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
-    #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
+    #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
       #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
       #define CALIBRATION_MEASURE_FRONT
@@ -4100,7 +4100,7 @@
  * User-defined menu items to run custom G-code.
  * Up to 25 may be defined, but the actual number is LCD-dependent.
  */
-#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series, TOOLHEAD_Galaxy_DualExtruder)
   #define CUSTOM_MENU_MAIN
 #endif
  #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
@@ -4122,6 +4122,8 @@
     #define E_CURRENT_BMG  "M906 E960"
     #define E_CURRENT_LGX175 "M906 E750"
     #define E_CURRENT_LGX285 "M906 E850"
+    #define E_CURRENT_TWNB175 "M906 T0 E750 T1 E750"
+    #define E_CURRENT_TWNB285 "M906 T0 E850 T1 E850"
   #endif
 
 
@@ -4139,6 +4141,13 @@
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
       #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\n" E_CURRENT_LGX285 "\nM900 K0.03\nM500\nM117 AST-2.85|0.50mm|GM STEEL"
     #endif
+
+  #elif defined(TOOLHEAD_Galaxy_DualExtruder)
+    #define MAIN_MENU_ITEM_2_DESC "TWNB175|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\n" E_CURRENT_TWNB175 "\nM900 K0.05\nM500\nM117 TWNB-1.75|0.50mm|NKL-PL BRASS"
+
+    #define MAIN_MENU_ITEM_3_DESC "TWNB285|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\n" E_CURRENT_TWNB285 "\nM900 K0.05\nM500\nM117 TWNB-2.85|0.50mm|NKL-PL BRASS"
 
   #elif defined(TOOLHEAD_Legacy_Universal)
     #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT)
