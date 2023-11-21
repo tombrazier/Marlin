@@ -97,27 +97,41 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     else
       strcpy_P(z_str, PSTR("?"));
 
-    cmd.tag(6)
-       .font(Theme::font_medium)
-       .text(X_VAL_POS, x_str)
-       .text(Y_VAL_POS, y_str)
-       .text(Z_VAL_POS, z_str);
+    if (!ExtUI::isPrinting()) {
+      cmd.tag(6)
+        .font(Theme::font_medium)
+        .text(X_VAL_POS, x_str)
+        .text(Y_VAL_POS, y_str)
+        .text(Z_VAL_POS, z_str);
 
-    cmd.colors(text_x_axis_btn)
-       .cmd (BITMAP_SOURCE(Home_icon_Info))
-       .cmd (BITMAP_LAYOUT(Home_icon_Info))
-       .cmd (BITMAP_SIZE  (Home_icon_Info))
-       .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-       .colors(normal_btn)
-       .icon(Home_X_POS, Home_icon_Info, icon_scale_lg);
-    cmd.colors(text_y_axis_btn)
-       .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-       .colors(normal_btn)
-       .icon(Home_Y_POS, Home_icon_Info, icon_scale_lg);
-    cmd.colors(text_z_axis_btn)
-       .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-       .colors(normal_btn)
-       .icon(Home_Z_POS, Home_icon_Info, icon_scale_lg);
+      cmd.colors(text_x_axis_btn)
+        .cmd (BITMAP_SOURCE(Home_icon_Info))
+        .cmd (BITMAP_LAYOUT(Home_icon_Info))
+        .cmd (BITMAP_SIZE  (Home_icon_Info))
+        .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+        .colors(normal_btn)
+        .icon(Home_X_POS, Home_icon_Info, icon_scale_lg);
+      cmd.colors(text_y_axis_btn)
+        .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+        .colors(normal_btn)
+        .icon(Home_Y_POS, Home_icon_Info, icon_scale_lg);
+      cmd.colors(text_z_axis_btn)
+        .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
+        .colors(normal_btn)
+        .icon(Home_Z_POS, Home_icon_Info, icon_scale_lg);
+    }
+    else{
+      cmd.colors(normal_text)
+          .font(Theme::font_medium)
+          .tag(0).button(ALL_VAL_POS, F(""));
+      cmd.colors(text_x_axis)
+          .font(font_medium)
+          .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
+      cmd.colors(text_y_axis)
+          .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
+      cmd.colors(text_z_axis)
+          .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+    }
   }
 }
 
