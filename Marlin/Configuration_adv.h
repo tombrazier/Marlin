@@ -1696,7 +1696,7 @@
   #define SOUND_ON_DEFAULT    // Buzzer/speaker default enabled state
 
   // The timeout to return to the status screen from sub-menus
-  #define LCD_TIMEOUT_TO_STATUS 15000   // (ms)
+  #define LCD_TIMEOUT_TO_STATUS (15*60*1000)   // (ms) 15 minutes for screen timeout
 
   // Scroll a longer status message into view
   #define STATUS_MESSAGE_SCROLLING
