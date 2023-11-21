@@ -73,16 +73,21 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
   #endif
   w.increments();
 
+  #define PREHEAT_1_POS         BTN_POS(1,(6+EXTRUDERS)), BTN_SIZE(1,1)
+  #define PREHEAT_2_POS         BTN_POS(2,(6+EXTRUDERS)), BTN_SIZE(1,1)
+  #define PREHEAT_3_POS         BTN_POS(1,(7+EXTRUDERS)), BTN_SIZE(1,1)
+  #define PREHEAT_4_POS         BTN_POS(2,(7+EXTRUDERS)), BTN_SIZE(1,1)
+
   if (what & FOREGROUND) {
     #define GRID_COLS 2
-    #define GRID_ROWS 10
+    #define GRID_ROWS (9+EXTRUDERS)
     cmd.font(Theme::font_medium)
        .colors(normal_btn)
-       .tag(31).button(BTN_POS(1,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_1))
-       .tag(32).button(BTN_POS(2,7), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_2))
-       .tag(33).button(BTN_POS(1,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_3))
+       .tag(31).button(PREHEAT_1_POS, GET_TEXT_F(MSG_PREHEAT_1))
+       .tag(32).button(PREHEAT_2_POS, GET_TEXT_F(MSG_PREHEAT_2))
+       .tag(33).button(PREHEAT_3_POS, GET_TEXT_F(MSG_PREHEAT_3))
        .colors(cold_pull_btn)
-       .tag(34).button(BTN_POS(2,8), BTN_SIZE(1,1), GET_TEXT_F(MSG_PREHEAT_4));
+       .tag(34).button(PREHEAT_4_POS, GET_TEXT_F(MSG_PREHEAT_4));
 
   }
 }
