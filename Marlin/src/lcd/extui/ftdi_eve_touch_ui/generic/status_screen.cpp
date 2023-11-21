@@ -261,19 +261,17 @@ void StatusScreen::_format_time(char *outstr, uint32_t time) {
 void StatusScreen::draw_progress(draw_mode_t what) {
   using namespace ExtUI;
   using namespace Theme;
-  char * const filename = card.longest_filename();
 
   CommandProcessor cmd;
 
  #undef GRID_COLS
- #undef GRID_ROWS
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define GRID_COLS 3
-    #define GRID_ROWS 32
-    #define FILE_NAME_POS       BTN_POS(1,21), BTN_SIZE(3,2)
-    #define PROGRESSZONE_POS    BTN_POS(1,21), BTN_SIZE(3,4)
-    #define CHANGE_FILAMENT_POS BTN_POS(1,21), BTN_SIZE(3,4)
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+  #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
+
+    #define PROGRESSZONE_POS BTN_POS(1,11), BTN_SIZE(3,2)
 
     #define TIME_POS_X       BTN_X(1)
     #define TIME_POS_W       BTN_W(1)
@@ -281,8 +279,8 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define REMAINING_POS_W  BTN_W(1)
     #define PROGRESS_POS_X   BTN_X(3)
     #define PROGRESS_POS_W   BTN_W(1)
-    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(23)
-    #define PROGRESSBAR_POS  BTN_POS(1,23), BTN_SIZE(3,4)
+    #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(11)
+    #define PROGRESSBAR_POS  BTN_POS(1,11), BTN_SIZE(3,2)
   #else
     #define GRID_COLS 6
     #define PROGRESSZONE_POS BTN_POS(5,1), BTN_SIZE(2,4)
@@ -344,8 +342,6 @@ void StatusScreen::draw_progress(draw_mode_t what) {
             .text(REMAINING_POS_X, PROGRESSZONE_FIRSTLINE_Y, REMAINING_POS_W, texts_pos_h, remaining_str)
           #endif
           .text(PROGRESS_POS_X, PROGRESSZONE_FIRSTLINE_Y, PROGRESS_POS_W, texts_pos_h, progress_str);
-        cmd.tag(0).font(font_medium)
-          .colors(normal_btn).button(FILE_NAME_POS, filename, OPT_FLAT);
       #else
         cmd.font(font_medium)
           .tag(0).text(TIME_POS, elapsed_str)
@@ -358,18 +354,16 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   }
   else {
     cmd.colors(disabled_btn)
-       .tag(0).button(CHANGE_FILAMENT_POS, F(""));
+       .tag(0).button(PROGRESSZONE_POS, F(""));
     cmd.colors(normal_btn)
        .font(font_medium)
-       .tag(14).button(CHANGE_FILAMENT_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE));
+       .tag(14).button(PROGRESSZONE_POS,  GET_TEXT_F(MSG_FILAMENTCHANGE));
   }
 }
 
 void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
   #undef GRID_COLS
-  #undef GRID_ROWS
   #define GRID_COLS 4
-  #define GRID_ROWS 16
   if (what & FOREGROUND) {
     using namespace ExtUI;
 
