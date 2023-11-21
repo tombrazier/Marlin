@@ -97,13 +97,16 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     else
       strcpy_P(z_str, PSTR("?"));
 
-    if (!ExtUI::isPrinting()) {
-      cmd.tag(6)
-        .font(Theme::font_medium)
-        .text(X_VAL_POS, x_str)
-        .text(Y_VAL_POS, y_str)
-        .text(Z_VAL_POS, z_str);
+    cmd.colors(normal_text)
+          .font(Theme::font_medium)
+          .tag(0).button(ALL_VAL_POS, F(""));
+    cmd.tag(6)
+      .font(Theme::font_medium)
+      .text(X_VAL_POS, x_str)
+      .text(Y_VAL_POS, y_str)
+      .text(Z_VAL_POS, z_str);
 
+    if (!ExtUI::isOngoingPrintJob()) {
       cmd.colors(text_x_axis_btn)
         .cmd (BITMAP_SOURCE(Home_icon_Info))
         .cmd (BITMAP_LAYOUT(Home_icon_Info))
@@ -121,9 +124,6 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
         .icon(Home_Z_POS, Home_icon_Info, icon_scale_lg);
     }
     else{
-      cmd.colors(normal_text)
-          .font(Theme::font_medium)
-          .tag(0).button(ALL_VAL_POS, F(""));
       cmd.colors(text_x_axis)
           .font(font_medium)
           .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
@@ -203,7 +203,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
   }
 
-  if (ExtUI::isPrinting()) {
+  if (ExtUI::isOngoingPrintJob()) {
     cmd.colors(disabled_btn)
        .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
@@ -308,7 +308,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESSBAR_POS  BTN_POS(5,2), BTN_SIZE(2,2)
   #endif
 
-  if (ExtUI::isPrinting()) {
+  if ((ExtUI::isPrinting() && !ExtUI::isPrintingPaused())) {
     if (what & BACKGROUND) {
       cmd.colors(disabled_btn)
          .tag(0).button(PROGRESSZONE_POS, F(""));
@@ -540,7 +540,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
       case 10:  GOTO_SCREEN(CustomUserMenus); break;
     #endif
-    if (!ExtUI::isPrinting()) {
+    if (!ExtUI::isOngoingPrintJob()) {
     case 11: injectCommands(F("G28X")); break;
     case 12: injectCommands(F("G28Y")); break;
     case 13: injectCommands(F("G28Z")); break;
