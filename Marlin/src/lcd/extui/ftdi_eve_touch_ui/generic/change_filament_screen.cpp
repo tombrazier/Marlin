@@ -40,7 +40,7 @@ constexpr static ChangeFilamentScreenData &mydata = screen_data.ChangeFilamentSc
   #define UNLOAD_POS           BTN_POS(3,7),  BTN_SIZE(2,2)
   #define LOAD_POS             BTN_POS(1,7),  BTN_SIZE(2,2)
   #define COOLDOWN_POS         BTN_POS(1,9),  BTN_SIZE(4,1)
-  #define TOOLHEAD_SWAP_POS    BTN_POS(1,10), BTN_SIZE(4,1)
+  #define FILAMENT_SWAP_POS    BTN_POS(1,10), BTN_SIZE(4,1)
   #define BACK_POS             BTN_POS(1,11), BTN_SIZE(4,1)
 #else
   #define GRID_COLS 4
@@ -264,7 +264,7 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
        .tag(8).TOG_STYLE(tog8).enabled(t_ok).button (LOAD_POS, GET_TEXT_F(MSG_LOAD))
        .font(font_medium)
        .tag(16).colors(cold_pull_btn)       .button (COOLDOWN_POS, GET_TEXT_F(MSG_COOLDOWN))
-       .tag(17).colors(normal_btn)          .button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_TOOL_HEAD_SWAP))
+       .tag(17).colors(normal_btn)          .button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_SWAP))
        .tag(1).colors(action_btn)           .button (BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
   }
 }

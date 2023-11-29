@@ -73,7 +73,7 @@ BaseNumericAdjustmentScreen::widgets_t::widgets_t(draw_mode_t what) : _what(what
       #else
         BTN_POS(15,7), BTN_SIZE(4,1),
       #endif
-      GET_TEXT_F(MSG_FILAMENT_TOOL_HEAD_SWAP), true, true
+      GET_TEXT_F(MSG_TOOL_HEAD_SWAP), true, true
     );
   }
 

@@ -93,7 +93,7 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
           .tag(34).button(PREHEAT_4_POS, GET_TEXT_F(MSG_PREHEAT_4))
           .tag(30).button(COOLDOWN_POS, GET_TEXT_F(MSG_COOLDOWN))
           .colors(normal_btn)
-          .tag(35).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_TOOL_HEAD_SWAP));
+          .tag(35).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP));
     }
   }
 }

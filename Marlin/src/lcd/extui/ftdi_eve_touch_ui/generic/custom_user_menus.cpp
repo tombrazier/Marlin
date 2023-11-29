@@ -49,17 +49,23 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
       #define GRID_ROWS 7
     #endif
     #define GRID_COLS 1
-    #define USER_ITEM_POS(N) BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
-    #define BACK_POS         BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
+    #define TOOLHEAD_LABL_POS BTN_POS(1, 1), BTN_SIZE(GRID_COLS,1)
+    #define USER_ITEM_POS(N)  BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
+    #define TOOLHEAD_SWAP_POS BTN_POS(1,GRID_ROWS-1), BTN_SIZE(GRID_COLS,1)
+    #define BACK_POS          BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
   #else
     #define GRID_ROWS 9
     #define GRID_COLS 1
-    #define USER_ITEM_POS(N) BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
-    #define BACK_POS         BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
+    #define USER_ITEM_POS(N)  BTN_POS(1, N), BTN_SIZE(GRID_COLS,1)
+    #define TOOLHEAD_SWAP_POS BTN_POS(1,GRID_ROWS-1), BTN_SIZE(GRID_COLS,1)
+    #define BACK_POS          BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
   #endif
 
   if (what & FOREGROUND) {
     CommandProcessor cmd;
+    cmd.colors(normal_btn)
+       .font(Theme::font_medium)
+       .tag(0).text(TOOLHEAD_LABL_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     cmd.colors(accent_btn)
        .font(Theme::font_medium)
        #if defined(MAIN_MENU_ITEM_1_DESC)
@@ -95,8 +101,8 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
         //_USER_ITEM(8)
         .tag(_ITEM_TAG(18)).button(USER_ITEM_POS(8), MAIN_MENU_ITEM_8_DESC)
        #endif
-      .colors(action_btn)
-      .tag(1).button(BACK_POS, GET_TEXT_F(MSG_BACK));
+      .tag(17).colors(normal_btn).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP))
+      .tag(1).colors(action_btn).button(BACK_POS, GET_TEXT_F(MSG_BACK));
   }
 }
 
@@ -136,6 +142,7 @@ bool CustomUserMenus::onTouchEnd(uint8_t tag) {
     #endif
 
     case 1: GOTO_PREVIOUS(); break;
+    case 20: injectCommands(F("G28O\nG0 X100 Y283 Z200 F3000"));
     default: return false;
   }
   return true;
