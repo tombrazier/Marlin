@@ -118,6 +118,8 @@ namespace Language_en {
   LSTR MSG_HOT                      = u8"Hot!";
   LSTR MSG_UNLOAD_FILAMENT          = u8"Unload/Retract";
   LSTR MSG_LOAD_FILAMENT            = u8"Load/Extrude";
+  LSTR MSG_LOAD                     = u8"Load";
+  LSTR MSG_UNLOAD                   = u8"Unload";
   LSTR MSG_MOMENTARY                = u8"Momentary";
   LSTR MSG_CONTINUOUS               = u8"Continuous";
   LSTR MSG_PRINT_MENU               = u8"Print Menu";

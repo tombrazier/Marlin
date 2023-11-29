@@ -165,8 +165,8 @@ namespace Theme {
     constexpr uint32_t fan_speed            = hsl_to_rgb(240, 0.5, 0.13);
     constexpr uint32_t temp                 = hsl_to_rgb(343, 1.0, 0.23);
   #else
-    constexpr uint32_t fan_speed            = hsl_to_rgb(204, 0.47, 0.41);
-    constexpr uint32_t fan_speed_button     = hsl_to_rgb(204, 0.47, 0.41);
+    constexpr uint32_t fan_speed            = hsl_to_rgb(300, 0.45, 0.30);
+    constexpr uint32_t fan_speed_button     = hsl_to_rgb(300, 0.45, 0.30);
     constexpr uint32_t temp                 = hsl_to_rgb(accent_hue, accent_sat, 0.30);
     constexpr uint32_t temp_button          = hsl_to_rgb(accent_hue, accent_sat, 0.39);
   #endif
@@ -202,8 +202,8 @@ namespace Theme {
 
   // Temperature color scale
 
-  const rgb_t cool_rgb (  0,   0,   0);
-  const rgb_t low_rgb  (128,   0,   0);
-  const rgb_t med_rgb  (255, 128,   0);
-  const rgb_t high_rgb (255, 255, 128);
+  const rgb_t cool_rgb (100, 100,  80);
+  const rgb_t low_rgb  (128,  50,   0);
+  const rgb_t med_rgb  (200,  85,   0);
+  const rgb_t high_rgb (255,  85,   0);
 };
