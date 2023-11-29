@@ -157,7 +157,6 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
   }
 
   if (what & FOREGROUND) {
-    widgets_t w(what);
     char e0_str[20], e1_str[20];
     const extruder_t e = getExtruder();
 

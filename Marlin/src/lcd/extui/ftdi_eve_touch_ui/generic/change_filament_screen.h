@@ -33,7 +33,7 @@ struct ChangeFilamentScreenData {
   #endif
 };
 
-class ChangeFilamentScreen : public BaseNumericAdjustmentScreen, public CachedScreen<CHANGE_FILAMENT_SCREEN_CACHE> {//public BaseScreen,
+class ChangeFilamentScreen : public BaseScreen, public CachedScreen<CHANGE_FILAMENT_SCREEN_CACHE> {
   private:
     static uint8_t getSoftenTemp();
     static ExtUI::extruder_t getExtruder();
