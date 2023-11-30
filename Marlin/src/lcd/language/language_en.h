@@ -361,7 +361,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_CONTROLLER_FAN_AUTO_ON         = _UxGT("Auto Mode");
   LSTR MSG_CONTROLLER_FAN_SPEED           = _UxGT("Active Speed");
   LSTR MSG_CONTROLLER_FAN_DURATION        = _UxGT("Idle Period");
-  LSTR MSG_FLOW                           = _UxGT("Set Flow Percentage");
+  LSTR MSG_FLOW_PERCENTAGE                = _UxGT("Set Flowrate Percentage");
+  LSTR MSG_FLOW                           = _UxGT("Flowrate");
   LSTR MSG_FLOW_N                         = _UxGT("Flow ~");
   LSTR MSG_CONTROL                        = _UxGT("Control");
   LSTR MSG_MIN                            = " " LCD_STR_THERMOMETER _UxGT(" Min");
@@ -555,7 +556,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_FILAMENT_SWAP_EXTRA            = _UxGT("Swap Extra");
   LSTR MSG_FILAMENT_PURGE_LENGTH          = _UxGT("Purge Length");
   LSTR MSG_TOOL_CHANGE                    = _UxGT("Tool Change");
-  LSTR MSG_FILAMENT_TOOL_HEAD_SWAP        = _UxGT("Filament or Tool Head Swap");
+  LSTR MSG_TOOL_HEAD_SWAP                 = _UxGT("Park For Tool Head Swap");
+  LSTR MSG_FILAMENT_SWAP                  = _UxGT("Park For Filament Change");
   LSTR MSG_TOOL_CHANGE_ZLIFT              = _UxGT("Z Raise");
   LSTR MSG_SINGLENOZZLE_PRIME_SPEED       = _UxGT("Prime Speed");
   LSTR MSG_SINGLENOZZLE_WIPE_RETRACT      = _UxGT("Wipe Retract");

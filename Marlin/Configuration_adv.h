@@ -4126,9 +4126,10 @@
     #define E_CURRENT_TWNB285 "M906 T0 E850 T1 E850"
   #endif
 
-
-  #define MAIN_MENU_ITEM_1_DESC "Park for TH Swap"
-  #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"
+  #if DISABLED(TAZPro, TAZProV2, TAZProXT)
+    #define MAIN_MENU_ITEM_1_DESC "Park for TH Swap"
+    #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"
+  #endif
 
   #if defined(TOOLHEAD_Galaxy_Series)
     #define MAIN_MENU_ITEM_2_DESC "MET175|NKL-PL BRASS"
