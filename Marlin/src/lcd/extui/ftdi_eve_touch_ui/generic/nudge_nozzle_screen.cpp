@@ -46,7 +46,7 @@ void NudgeNozzleScreen::onRedraw(draw_mode_t what) {
   widgets_t w(what);
   w.precision(2, BaseNumericAdjustmentScreen::DEFAULT_MIDRANGE).units(GET_TEXT_F(MSG_UNITS_MM));
 
-  w.heading(GET_TEXT_F(MSG_NUDGE_NOZZLE));
+  w.heading(GET_TEXT_F(MSG_ZOFFSET));
   #if ENABLED(BABYSTEP_XY)
   w.color(x_axis).adjuster(2, GET_TEXT_F(MSG_AXIS_X), mydata.rel.x / getAxisSteps_per_mm(X));
   w.color(y_axis).adjuster(4, GET_TEXT_F(MSG_AXIS_Y), mydata.rel.y / getAxisSteps_per_mm(Y));

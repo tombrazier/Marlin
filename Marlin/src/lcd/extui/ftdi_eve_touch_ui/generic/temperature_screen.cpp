@@ -68,7 +68,7 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
     w.adjuster(    22, GET_TEXT_F(MSG_CHAMBER), getTargetTemp_celsius(CHAMBER));
   #endif
   #if HAS_FAN0
-    w.color(fan_speed).units(GET_TEXT_F(MSG_UNITS_PERCENT));
+    w.color(temp).units(GET_TEXT_F(MSG_UNITS_PERCENT));
     w.adjuster(    10, GET_TEXT_F(MSG_FAN_SPEED), getTargetFan_percent(FAN0));
   #endif
   w.increments();

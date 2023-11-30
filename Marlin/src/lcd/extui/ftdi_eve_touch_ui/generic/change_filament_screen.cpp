@@ -263,9 +263,9 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
        .tag(7).TOG_STYLE(tog7).enabled(t_ok).button (UNLOAD_POS, GET_TEXT_F(MSG_UNLOAD))
        .tag(8).TOG_STYLE(tog8).enabled(t_ok).button (LOAD_POS, GET_TEXT_F(MSG_LOAD))
        .font(font_medium)
-       .tag(16).colors(cold_pull_btn)       .button (COOLDOWN_POS, GET_TEXT_F(MSG_COOLDOWN))
-       .tag(17).colors(normal_btn)          .button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_SWAP))
-       .tag(1).colors(action_btn)           .button (BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
+       .tag(16).colors(cold_pull_btn)                                  .button (COOLDOWN_POS, GET_TEXT_F(MSG_COOLDOWN))
+       .tag(17).colors(normal_btn).enabled(!ExtUI::isOngoingPrintJob()).button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_SWAP))
+       .tag(1).colors(action_btn)                                      .button (BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
   }
 }
 
