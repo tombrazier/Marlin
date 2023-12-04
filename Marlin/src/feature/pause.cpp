@@ -678,8 +678,6 @@ void resume_print(const bool loading_filament/*=false*/, const_float_t slow_load
     set_bed_leveling_enabled(false);  // turn off leveling
   #endif
 
-
-
   // Unretract
   unscaled_e_move(PAUSE_PARK_RETRACT_LENGTH, feedRate_t(PAUSE_PARK_RETRACT_FEEDRATE));
 
