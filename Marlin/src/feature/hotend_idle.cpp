@@ -88,8 +88,9 @@ void HotendIdleProtection::timed_out() {
       thermalManager.setTargetHotend(cfg.nozzle_target, e);
   }
   #if HAS_HEATED_BED
-    if (cfg.bed_target < thermalManager.degTargetBed())
-      thermalManager.setTargetBed(cfg.bed_target);
+    if (!printingIsPaused())
+      if (cfg.bed_trigger < thermalManager.degTargetBed())
+        thermalManager.setTargetBed(cfg.bed_target);
   #endif
 }
 
