@@ -1892,7 +1892,7 @@ void MarlinUI::host_notify(const char * const cstr) {
     pause_mode = mode;
     ExtUI::pauseModeStatus = message;
     switch (message) {
-      //case PAUSE_MESSAGE_PARKING:  ExtUI::injectCommands(F("M117 Print Paused")); break; //ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_PAUSE_PRINT_PARKING)); break;
+      case PAUSE_MESSAGE_PARKING:  ExtUI::injectCommands(F("M300 T")); break; // Play tone when parking
       case PAUSE_MESSAGE_CHANGING: ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_INIT)); break;
       case PAUSE_MESSAGE_UNLOAD:   ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_UNLOAD)); break;
       case PAUSE_MESSAGE_WAITING:  ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_ADVANCED_PAUSE_WAITING)); break;
