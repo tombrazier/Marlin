@@ -439,7 +439,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // Save current position
   resume_position = current_position;
-  resume_temp = thermalManager.degHotend(active_extruder);
+  resume_temp = thermalManager.degTargetHotend(active_extruder);
   // Will the nozzle be parking?
   const bool do_park = !axes_should_home();
 
