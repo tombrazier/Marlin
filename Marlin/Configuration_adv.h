@@ -575,7 +575,7 @@
  */
 #define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-    #if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+    #if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Sidekick_289, Sidekick_747)
     #define CONTROLLER_FAN_PIN FAN1_PIN        // Set a custom pin for the controller fan
   #else
     #define CONTROLLER_FAN_PIN FAN2_PIN        // Set a custom pin for the controller fan
@@ -932,7 +932,7 @@
  * the position of the toolhead relative to the workspace.
  */
 
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Sidekick_289, Sidekick_747)
   #define SENSORLESS_BACKOFF_MM  { 4, 4 , 0}     // (mm) Backoff from endstops before sensorless homing
   #define HOMING_BACKOFF_POST_MM { 5, 5, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 #else
@@ -1258,7 +1258,7 @@
 // If the Nozzle or Bed falls when the Z stepper is disabled, set its resting position here.
 //#define Z_AFTER_DEACTIVATE Z_HOME_POS
 
-#if ANY(TAZPro, TAZProXT, MiniV2, MiniV3)
+#if ANY(TAZPro, TAZProXT, TAZProV2, MiniV2, MiniV3)
   #define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 #endif
 
@@ -1299,7 +1299,7 @@
 #if ENABLED(BACKLASH_COMPENSATION)
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
-  #if ANY(TAZPro, TAZProXT)
+  #if ANY(TAZPro, TAZProXT, TAZProV2)
     #define BACKLASH_DISTANCE_MM {0.252, 0.183, 0.075} // <-- changed:  (mm)
     #define BACKLASH_CORRECTION    1.0 // <-- changed:  0.0 = no correction; 1.0 = full correction
   #else
@@ -1358,7 +1358,7 @@
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/833.0f)  // mm
   #elif ENABLED(TAZ6)
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/830.0f)  // mm
-  #elif ANY(Workhorse, TAZPro, TAZProXT, MiniV2, MiniV3)
+  #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2, MiniV2, MiniV3)
     #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/420.0f)  // mm
   #endif
 
@@ -1404,7 +1404,7 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
-  #elif ANY(TAZPro, TAZProXT)
+  #elif ANY(TAZPro, TAZProXT, TAZProV2)
     #if defined(TOOLHEAD_Quiver_DualExtruder)
       #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
       #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
@@ -1476,7 +1476,7 @@
 
   // Define the pin to read during calibration
   #ifndef CALIBRATION_PIN
-    #if defined(LULZBOT_BLTouch) && ANY(TAZPro, TAZProXT)
+    #if defined(LULZBOT_BLTouch) && ANY(TAZPro, TAZProXT, TAZProV2)
       #define CALIBRATION_PIN 31 // Override in pins.h or set to -1 to use your Z endstop
       #define CALIBRATION_PIN_INVERTING true // Set to true to invert the pin
     #else
@@ -1696,7 +1696,7 @@
   #define SOUND_ON_DEFAULT    // Buzzer/speaker default enabled state
 
   // The timeout to return to the status screen from sub-menus
-  #define LCD_TIMEOUT_TO_STATUS (15*60*1000)   // (ms) 15 minutes for screen timeout
+  #define LCD_TIMEOUT_TO_STATUS (900000)   // (ms) 15 minutes for screen timeout
 
   // Scroll a longer status message into view
   #define STATUS_MESSAGE_SCROLLING
@@ -1784,7 +1784,7 @@
    *
    * :['SPI_HALF_SPEED', 'SPI_QUARTER_SPEED', 'SPI_EIGHTH_SPEED']
    */
-  #if ANY(TAZPro, TAZProXT)
+  #if ANY(TAZPro, TAZProXT, TAZProV2)
     #define SD_SPI_SPEED SPI_SIXTEENTH_SPEED
   #endif
 
@@ -1932,7 +1932,7 @@
    *
    * [1] On AVR an interrupt-capable pin is best for UHS3 compatibility.
    */
-  #if ANY(TAZPro, TAZProXT, MiniV3)
+  #if ANY(TAZPro, TAZProXT, TAZProV2, MiniV3)
     #define USB_FLASH_DRIVE_SUPPORT
   #endif
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
@@ -2378,7 +2378,7 @@
   #define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
-    #if DISABLED(TAZPro, TAZProXT, MiniV3)
+    #if DISABLED(TAZPro, TAZProXT, TAZProV2, MiniV3)
       #define BABYSTEP_GFX_OVERLAY          // Enable graphical overlay on Z-offset editor
     #endif
   #endif
@@ -3308,7 +3308,7 @@
    * The default SW SPI pins are defined the respective pins files,
    * but you can override or define them here.
    */
-  #if ANY(TAZPro, TAZProXT)
+  #if ANY(TAZPro, TAZProXT, TAZProV2)
     #define TMC_USE_SW_SPI
   #endif
   //#define TMC_SPI_MOSI  -1
@@ -3505,7 +3505,7 @@
 
   #if ANY(SENSORLESS_HOMING, SENSORLESS_PROBING)
     // TMC2209: 0...255. TMC2130: -64...63
-    #if ANY(TAZPro, TAZProXT)
+    #if ANY(TAZPro, TAZProXT, TAZProV2)
       #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
         #define X_STALL_SENSITIVITY  4
         #define Y_STALL_SENSITIVITY  4
@@ -4150,7 +4150,7 @@
     #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\n" E_CURRENT_TWNB285 "\nM900 K0.05\nM500\nM117 TWNB-2.85|0.50mm|NKL-PL BRASS"
 
   #elif defined(TOOLHEAD_Legacy_Universal)
-    #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT)
+    #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT, TAZProV2)
       #define MAIN_MENU_ITEM_2_DESC "M175v2|0.50mm|CRB CU"
       #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM301P" charM175_DEFAULT_Kp "I" charM175_DEFAULT_Ki "D" charM175_DEFAULT_Kd "\n" E_CURRENT_BMG "\nM900 K0.05\nM500\nM117 M175v2|0.50mm|CRB CU"
 
