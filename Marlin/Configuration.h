@@ -2095,8 +2095,10 @@
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.2 }
 #elif ANY(TAZPro, TAZProXT, TAZProV2) && DISABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.102 }
-#elif ANY(TAZPro, TAZProXT, TAZProV2) && ENABLED(LULZBOT_BLTouch)
+#elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { -38, -20, -3.2 }
+#elif ENABLED(TAZProV2, TOOLHEAD_Galaxy_DualExtruder)
+  #define NOZZLE_TO_PROBE_OFFSET { 50, 70, -3.2 }
 #elif ANY(Sidekick_289, Sidekick_747)
   #define NOZZLE_TO_PROBE_OFFSET { -1, 50, -2.1 }
 #endif
@@ -2215,9 +2217,9 @@
 
 // For M851 provide ranges for adjusting the X, Y, and Z probe offsets
 //#define PROBE_OFFSET_XMIN -50   // (mm)
-//#define PROBE_OFFSET_XMAX  50   // (mm)
+#define PROBE_OFFSET_XMAX  51   // (mm)
 //#define PROBE_OFFSET_YMIN -50   // (mm)
-//#define PROBE_OFFSET_YMAX  50   // (mm)
+#define PROBE_OFFSET_YMAX  71   // (mm)
 #define PROBE_OFFSET_ZMIN -4    // (mm)
 #define PROBE_OFFSET_ZMAX  5    // (mm)
 
@@ -2523,19 +2525,19 @@
     #define Y_BED_SIZE 283
     // Travel limits (mm) after homing, corresponding to endstop positions.
     #define LULZBOT_X_MIN_POS -7// <-- changed
-    #define LULZBOT_Y_MIN_POS -13 // <-- changed
-    #define LULZBOT_X_MAX_POS 308 // <-- changed
+    #define LULZBOT_Y_MIN_POS -23 // <-- changed
+    #define LULZBOT_X_MAX_POS 260 // <-- changed
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
   #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
-    #define X_BED_SIZE 281
-    #define Y_BED_SIZE 283
+    #define X_BED_SIZE 285
+    #define Y_BED_SIZE 285
     // Travel limits (mm) after homing, corresponding to endstop positions.
-    #define LULZBOT_X_MIN_POS -6// <-- changed
+    #define LULZBOT_X_MIN_POS -15 // <-- changed   change this
     #define LULZBOT_Y_MIN_POS -13 // <-- changed
     #define LULZBOT_X_MAX_POS 308 // <-- changed
-    #define LULZBOT_Y_MAX_POS 315 // <-- changed
+    #define LULZBOT_Y_MAX_POS 338 // <-- changed   change this
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
   #elif defined(LULZBOT_LONG_BED)
