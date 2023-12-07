@@ -26,12 +26,13 @@
 typedef struct {
   int16_t timeout, trigger, nozzle_target;
   #if HAS_HEATED_BED
-    int16_t bed_target;
+    int16_t bed_trigger, bed_target;
   #endif
   void set_defaults() {
     timeout       = HOTEND_IDLE_TIMEOUT_SEC;
     trigger       = HOTEND_IDLE_MIN_TRIGGER;
     nozzle_target = HOTEND_IDLE_NOZZLE_TARGET;
+    bed_trigger   = HOTEND_IDLE_BED_MIN_TRIGGER;
     bed_target    = HOTEND_IDLE_BED_TARGET;
   }
 } hotend_idle_settings_t;

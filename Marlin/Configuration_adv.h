@@ -549,10 +549,11 @@
  */
 #define HOTEND_IDLE_TIMEOUT
 #if ENABLED(HOTEND_IDLE_TIMEOUT)
-  #define HOTEND_IDLE_TIMEOUT_SEC (15*60)    // (seconds) Time without extruder movement to trigger protection
-  #define HOTEND_IDLE_MIN_TRIGGER   150     // (°C) Minimum temperature to enable hotend protection
-  #define HOTEND_IDLE_NOZZLE_TARGET   0     // (°C) Safe temperature for the nozzle after timeout
-  #define HOTEND_IDLE_BED_TARGET      0     // (°C) Safe temperature for the bed after timeout
+  #define HOTEND_IDLE_TIMEOUT_SEC   (15*60)    // (seconds) Time without extruder movement to trigger protection
+  #define HOTEND_IDLE_MIN_TRIGGER      150     // (°C) Minimum temperature to enable hotend protection
+  #define HOTEND_IDLE_NOZZLE_TARGET      0     // (°C) Safe temperature for the nozzle after timeout
+  #define HOTEND_IDLE_BED_MIN_TRIGGER   50     // (°C) Minimum temperature to enable bed protection
+  #define HOTEND_IDLE_BED_TARGET         0     // (°C) Safe temperature for the bed after timeout
 #endif
 
 // @section temperature
@@ -2975,7 +2976,7 @@
 #define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         10  // (mm/s) Initial retract feedrate.
-  #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
+  #define PAUSE_PARK_RETRACT_LENGTH            1  // (mm) Initial retract.
                                                   // This short retract is done immediately, before parking the nozzle.
   #define FILAMENT_CHANGE_UNLOAD_FEEDRATE      2  // (mm/s) Unload filament feedrate. This can be pretty fast.
   #define FILAMENT_CHANGE_UNLOAD_ACCEL        25  // (mm/s^2) Lower acceleration may allow a faster feedrate.

@@ -264,8 +264,18 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
        .tag(8).TOG_STYLE(tog8).enabled(t_ok).button (LOAD_POS, GET_TEXT_F(MSG_LOAD))
        .font(font_medium)
        .tag(16).colors(cold_pull_btn)                                  .button (COOLDOWN_POS, GET_TEXT_F(MSG_COOLDOWN))
-       .tag(17).colors(normal_btn).enabled(!ExtUI::isOngoingPrintJob()).button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_SWAP))
        .tag(1).colors(action_btn)                                      .button (BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
+
+       if (!ExtUI::isPrintingPaused()) {
+        cmd.colors(normal_btn)
+           .font(font_medium)
+           .tag(17).colors(normal_btn).button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_FILAMENT_SWAP));
+       }
+       else{
+        cmd.colors(normal_btn)
+           .font(font_medium)
+           .tag(18).colors(normal_btn).button(FILAMENT_SWAP_POS, GET_TEXT_F(MSG_RESUME_PRINT));
+       }
   }
 }
 
@@ -343,6 +353,7 @@ bool ChangeFilamentScreen::onTouchEnd(uint8_t tag) {
     case 15: GOTO_SCREEN(TemperatureScreen); break;
     case 16: coolDown();                     break;
     case 17: injectCommands(F("G28O\nG0 X100 Y283 Z200 F3000"));
+    case 18: injectCommands(F("M117 Print Resumed")); resumePrint(); GOTO_SCREEN(StatusScreen); break;
   }
   return true;
 }
