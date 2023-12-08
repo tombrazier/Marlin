@@ -34,9 +34,9 @@ void GcodeSuite::M891() {
 
   if (parser.seen('T')) {
     planner.synchronize();
-    tool_head.id_number = parser.value_linear_units();
+    tool_head.setToolHeadId(parser.value_linear_units());
     noArgs = false;
-    }
+  }
 
   if (noArgs) {
     #if ENABLED(TOOLHEAD_Galaxy_Series)
@@ -48,14 +48,14 @@ void GcodeSuite::M891() {
     #elif ANY(TOOLHEAD_Twin_Nebula_175, TOOLHEAD_Twin_Nebula_285)
       SERIAL_ECHOPGM("12=Twin Nebula 175, 13=Twin Nebula 285");
     #endif
-    SERIAL_ECHOPGM("  Tool Head ID:", tool_head.id_number);
+    SERIAL_ECHOPGM("  Tool Head ID:", tool_head.getToolHeadId());
   }
 }
 
 void GcodeSuite::M891_report(const bool forReplay/*=true*/) {
   report_heading_etc(forReplay, F(STR_TOOLHEAD_ID));
   SERIAL_ECHOPGM(
-    "  M891 T", tool_head.id_number
+    PSTR("  M891 T"), tool_head.getToolHeadId()
   );
 }
 

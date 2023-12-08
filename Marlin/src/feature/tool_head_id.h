@@ -26,11 +26,14 @@
 
 
 class Tool_head {
-public:
+private:
+  static uint8_t id_number;
 
-    #ifdef TOOL_HEAD_ID
-      static uint8_t id_number;
-    #endif
+public:
+  #ifdef TOOL_HEAD_ID
+    static void setToolHeadId(const uint8_t v);
+    static uint8_t getToolHeadId() {return id_number;}
+  #endif
 
 };
 

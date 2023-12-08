@@ -367,8 +367,8 @@ namespace ExtUI {
   #endif
 
   #if ENABLED(SHOW_TOOL_HEAD_ID)
-    uint8_t getToolHeadId();
-    void setToolHeadId(const uint16_t);
+    uint8_t getToolHeadIdNumber();
+    void setToolHeadIdNumber(const uint16_t);
   #endif
 
   // Case Light Control

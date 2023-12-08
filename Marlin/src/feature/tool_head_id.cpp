@@ -37,4 +37,8 @@
 
 Tool_head tool_head;
 
+void Tool_head::setToolHeadId(const uint8_t v) {
+  id_number = v;
+}
+
 #endif // TOOL_HEAD_ID

@@ -1610,7 +1610,7 @@ void MarlinSettings::postprocess() {
     //
     #if ENABLED(SHOW_TOOL_HEAD_ID)
     {
-      const uint8_t &tool_head_id = tool_head.id_number;
+      const uint8_t tool_head_id = tool_head.getToolHeadId();
       EEPROM_WRITE(tool_head_id);
     }
     #endif
@@ -2691,8 +2691,9 @@ void MarlinSettings::postprocess() {
       //
       #if ENABLED(SHOW_TOOL_HEAD_ID)
       {
-        uint8_t &tool_head_id = tool_head.id_number;
+        uint8_t tool_head_id;
         EEPROM_READ(tool_head_id);
+        tool_head.setToolHeadId(tool_head_id);
       }
       #endif
 
@@ -3224,7 +3225,7 @@ void MarlinSettings::reset() {
   // TOOL_HEAD_ID
   //
   #if ENABLED(SHOW_TOOL_HEAD_ID)
-    tool_head.id_number = TOOL_HEAD_ID;
+    tool_head.setToolHeadId(TOOL_HEAD_ID);
   #endif
 
   TERN_(DWIN_CREALITY_LCD_JYERSUI, jyersDWIN.resetSettings());
