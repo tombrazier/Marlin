@@ -2437,13 +2437,13 @@
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
   #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
     #define X_BED_SIZE 281
-    #define Y_BED_SIZE 283
+    #define Y_BED_SIZE 285
     // Travel limits (mm) after homing, corresponding to endstop positions.
     #define LULZBOT_X_MIN_POS -6// <-- changed
-    #define LULZBOT_Y_MIN_POS -13 // <-- changed
-    #define LULZBOT_X_MAX_POS 308 // <-- changed
-    #define LULZBOT_Y_MAX_POS 315 // <-- changed
-    #define LULZBOT_Z_MIN_POS -9 // <-- changed
+    #define LULZBOT_Y_MIN_POS -15 // <-- changed
+    #define LULZBOT_X_MAX_POS 300 // <-- changed
+    #define LULZBOT_Y_MAX_POS 318 // <-- changed
+    #define LULZBOT_Z_MIN_POS  -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
   #elif defined(LULZBOT_LONG_BED)
     #define X_BED_SIZE        280
