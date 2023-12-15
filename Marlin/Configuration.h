@@ -2089,7 +2089,7 @@
 #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { -38, -20, -3.2 }
 #elif ANY(Sidekick_289, Sidekick_747)
-  #define NOZZLE_TO_PROBE_OFFSET { -1, 50, -2.1 }
+  #define NOZZLE_TO_PROBE_OFFSET { -1, 50, -1.23 }
 #endif
 
 
