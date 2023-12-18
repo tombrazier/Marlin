@@ -477,7 +477,6 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
-  #define LULZBOT_TOOLHEAD_WATT              { 50.0f }
   #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
@@ -539,7 +538,7 @@
     #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
     #define LULZBOT_E_STEPS                        410
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
-    #define LULZBOT_TOOLHEAD_WATT                  { 50.0f }
+    #define LULZBOT_SLICE_MOS_PID
     #define LULZBOT_TEMP_SENSOR_1                  5
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
@@ -1016,11 +1015,8 @@
  * PIDTEMP : PID temperature control (~4.1K)
  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
  */
-#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Quiver_DualExtruder)
-  #define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
-#elif ANY(TOOLHEAD_Galaxy_Series, TOOLHEAD_Galaxy_DualExtruder)
-  #define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
-#endif
+#define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+//#define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1     0.95   // Smoothing factor within any PID loop
@@ -1030,15 +1026,15 @@
     #define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
   #endif                                  // Set/get with G-code: M301 E[extruder number, 0-2]
 //TAZ 6 Single Extruder (W)
-    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID.
-    #define TAZ6_STD_DEFAULT_Ki 1.91
+    #define TAZ6_STD_DEFAULT_Kp 28.79        //used to define stock PID. 
+    #define TAZ6_STD_DEFAULT_Ki 1.91         
     #define TAZ6_STD_DEFAULT_Kd 108.51
     #define charTAZ6_STD_DEFAULT_Kp STRINGIFY(TAZ6_STD_DEFAULT_Kd)  //used in the tool head menu gcode.
     #define charTAZ6_STD_DEFAULT_Ki STRINGIFY(TAZ6_STD_DEFAULT_Ki)
     #define charTAZ6_STD_DEFAULT_Kd STRINGIFY(TAZ6_STD_DEFAULT_Kp)
 
   // E3D Titan Aero with LulzBot V6 block (40W)
-    #define SLSEHE_DEFAULT_Kp 21.0
+    #define SLSEHE_DEFAULT_Kp 21.0           
     #define SLSEHE_DEFAULT_Ki 1.78
     #define SLSEHE_DEFAULT_Kd 61.93
     #define charSLSEHE_DEFAULT_Kp STRINGIFY(SLSEHE_DEFAULT_Kp)
@@ -1046,15 +1042,15 @@
     #define charSLSEHE_DEFAULT_Kd STRINGIFY(SLSEHE_DEFAULT_Kd)
 
   // SK175 Tool head (30W)
-    #define SK175_DEFAULT_Kp 26.47
+    #define SK175_DEFAULT_Kp 26.47           
     #define SK175_DEFAULT_Ki 2.32
     #define SK175_DEFAULT_Kd 75.56
     #define charSK175_DEFAULT_Kp STRINGIFY(SK175_DEFAULT_Kp)
     #define charSK175_DEFAULT_Ki STRINGIFY(SK175_DEFAULT_Ki)
     #define charSK175_DEFAULT_Kd STRINGIFY(SK175_DEFAULT_Kd)
-
+   
   // SK285 Tool head (30W)
-    #define SK285_DEFAULT_Kp 26.90
+    #define SK285_DEFAULT_Kp 26.90           
     #define SK285_DEFAULT_Ki 2.41
     #define SK285_DEFAULT_Kd 75.19
     #define charSK285_DEFAULT_Kp STRINGIFY(SK285_DEFAULT_Kp)
@@ -1062,29 +1058,29 @@
     #define charSK285_DEFAULT_Kd STRINGIFY(SK285_DEFAULT_Kd)
 
   // H175 Tool head (40W)
-    #define H175_DEFAULT_Kp 27.58
+    #define H175_DEFAULT_Kp 27.58            
     #define H175_DEFAULT_Ki 3.22
     #define H175_DEFAULT_Kd 65.66
-    #define charH175_DEFAULT_Kp STRINGIFY(H175_DEFAULT_Kp)
+    #define charH175_DEFAULT_Kp STRINGIFY(H175_DEFAULT_Kp) 
     #define charH175_DEFAULT_Ki STRINGIFY(H175_DEFAULT_Ki)
     #define charH175_DEFAULT_Kd STRINGIFY(H175_DEFAULT_Kd)
 
   // M175 Tool head (50W)
-    #define M175_DEFAULT_Kp 22.12
+    #define M175_DEFAULT_Kp 22.12            
     #define M175_DEFAULT_Ki 1.94
     #define M175_DEFAULT_Kd 63.59
     #define charM175_DEFAULT_Kp STRINGIFY(M175_DEFAULT_Kp)
     #define charM175_DEFAULT_Ki STRINGIFY(M175_DEFAULT_Ki)
     #define charM175_DEFAULT_Kd STRINGIFY(M175_DEFAULT_Kd)
 
-  // HS & HSPLUS Tool heads
-    #define HSHSPLUS_DEFAULT_Kp 37.55
+  // HS & HSPLUS Tool heads  
+    #define HSHSPLUS_DEFAULT_Kp 37.55        
     #define HSHSPLUS_DEFAULT_Ki 5.39
     #define HSHSPLUS_DEFAULT_Kd 65.36
     #define charHSHSPLUS_DEFAULT_Kp STRINGIFY(HSHSPLUS_DEFAULT_Kp)
     #define charHSHSPLUS_DEFAULT_Ki STRINGIFY(HSHSPLUS_DEFAULT_Ki)
     #define charHSHSPLUS_DEFAULT_Kd STRINGIFY(HSHSPLUS_DEFAULT_Kd)
-
+  
   // MET175 Tool head (50W)
     #define MET175_DEFAULT_Kp 17.5
     #define MET175_DEFAULT_Ki 1.25
@@ -1100,7 +1096,7 @@
     #define charMET285_DEFAULT_Kp STRINGIFY(MET285_DEFAULT_Kp)
     #define charMET285_DEFAULT_Ki STRINGIFY(MET285_DEFAULT_Ki)
     #define charMET285_DEFAULT_Kd STRINGIFY(MET285_DEFAULT_Kd)
-
+  
   // AST285 Tool head (50W)
     #define AST285_DEFAULT_Kp 14.37
     #define AST285_DEFAULT_Ki 0.86
@@ -1135,20 +1131,20 @@
  */
 #if ENABLED(MPCTEMP)
   #define MPC_AUTOTUNE                                // Include a method to do MPC auto-tuning (~6.3K bytes of flash)
-  #define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
-  #define MPC_AUTOTUNE_MENU                         // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
+  //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
+  //#define MPC_AUTOTUNE_MENU                         // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
 
   #define MPC_MAX 255                                 // (0..255) Current to nozzle while MPC is active.
-  #define MPC_HEATER_POWER LULZBOT_TOOLHEAD_WATT      // (W) Heat cartridge powers.
+  #define MPC_HEATER_POWER { 40.0f }                  // (W) Heat cartridge powers.
 
   #define MPC_INCLUDE_FAN                             // Model the fan speed?
 
   // Measured physical constants from M306
-  #define MPC_BLOCK_HEAT_CAPACITY { 15.44f }           // (J/K) Heat block heat capacities.
-  #define MPC_SENSOR_RESPONSIVENESS { 0.1128f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
-  #define MPC_AMBIENT_XFER_COEFF { 0.0622f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  #define MPC_BLOCK_HEAT_CAPACITY { 16.7f }           // (J/K) Heat block heat capacities.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.068f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.1844f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
   #endif
 
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
