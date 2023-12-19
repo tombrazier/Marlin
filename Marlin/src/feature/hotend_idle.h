@@ -24,9 +24,9 @@
 #include "../inc/MarlinConfig.h"
 
 typedef struct {
-  int16_t timeout, bed_timeout, trigger, nozzle_target;
+  int16_t timeout, trigger, nozzle_target;
   #if HAS_HEATED_BED
-    int16_t bed_trigger, bed_target;
+    int16_t bed_timeout, bed_trigger, bed_target;
   #endif
 
   #ifndef BED_IDLE_TIMEOUT_SEC
@@ -35,11 +35,13 @@ typedef struct {
 
   void set_defaults() {
     timeout       = HOTEND_IDLE_TIMEOUT_SEC;
-    bed_timeout   = BED_IDLE_TIMEOUT_SEC;
     trigger       = HOTEND_IDLE_MIN_TRIGGER;
     nozzle_target = HOTEND_IDLE_NOZZLE_TARGET;
-    bed_trigger   = BED_IDLE_MIN_TRIGGER;
-    bed_target    = BED_IDLE_TARGET;
+    #if HAS_HEATED_BED
+      bed_timeout   = BED_IDLE_TIMEOUT_SEC;
+      bed_trigger   = BED_IDLE_MIN_TRIGGER;
+      bed_target    = BED_IDLE_TARGET;
+    #endif
   }
 } hotend_idle_settings_t;
 

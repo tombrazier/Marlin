@@ -264,8 +264,9 @@ void menu_advanced_settings();
     EDIT_ITEM(int3, MSG_TIMEOUT, &c.timeout, 0, 999);
     EDIT_ITEM(int3, MSG_TEMPERATURE, &c.trigger, 0, HEATER_0_MAXTEMP);
     EDIT_ITEM(int3, MSG_HOTEND_IDLE_NOZZLE_TARGET, &c.nozzle_target, 0, HEATER_0_MAXTEMP);
-    EDIT_ITEM(int3, MSG_HOTEND_IDLE_BED_TARGET, &c.bed_target, 0, BED_MAXTEMP);
-
+    #if HAS_HEATED_BED
+      EDIT_ITEM(int3, MSG_HOTEND_IDLE_BED_TARGET, &c.bed_target, 0, BED_MAXTEMP);
+    #endif
     END_MENU();
   }
 

@@ -46,19 +46,27 @@ hotend_idle_settings_t HotendIdleProtection::cfg; // Initialized by settings.loa
 void HotendIdleProtection::check_hotends(const millis_t &ms) {
   const bool busy = (TERN0(HAS_RESUME_CONTINUE, wait_for_user) || planner.has_blocks_queued());
   bool do_prot = false;
+  bool do_bed_prot = false;
   if (!busy && cfg.timeout != 0) {
     HOTEND_LOOP() {
-      if ((thermalManager.degHotend(e) >= cfg.trigger) || (thermalManager.degBed() >= cfg.bed_trigger)) {
+      if (thermalManager.degHotend(e) >= cfg.trigger) {
         do_prot = true; break;
       }
     }
   }
+  if (!busy && cfg.bed_timeout != 0 && thermalManager.degBed() >= cfg.bed_trigger) {
+    do_bed_prot = true;
+  }
   if (!do_prot){
     next_protect_ms = 0;                          // No hotends are hot so cancel timeout
+  }
+  if (!do_bed_prot){
     next_bed_protect_ms = 0;                          // Bed is not hot so cancel timeout
   }
-  else if (!next_protect_ms || !next_bed_protect_ms) {                     // Timeout is possible?
+  if (!next_protect_ms && do_prot) {                     // Timeout is possible?
     next_protect_ms = ms + 1000UL * cfg.timeout;  // Start timeout if not already set                   // Timeout is possible?
+  }
+  if (!next_bed_protect_ms && do_bed_prot) {                     // Timeout is possible?
     next_bed_protect_ms = ms + 1000UL * cfg.bed_timeout;  // Start timeout of bed if not already set
   }
 }
@@ -67,8 +75,10 @@ void HotendIdleProtection::check_e_motion(const millis_t &ms) {
   static float old_e_position = 0;
   if (old_e_position != current_position.e) {
     old_e_position = current_position.e;            // Track filament motion
-    if (next_protect_ms)                            // If some heater is on then...
+    if (next_protect_ms){                            // If some heater is on then...
       next_protect_ms = ms + 1000UL * cfg.timeout;  // ...delay the timeout till later
+      next_bed_protect_ms = ms + 1000UL * cfg.bed_timeout;  // ...delay the timeout till later
+    }
   }
 }
 
