@@ -29,6 +29,7 @@
  */
 
 #include "MarlinCore.h"
+#include "Lulzbot_Extras.h"
 
 #include "HAL/shared/Delay.h"
 #include "HAL/shared/esp_wifi.h"
@@ -1523,6 +1524,8 @@ void setup() {
     i2c.onReceive(i2c_on_receive);
     i2c.onRequest(i2c_on_request);
   #endif
+
+  LULZBOT_ON_STARTUP();
 
   #if DO_SWITCH_EXTRUDER
     SETUP_RUN(move_extruder_servo(0));  // Initialize extruder servo
