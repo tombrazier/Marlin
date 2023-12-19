@@ -26,14 +26,22 @@
 typedef struct {
   int16_t timeout, trigger, nozzle_target;
   #if HAS_HEATED_BED
-    int16_t bed_trigger, bed_target;
+    int16_t bed_timeout, bed_trigger, bed_target;
   #endif
+
+  #ifndef BED_IDLE_TIMEOUT_SEC
+    #define BED_IDLE_TIMEOUT_SEC HOTEND_IDLE_TIMEOUT_SEC
+  #endif
+
   void set_defaults() {
     timeout       = HOTEND_IDLE_TIMEOUT_SEC;
     trigger       = HOTEND_IDLE_MIN_TRIGGER;
     nozzle_target = HOTEND_IDLE_NOZZLE_TARGET;
-    bed_trigger   = HOTEND_IDLE_BED_MIN_TRIGGER;
-    bed_target    = HOTEND_IDLE_BED_TARGET;
+    #if HAS_HEATED_BED
+      bed_timeout   = BED_IDLE_TIMEOUT_SEC;
+      bed_trigger   = BED_IDLE_MIN_TRIGGER;
+      bed_target    = BED_IDLE_TARGET;
+    #endif
   }
 } hotend_idle_settings_t;
 
@@ -43,9 +51,11 @@ public:
   static hotend_idle_settings_t cfg;
 private:
   static millis_t next_protect_ms;
+  static millis_t next_bed_protect_ms;
   static void check_hotends(const millis_t &ms);
   static void check_e_motion(const millis_t &ms);
   static void timed_out();
+  static void bed_timed_out();
 };
 
 extern HotendIdleProtection hotend_idle;

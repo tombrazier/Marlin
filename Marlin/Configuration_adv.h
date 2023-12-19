@@ -549,11 +549,12 @@
  */
 #define HOTEND_IDLE_TIMEOUT
 #if ENABLED(HOTEND_IDLE_TIMEOUT)
-  #define HOTEND_IDLE_TIMEOUT_SEC   (15*60)    // (seconds) Time without extruder movement to trigger protection
+  #define HOTEND_IDLE_TIMEOUT_SEC   (10*60)    // (seconds) Time without extruder movement to trigger protection
   #define HOTEND_IDLE_MIN_TRIGGER      150     // (°C) Minimum temperature to enable hotend protection
   #define HOTEND_IDLE_NOZZLE_TARGET      0     // (°C) Safe temperature for the nozzle after timeout
-  #define HOTEND_IDLE_BED_MIN_TRIGGER   50     // (°C) Minimum temperature to enable bed protection
-  #define HOTEND_IDLE_BED_TARGET         0     // (°C) Safe temperature for the bed after timeout
+  #define BED_IDLE_TIMEOUT_SEC      (60*60)    // (seconds) Time to trigger bed protection. Comment out to use HOTEND_IDLE_TIMEOUT_SEC
+  #define BED_IDLE_MIN_TRIGGER          50     // (°C) Minimum temperature to enable bed protection
+  #define BED_IDLE_TARGET                0     // (°C) Safe temperature for the bed after timeout
 #endif
 
 // @section temperature
