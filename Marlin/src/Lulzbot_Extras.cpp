@@ -21,6 +21,7 @@
 
 #include "MarlinCore.h"
 #include "module/planner.h"
+#include "module/stepper.h"
 #include "module/endstops.h"
 #include "gcode/gcode.h"
 #if ENABLED(TOUCH_UI_FTDI_EVE)
@@ -35,7 +36,7 @@
 void LULZBOT_ON_STARTUP(void) {
     EnableProbePins::enable(false);
 
-    #if defined(LULZBOT_USE_ARCHIM2)
+    #if (MOTHERBOARD == BOARD_ARCHIM2)
         LULZBOT_EMI_SHUTOFF(GPIO_PB1_J20_5)
         LULZBOT_EMI_SHUTOFF(GPIO_PB0_J20_6)
         LULZBOT_EMI_SHUTOFF(GPIO_PB3_J20_7)
@@ -77,21 +78,20 @@ void LULZBOT_ON_REFLASH() {
     } else { \
         LULZBOT_EMI_SHUTOFF(pin); \
     }
+#define LULZBOT_EXTRUDER_MOTOR_SHUTOFF_ON_PROBE(probing) \
+        if(probing) { \
+            planner.synchronize(); \
+            stepper.disable_extruder(); \
+        } else { \
+            stepper.enable_extruder(); \
+        }
 
-#if defined(LULZBOT_USE_AUTOLEVELING) && !defined(LULZBOT_Z_MIN_PROBE_PIN)
+#if ANY(CALIBRATION_GCODE, NOZZLE_AS_PROBE)
 
      void EnableProbePins::enable(const bool enable) {
          endstops.enable_z_probe(enable);
          LULZBOT_SET_PIN_STATE(Z_MIN_PIN, enable)
          LULZBOT_EXTRUDER_MOTOR_SHUTOFF_ON_PROBE(enable)
-     }
-
-#elif defined(LULZBOT_USE_AUTOLEVELING) && defined(LULZBOT_Z_MIN_PROBE_PIN)
-
-     void EnableProbePins::enable(const bool enable) {
-         endstops.enable_z_probe(enable);
-         LULZBOT_SET_PIN_STATE(Z_MIN_PIN, enable)
-         LULZBOT_SET_PIN_STATE(LULZBOT_Z_MIN_PROBE_PIN, enable)
      }
 
 #else
