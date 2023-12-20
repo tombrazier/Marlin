@@ -23,8 +23,8 @@
 #include "module/planner.h"
 #include "module/endstops.h"
 #include "gcode/gcode.h"
-#if ENABLED(LULZBOT_USE_TOUCH_UI)
-    #include "lcd/extensible_ui/lib/ftdi_eve_lib/basic/ftdi_basic.h"
+#if ENABLED(TOUCH_UI_FTDI_EVE)
+    #include "lcd/extui/ftdi_eve_touch_ui/ftdi_eve_lib/basic/ftdi_basic.h"
 #endif
 #include "Lulzbot_Extras.h"
 
@@ -53,7 +53,7 @@ void LULZBOT_ON_STARTUP(void) {
 }
 
 void LULZBOT_ON_REFLASH() {
-    #if ENABLED(LULZBOT_USE_TOUCH_UI)
+    #if ENABLED(TOUCH_UI_FTDI_EVE)
         CLCD::set_brightness(0);
     #endif
 }
