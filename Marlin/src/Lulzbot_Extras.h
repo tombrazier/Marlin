@@ -23,13 +23,6 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-  class EnableProbePins {
-    public:
-      static void enable(const bool enable);
-
-      EnableProbePins() {enable(true);}
-      ~EnableProbePins() {enable(false);}
-  };
 
   extern "C" void LULZBOT_ON_REFLASH();
   extern "C" void LULZBOT_ON_STARTUP();

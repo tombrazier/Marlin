@@ -34,7 +34,6 @@
 #define LULZBOT_EMI_SHUTOFF(pin)             SET_OUTPUT(pin); WRITE(pin, LOW);
 
 void LULZBOT_ON_STARTUP(void) {
-    EnableProbePins::enable(false);
 
     #if (MOTHERBOARD == BOARD_ARCHIM2)
         LULZBOT_EMI_SHUTOFF(GPIO_PB1_J20_5)
@@ -85,18 +84,3 @@ void LULZBOT_ON_REFLASH() {
         } else { \
             stepper.enable_extruder(); \
         }
-
-#if ANY(CALIBRATION_GCODE, NOZZLE_AS_PROBE)
-
-     void EnableProbePins::enable(const bool enable) {
-         endstops.enable_z_probe(enable);
-         LULZBOT_SET_PIN_STATE(Z_MIN_PIN, enable)
-         LULZBOT_EXTRUDER_MOTOR_SHUTOFF_ON_PROBE(enable)
-     }
-
-#else
-
-     void EnableProbePins::enable(const bool) {
-     }
-
-#endif
