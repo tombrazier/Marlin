@@ -1505,7 +1505,7 @@
       #define XATC_START_Z 1.0
       #define XATC_MAX_POINTS 3                       // Number of points to probe in the wizard
       #define XATC_Y_POSITION (Y_CENTER - 20.0f)      // (mm) Y position to probe
-      #define XATC_Z_OFFSETS { 0.03f, -0.03f, 0.0f }  // Z offsets for X axis sample points
+      #define XATC_Z_OFFSETS { -0.06f, 0.02f, 0.04f }  // Z offsets for X axis sample points
     #endif
 
     // Show Deploy / Stow Probe options in the Motion menu.

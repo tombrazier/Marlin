@@ -580,14 +580,14 @@
 
 #if HAS_E_TEMP_SENSOR
   #define TEMP_RESIDENCY_TIME          2  // (seconds) Time to wait for hotend to "settle" in M109
-  #define TEMP_WINDOW                  2  // (°C) Temperature proximity for the "temperature reached" timer
+  #define TEMP_WINDOW                  3  // (°C) Temperature proximity for the "temperature reached" timer
   #define TEMP_HYSTERESIS              3  // (°C) Temperature proximity considered "close enough" to the target
 #endif
 
 #if TEMP_SENSOR_BED
   #define TEMP_BED_RESIDENCY_TIME      2  // (seconds) Time to wait for bed to "settle" in M190
-  #define TEMP_BED_WINDOW              2  // (°C) Temperature proximity for the "temperature reached" timer
-  #define TEMP_BED_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
+  #define TEMP_BED_WINDOW              4  // (°C) Temperature proximity for the "temperature reached" timer
+  #define TEMP_BED_HYSTERESIS          4  // (°C) Temperature proximity considered "close enough" to the target
 #endif
 
 #if TEMP_SENSOR_CHAMBER
@@ -1558,7 +1558,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.75 }
+#define NOZZLE_TO_PROBE_OFFSET { 22.75, 5.0, -0.84 }
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
 #define PROBING_TOOL 0
@@ -2297,20 +2297,20 @@
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
-  #define XY_DIAG_AC 56.61
-  #define XY_DIAG_BD 56.47
-  #define XY_SIDE_AD 40.03
+  #define XY_DIAG_AC 56.25
+  #define XY_DIAG_BD 56.61
+  #define XY_SIDE_AD 39.89
 
   // Or, set the XY skew factor directly:
   //#define XY_SKEW_FACTOR 0.0
 
   #define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
-    #define XZ_DIAG_AC 56.41
-    #define XZ_DIAG_BD 56.86
-    #define YZ_DIAG_AC 56.9
-    #define YZ_DIAG_BD 56.06
-    #define YZ_SIDE_AD 39.9
+    #define XZ_DIAG_AC 56.44
+    #define XZ_DIAG_BD 56.89
+    #define YZ_DIAG_AC 56.72
+    #define YZ_DIAG_BD 56.43
+    #define YZ_SIDE_AD 39.92
 
     // Or, set the Z skew factors directly:
     //#define XZ_SKEW_FACTOR 0.0
