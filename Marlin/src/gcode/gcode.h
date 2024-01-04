@@ -766,7 +766,10 @@ private:
   #endif
 
   static void M114();
-  static void M115();
+
+  #if ENABLED(REPORT_CAPABILITIES_GCODE)
+    static void M115();
+  #endif
 
   #if HAS_STATUS_MESSAGE
     static void M117();
@@ -915,7 +918,7 @@ private:
     static void M250_report(const bool forReplay=true);
   #endif
 
-  #if HAS_GCODE_M255
+  #if ENABLED(EDITABLE_DISPLAY_TIMEOUT)
     static void M255();
     static void M255_report(const bool forReplay=true);
   #endif
