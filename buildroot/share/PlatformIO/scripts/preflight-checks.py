@@ -78,21 +78,13 @@ if pioutil.is_pio_build():
 					err = "ERROR: Config files found in directory %s. Please move them into the Marlin subfolder." % p
 					raise SystemExit(err)
 
-        #
-        # Find the name.cpp.o or name.o and remove it
-        #
-        def rm_ofile(subdir, name):
-            build_dir = Path(env['PROJECT_BUILD_DIR'], build_env)
-            for outdir in (build_dir, build_dir / "debug"):
-                for ext in (".cpp.o", ".o"):
-                    fpath = outdir / "src/src" / subdir / (name + ext)
-                    if fpath.exists():
-                        fpath.unlink()
-
-        #
-        # Give warnings on every build
-        #
-        rm_ofile("inc", "Warnings")
+		#
+		# Give warnings on every build
+		#
+		srcpath = os.path.join(env['PROJECT_BUILD_DIR'], build_env, "src", "src")
+		warnfile = os.path.join(srcpath, "inc", "Warnings.cpp.o")
+		if os.path.exists(warnfile):
+			os.remove(warnfile)
 
 		#
 		# Rebuild 'settings.cpp' for EEPROM_INIT_NOW
