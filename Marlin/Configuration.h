@@ -2552,7 +2552,7 @@
   #define LULZBOT_Z_MAX_POS  244.5
 #endif
 
-#define charLULZBOT_Z_MAX_POS STRINGIFY(LULZBOT_Z_MAX_POS) //Used for event of SD abort
+#define charZ_MAX_POS STRINGIFY(Z_MAX_POS) //Used for event of SD abort
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MAX_POS (LULZBOT_X_MAX_POS + LULZBOT_TOOLHEAD_X_MAX_ADJ)
@@ -3233,6 +3233,26 @@
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE  Z_FEEDRATE   // (mm/s) Z axis feedrate (not used for delta printers)
   #define PARK_NOZZLE_MENU_OPTION       // Adds an option to park the nozzle under motion menu
+#endif
+
+/**
+ * Present Bed Menu option
+ *
+ * This option allows the first menu item to present the bed to the user
+ *
+ **/
+#define PRESENT_BED_FEATURE
+
+#if ENABLED(PRESENT_BED_FEATURE)
+  #if ENABLED(MiniV2)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y190 F10000\nM117 Printer Ready"
+  #elif ENABLED(Sidekick_289)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y160 F10000\nM117 Printer Ready"
+  #elif ENABLED(Sidekick_747)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y233 F10000\nM117 Printer Ready"
+  #else
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y300 F10000\nM117 Printer Ready"
+  #endif
 #endif
 
 /**
