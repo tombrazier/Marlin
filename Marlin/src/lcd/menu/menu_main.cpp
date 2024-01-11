@@ -329,6 +329,10 @@ void menu_main() {
       SUBMENU(MSG_PREHEAT_CUSTOM, menu_preheat_only);
     #endif
 
+    #if ENABLED(PRESENT_BED_FEATURE)
+      GCODES_ITEM(MSG_PRESENT_BED, F(PRESENT_BED_GCODE));
+    #endif
+
     SUBMENU(MSG_MOTION, menu_motion);
   }
 

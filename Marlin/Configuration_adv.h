@@ -1417,7 +1417,7 @@
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
   #elif ENABLED(Workhorse)
-    #define CALIBRATION_OBJECT_CENTER     { 266, -17.0,-2.0 } // mm True location is -22 in y but object size is accounting for location change
+    #define CALIBRATION_OBJECT_CENTER     { 262, -16.5,-2.0 } // mm True location is -22 in y but object size is accounting for location change
     #define CALIBRATION_OBJECT_DIMENSIONS { 10.0, 4.0,  10.0 } // mm
 
     // Comment out any sides which are unreachable by the probe. For best
@@ -1861,7 +1861,7 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  #define EVENT_GCODE_SD_ABORT "G0 Z" charLULZBOT_Z_MAX_POS "F2500\nG27\nM524\nM104 S0"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G0 Z" charZ_MAX_POS "F2500\nG27\nM524\nM104 S0"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
