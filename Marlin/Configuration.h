@@ -1748,11 +1748,17 @@
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 200, LULZBOT_E_STEPS }
 #elif ENABLED(TAZ6)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 1600, LULZBOT_E_STEPS }
-#elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
+#elif ANY(Workhorse, TAZPro, TAZProXT)
   #if defined(LULZBOT_LONG_BED)
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 160, 500, LULZBOT_E_STEPS }
   #else
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 500, LULZBOT_E_STEPS }
+  #endif
+#elif ENABLED(TAZProV2) //TAZProV2 used 5.1:1 Z motors
+  #if defined(LULZBOT_LONG_BED)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 160, 510, LULZBOT_E_STEPS }
+  #else
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 510, LULZBOT_E_STEPS }
   #endif
 #endif
 
