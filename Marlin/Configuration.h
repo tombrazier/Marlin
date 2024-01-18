@@ -3264,13 +3264,15 @@
 
 #if ENABLED(PRESENT_BED_FEATURE)
   #if ENABLED(MiniV2)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y190 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y188 F10000\nG0 Y190 F10000\nM117 Printer Ready"
   #elif ENABLED(Sidekick_289)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y160 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y158 F10000\nG0 Y160 F10000\nM117 Printer Ready"
   #elif ENABLED(Sidekick_747)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y233 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y231 F10000\nG0 Y233 F10000\nM117 Printer Ready"
+  #elif ENABLED(TAZWorkhorse)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y304 F10000\nG0 Y306 F10000\nM117 Printer Ready"
   #else
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y300 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y311 F10000\nG0 Y313 F10000\nM117 Printer Ready"
   #endif
 #endif
 
