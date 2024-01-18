@@ -1655,7 +1655,7 @@
  * Endstop "Hit" State
  * Set to the state (HIGH or LOW) that applies to each endstop.
  */
-#if ANY(MiniV2, TAZPro, TAZProXT, TAZProV2, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
+#if ANY(MiniV2, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)    //Don't include MiniV3 here, it needs false for the 2209 diag pin bump sense.
   #define X_MIN_ENDSTOP_HIT_STATE LOW
   #define Y_MAX_ENDSTOP_HIT_STATE LOW
 #else
@@ -2392,7 +2392,7 @@
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
-#if ANY(Workhorse, Sidekick_289, Sidekick_747)
+#if ANY(TAZProV2, Workhorse, Sidekick_289, Sidekick_747)
   #define Y_HOME_DIR -1
 #else
   #define Y_HOME_DIR 1

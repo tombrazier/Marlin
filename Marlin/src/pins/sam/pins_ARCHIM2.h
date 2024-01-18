@@ -100,14 +100,15 @@
 #else
 
   #define X_MIN_PIN                           14  // PD4 MIN ES1
-  #define X_MAX_PIN                           32  // PD10 MAX ES1
+  #if DISABLED(TAZProV2)
+    #define X_MAX_PIN                           32  // PD10 MAX ES1
+    #define Y_MAX_PIN                           15  // PD5 MAX ES2
+  #endif
   #define Y_MIN_PIN                           29  // PD6 MIN ES2
-  #define Y_MAX_PIN                           15  // PD5 MAX ES2
-
 #endif
 
 #if ENABLED(LULZBOT_BLTouch, TAZProV2)
-  #define Z_MIN_PIN        29   // PD6 MIN ES2 (Y_MIN_PIN)
+  #define Z_MIN_PIN        32   // X_MAX_PIN
 #elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
   #define Z_MIN_PIN        63   // PB18/RD/PWML2/AD11 THERM AN2
 #else
