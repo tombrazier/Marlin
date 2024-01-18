@@ -184,7 +184,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
     TERN_(TOUCH_UI_USE_UTF8, load_utf8_bitmaps(cmd)); // Restore font bitmap handles
   }
 
-  if (ExtUI::isOngoingPrintJob()) {
+  if (ExtUI::isPrinting()) {
     cmd.colors(normal_btn)
         .font(font_medium)
         .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
