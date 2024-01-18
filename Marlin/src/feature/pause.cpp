@@ -83,13 +83,16 @@
 // private:
 
 static xyze_pos_t resume_position;
+celsius_t resume_temp;
 
 #if M600_PURGE_MORE_RESUMABLE
   PauseMenuResponse pause_menu_response;
   PauseMode pause_mode = PAUSE_MODE_PAUSE_PRINT;
 #endif
 
-fil_change_settings_t fc_settings[EXTRUDERS];
+#if ENABLED(CONFIGURE_FILAMENT_CHANGE)
+  fil_change_settings_t fc_settings[EXTRUDERS];
+#endif
 
 #if HAS_MEDIA
   #include "../sd/cardreader.h"
@@ -438,7 +441,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // Save current position
   resume_position = current_position;
-
+  resume_temp = thermalManager.degTargetHotend(active_extruder);
   // Will the nozzle be parking?
   const bool do_park = !axes_should_home();
 
@@ -651,6 +654,10 @@ void resume_print(const bool loading_filament/*=false*/, const_float_t slow_load
     thermalManager.wait_for_hotend(active_extruder, false);
   }
   ui.pause_show_message(PAUSE_MESSAGE_RESUME);
+
+  // Reset Temperature to when it was paused
+  thermalManager.setTargetHotend(resume_temp, active_extruder);
+  thermalManager.wait_for_hotend(active_extruder);
 
   // Check Temperature before moving hotend
   ensure_safe_temperature(DISABLED(BELTPRINTER));

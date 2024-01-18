@@ -86,8 +86,8 @@ bool TuneMenu::onTouchEnd(uint8_t tag) {
       current_screen.forget();
       PUSH_SCREEN(StatusScreen);
       break;
-    case 3: pausePrint();  break;
-    case 4: resumePrint(); break;
+    case 3: injectCommands(F("M117 Print Paused")); pausePrint();  break;
+    case 4: injectCommands(F("M117 Print Resumed")); resumePrint(); break;
     case 5: GOTO_SCREEN(FlowPercentScreen);    break;
     case 6: GOTO_SCREEN(TemperatureScreen);    break;
     case 7: GOTO_SCREEN(AboutScreen);          break;

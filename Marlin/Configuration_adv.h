@@ -549,10 +549,12 @@
  */
 #define HOTEND_IDLE_TIMEOUT
 #if ENABLED(HOTEND_IDLE_TIMEOUT)
-  #define HOTEND_IDLE_TIMEOUT_SEC (15*60)    // (seconds) Time without extruder movement to trigger protection
-  #define HOTEND_IDLE_MIN_TRIGGER   150     // (°C) Minimum temperature to enable hotend protection
-  #define HOTEND_IDLE_NOZZLE_TARGET   0     // (°C) Safe temperature for the nozzle after timeout
-  #define HOTEND_IDLE_BED_TARGET      0     // (°C) Safe temperature for the bed after timeout
+  #define HOTEND_IDLE_TIMEOUT_SEC   (10*60)    // (seconds) Time without extruder movement to trigger protection
+  #define HOTEND_IDLE_MIN_TRIGGER      150     // (°C) Minimum temperature to enable hotend protection
+  #define HOTEND_IDLE_NOZZLE_TARGET      0     // (°C) Safe temperature for the nozzle after timeout
+  #define BED_IDLE_TIMEOUT_SEC      (60*60)    // (seconds) Time to trigger bed protection. Comment out to use HOTEND_IDLE_TIMEOUT_SEC
+  #define BED_IDLE_MIN_TRIGGER          50     // (°C) Minimum temperature to enable bed protection
+  #define BED_IDLE_TARGET                0     // (°C) Safe temperature for the bed after timeout
 #endif
 
 // @section temperature
@@ -1142,42 +1144,62 @@
 #if ENABLED(FT_MOTION)
   #define FTM_DEFAULT_MODE        ftMotionMode_DISABLED // Default mode of fixed time control. (Enums in ft_types.h)
   #define FTM_DEFAULT_DYNFREQ_MODE dynFreqMode_DISABLED // Default mode of dynamic frequency calculation. (Enums in ft_types.h)
-  #define FTM_SHAPING_DEFAULT_X_FREQ 37.0f              // (Hz) Default peak frequency used by input shapers.
-  #define FTM_SHAPING_DEFAULT_Y_FREQ 37.0f              // (Hz) Default peak frequency used by input shapers.
-  #define FTM_LINEAR_ADV_DEFAULT_ENA false              // Default linear advance enable (true) or disable (false).
-  #define FTM_LINEAR_ADV_DEFAULT_K    0.0f              // Default linear advance gain.
-  #define FTM_SHAPING_ZETA            0.1f              // Zeta used by input shapers.
-  #define FTM_SHAPING_V_TOL           0.05f             // Vibration tolerance used by EI input shapers.
+  #define FTM_SHAPING_DEFAULT_X_FREQ   37.0f      // (Hz) Default peak frequency used by input shapers
+  #define FTM_SHAPING_DEFAULT_Y_FREQ   37.0f      // (Hz) Default peak frequency used by input shapers
+  #define FTM_LINEAR_ADV_DEFAULT_ENA   false      // Default linear advance enable (true) or disable (false)
+  #define FTM_LINEAR_ADV_DEFAULT_K      0.0f      // Default linear advance gain
+  #define FTM_SHAPING_ZETA_X            0.1f      // Zeta used by input shapers for X axis
+  #define FTM_SHAPING_ZETA_Y            0.1f      // Zeta used by input shapers for Y axis
+
+  #define FTM_SHAPING_V_TOL_X           0.05f     // Vibration tolerance used by EI input shapers for X axis
+  #define FTM_SHAPING_V_TOL_Y           0.05f     // Vibration tolerance used by EI input shapers for Y axis
+
+  //#define FT_MOTION_MENU                        // Provide a MarlinUI menu to set M493 parameters
 
   /**
    * Advanced configuration
    */
-  #define FTM_BATCH_SIZE            100                 // Batch size for trajectory generation;
-  #define FTM_WINDOW_SIZE           200                 // Window size for trajectory generation.
-  #define FTM_FS                   1000                 // (Hz) Frequency for trajectory generation. (1 / FTM_TS)
-  #define FTM_TS                      0.001f            // (s) Time step for trajectory generation. (1 / FTM_FS)
-  #define FTM_STEPPER_FS          20000                 // (Hz) Frequency for stepper I/O update.
-  #define FTM_MIN_TICKS ((STEPPER_TIMER_RATE) / (FTM_STEPPER_FS)) // Minimum stepper ticks between steps.
-  #define FTM_MIN_SHAPE_FREQ         10                 // Minimum shaping frequency.
-  #define FTM_ZMAX                  100                 // Maximum delays for shaping functions (even numbers only!).
-                                                        // Calculate as:
-                                                        //    1/2 * (FTM_FS / FTM_MIN_SHAPE_FREQ) for ZV.
-                                                        //    (FTM_FS / FTM_MIN_SHAPE_FREQ) for ZVD, MZV.
-                                                        //    3/2 * (FTM_FS / FTM_MIN_SHAPE_FREQ) for 2HEI.
-                                                        //    2 * (FTM_FS / FTM_MIN_SHAPE_FREQ) for 3HEI.
-  #define FTM_STEPS_PER_UNIT_TIME    20                 // Interpolated stepper commands per unit time.
-                                                        // Calculate as (FTM_STEPPER_FS / FTM_FS).
-  #define FTM_CTS_COMPARE_VAL        10                 // Comparison value used in interpolation algorithm.
-                                                        // Calculate as (FTM_STEPS_PER_UNIT_TIME / 2).
-  // These values may be configured to adjust duration of loop().
-  #define FTM_STEPS_PER_LOOP         60                 // Number of stepper commands to generate each loop().
-  #define FTM_POINTS_PER_LOOP       100                 // Number of trajectory points to generate each loop().
+  #define FTM_UNIFIED_BWS                         // DON'T DISABLE unless you use Ulendo FBS (not implemented)
+  #if ENABLED(FTM_UNIFIED_BWS)
+    #define FTM_BW_SIZE               100         // Unified Window and Batch size with a ratio of 2
+  #else
+    #define FTM_WINDOW_SIZE           200         // Custom Window size for trajectory generation needed by Ulendo FBS
+    #define FTM_BATCH_SIZE            100         // Custom Batch size for trajectory generation needed by Ulendo FBS
+  #endif
 
-  // This value may be configured to adjust duration to consume the command buffer.
-  // Try increasing this value if stepper motion is not smooth.
-  #define FTM_STEPPERCMD_BUFF_SIZE 1000                 // Size of the stepper command buffers.
+  #define FTM_FS                     1000         // (Hz) Frequency for trajectory generation. (Reciprocal of FTM_TS)
+  #define FTM_TS                        0.001f    // (s) Time step for trajectory generation. (Reciprocal of FTM_FS)
 
-  //#define FT_MOTION_MENU                              // Provide a MarlinUI menu to set M493 parameters.
+  // These values may be configured to adjust the duration of loop().
+  #define FTM_STEPS_PER_LOOP           60         // Number of stepper commands to generate each loop()
+  #define FTM_POINTS_PER_LOOP         100         // Number of trajectory points to generate each loop()
+
+  #if DISABLED(COREXY)
+    #define FTM_STEPPER_FS          20000         // (Hz) Frequency for stepper I/O update
+
+    // Use this to adjust the time required to consume the command buffer.
+    // Try increasing this value if stepper motion is choppy.
+    #define FTM_STEPPERCMD_BUFF_SIZE 3000         // Size of the stepper command buffers
+                                                  // (FTM_STEPS_PER_LOOP * FTM_POINTS_PER_LOOP) is a good start
+                                                  // If you run out of memory, fall back to 3000 and increase progressively
+  #else
+    // CoreXY motion needs a larger buffer size. These values are based on our testing.
+    #define FTM_STEPPER_FS          30000
+    #define FTM_STEPPERCMD_BUFF_SIZE 6000
+  #endif
+
+  #define FTM_STEPS_PER_UNIT_TIME (FTM_STEPPER_FS / FTM_FS)       // Interpolated stepper commands per unit time
+  #define FTM_CTS_COMPARE_VAL (FTM_STEPS_PER_UNIT_TIME / 2)       // Comparison value used in interpolation algorithm
+  #define FTM_MIN_TICKS ((STEPPER_TIMER_RATE) / (FTM_STEPPER_FS)) // Minimum stepper ticks between steps
+
+  #define FTM_MIN_SHAPE_FREQ           10         // Minimum shaping frequency
+  #define FTM_RATIO (FTM_FS / FTM_MIN_SHAPE_FREQ) // Factor for use in FTM_ZMAX. DON'T CHANGE.
+  #define FTM_ZMAX (FTM_RATIO * 2)                // Maximum delays for shaping functions (even numbers only!)
+                                                  // Calculate as:
+                                                  //   ZV       : FTM_RATIO / 2
+                                                  //   ZVD, MZV : FTM_RATIO
+                                                  //   2HEI     : FTM_RATIO * 3 / 2
+                                                  //   3HEI     : FTM_RATIO * 2
 #endif
 
 /**
@@ -1288,7 +1310,7 @@
  */
 //#define XY_FREQUENCY_LIMIT      10 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
 #ifdef XY_FREQUENCY_LIMIT
-  #define XY_FREQUENCY_MIN_PERCENT 5 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
+  #define XY_FREQUENCY_MIN_PERCENT 5 // (%) Minimum FR percentage to apply. Set with M201 G<min%>.
 #endif
 
 //
@@ -1370,7 +1392,7 @@
   #define CALIBRATION_NOZZLE_TIP_HEIGHT          1.0  // mm
   #define CALIBRATION_NOZZLE_OUTER_DIAMETER      2.0  // mm
 
-  // Uncomment to enable reporting (required for "G425 V", but consumes PROGMEM).
+  // Uncomment to enable reporting (required for "G425 V", but consumes flash).
   //#define CALIBRATION_REPORTING
 
   // The true location and dimension the cube/bolt/washer on the bed.
@@ -1395,7 +1417,7 @@
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
   #elif ENABLED(Workhorse)
-    #define CALIBRATION_OBJECT_CENTER     { 266, -17.0,-2.0 } // mm True location is -22 in y but object size is accounting for location change
+    #define CALIBRATION_OBJECT_CENTER     { 262, -16.5,-2.0 } // mm True location is -22 in y but object size is accounting for location change
     #define CALIBRATION_OBJECT_DIMENSIONS { 10.0, 4.0,  10.0 } // mm
 
     // Comment out any sides which are unreachable by the probe. For best
@@ -1605,11 +1627,6 @@
   #define FEEDRATE_CHANGE_BEEP_FREQUENCY 440
 #endif
 
-//
-// LCD Backlight Timeout
-//
-//#define LCD_BACKLIGHT_TIMEOUT_MINS 1  // (minutes) Timeout before turning off the backlight
-
 #if HAS_BED_PROBE && ANY(HAS_MARLINUI_MENU, HAS_TFT_LVGL_UI)
   //#define PROBE_OFFSET_WIZARD       // Add a Probe Z Offset calibration option to the LCD menu
   #if ENABLED(PROBE_OFFSET_WIZARD)
@@ -1649,8 +1666,23 @@
     #define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
   #endif
 
-  // Add 50/100mm moves to MarlinUI even with a smaller bed
-  //#define LARGE_MOVE_ITEMS
+  /**
+   * MarlinUI "Move Axis" menu distances. Comma-separated list.
+   * Values are displayed as-defined, so always use plain numbers here.
+   * Axis moves <= 1/2 the axis length and Extruder moves <= EXTRUDE_MAXLENGTH
+   * will be shown in the move submenus.
+   */
+  #define MANUAL_MOVE_DISTANCE_MM                    10, 1.0, 0.1  // (mm)
+  //#define MANUAL_MOVE_DISTANCE_MM         100, 50, 10, 1.0, 0.1  // (mm)
+  //#define MANUAL_MOVE_DISTANCE_MM    500, 100, 50, 10, 1.0, 0.1  // (mm)
+
+  // Manual move distances for INCH_MODE_SUPPORT
+  #define MANUAL_MOVE_DISTANCE_IN                          0.100, 0.010, 0.001  // (in)
+  //#define MANUAL_MOVE_DISTANCE_IN          1.000, 0.500, 0.100, 0.010, 0.001  // (in)
+  //#define MANUAL_MOVE_DISTANCE_IN   5.000, 1.000, 0.500, 0.100, 0.010, 0.001  // (in)
+
+  // Manual move distances for rotational axes
+  #define MANUAL_MOVE_DISTANCE_DEG             90, 45, 22.5, 5, 1  // (°)
 
   // BACK menu items keep the highlight at the top
   #define TURBO_BACK_MENU_ITEM
@@ -1695,8 +1727,12 @@
   //#define SOUND_MENU_ITEM   // Add a mute option to the LCD menu
   #define SOUND_ON_DEFAULT    // Buzzer/speaker default enabled state
 
+  #if HAS_WIRED_LCD
+    //#define DOUBLE_LCD_FRAMERATE        // Not recommended for slow boards.
+  #endif
+
   // The timeout to return to the status screen from sub-menus
-  #define LCD_TIMEOUT_TO_STATUS (900000)   // (ms) 15 minutes for screen timeout
+  #define LCD_TIMEOUT_TO_STATUS (15*60000)   // (ms) 15 minutes for screen timeout
 
   // Scroll a longer status message into view
   #define STATUS_MESSAGE_SCROLLING
@@ -1739,6 +1775,15 @@
   #endif
 
 #endif // HAS_DISPLAY
+
+#if HAS_FEEDRATE_EDIT
+  #define SPEED_EDIT_MIN    10  // (%) Feedrate percentage edit range minimum
+  #define SPEED_EDIT_MAX   999  // (%) Feedrate percentage edit range maximum
+#endif
+#if HAS_FLOW_EDIT
+  #define FLOW_EDIT_MIN     10  // (%) Flow percentage edit range minimum
+  #define FLOW_EDIT_MAX    999  // (%) Flow percentage edit range maximum
+#endif
 
 // Add 'M73' to set print job progress, overrides Marlin's built-in estimate
 #define SET_PROGRESS_MANUALLY
@@ -1816,7 +1861,7 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  #define EVENT_GCODE_SD_ABORT "G0 Z" charLULZBOT_Z_MAX_POS "F2500\nG27\nM524\nM104 S0"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G0 Z" charZ_MAX_POS "F2500\nG27\nM524\nM104 S0"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -1832,19 +1877,20 @@
    */
   #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
-    #define PLR_ENABLED_DEFAULT   false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
-    //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
-    //#define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
-    //#define POWER_LOSS_PIN         44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
-    //#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
-    //#define POWER_LOSS_PULLUP         // Set pullup / pulldown as appropriate for your sensor
+    #define PLR_ENABLED_DEFAULT       false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
+    //#define PLR_BED_THRESHOLD BED_MAXTEMP // (°C) Skip user confirmation at or above this bed temperature (0 to disable)
+    //#define BACKUP_POWER_SUPPLY           // Backup power / UPS to move the steppers on power loss
+    //#define POWER_LOSS_ZRAISE           2 // (mm) Z axis raise on resume (on power loss with UPS)
+    //#define POWER_LOSS_PIN             44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
+    //#define POWER_LOSS_STATE         HIGH // State of pin indicating power loss
+    //#define POWER_LOSS_PULLUP             // Set pullup / pulldown as appropriate for your sensor
     //#define POWER_LOSS_PULLDOWN
-    //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
-    //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
+    //#define POWER_LOSS_PURGE_LEN       20 // (mm) Length of filament to purge on resume
+    //#define POWER_LOSS_RETRACT_LEN     10 // (mm) Length of filament to retract on fail. Requires backup power.
 
     // Without a POWER_LOSS_PIN the following option helps reduce wear on the SD card,
     // especially with "vase mode" printing. Set too high and vases cannot be continued.
-    #define POWER_LOSS_MIN_Z_CHANGE 0.05 // (mm) Minimum Z change before saving power-loss data
+    #define POWER_LOSS_MIN_Z_CHANGE    0.05 // (mm) Minimum Z change before saving power-loss data
 
     // Enable if Z homing is needed for proper recovery. 99.9% of the time this should be disabled!
     //#define POWER_LOSS_RECOVER_ZHOME
@@ -2321,6 +2367,15 @@
 #endif
 
 //
+// LCD Backlight Timeout
+// Requires a display with a controllable backlight
+//
+//#define LCD_BACKLIGHT_TIMEOUT_MINS 1  // (minutes) Timeout before turning off the backlight
+#if defined(DISPLAY_SLEEP_MINUTES) || defined(LCD_BACKLIGHT_TIMEOUT_MINS)
+  #define EDITABLE_DISPLAY_TIMEOUT      // Edit timeout with M255 S<minutes> and a menu item
+#endif
+
+//
 // ADC Button Debounce
 //
 #if HAS_ADC_BUTTONS
@@ -2774,10 +2829,12 @@
   //#define FULL_REPORT_TO_HOST_FEATURE   // Auto-report the machine status like Grbl CNC
 #endif
 
-// Bad Serial-connections can miss a received command by sending an 'ok'
-// Therefore some clients abort after 30 seconds in a timeout.
-// Some other clients start sending commands while receiving a 'wait'.
-// This "wait" is only sent when the buffer is empty. 1 second is a good value here.
+/**
+ * Bad Serial-connections can miss a received command by sending an 'ok'
+ * Therefore some clients abort after 30 seconds in a timeout.
+ * Some other clients start sending commands while receiving a 'wait'.
+ * This "wait" is only sent when the buffer is empty. 1 second is a good value here.
+ */
 //#define NO_TIMEOUTS 1000 // (ms)
 
 // Some clients will have this feature soon. This could make the NO_TIMEOUTS unnecessary.
@@ -2789,6 +2846,15 @@
 
 // For serial echo, the number of digits after the decimal point
 //#define SERIAL_FLOAT_PRECISION 4
+
+/**
+ * This feature is EXPERIMENTAL so use with caution and test thoroughly.
+ * Enable this option to receive data on the serial ports via the onboard DMA
+ * controller for more stable and reliable high-speed serial communication.
+ * Only some STM32 MCUs are currently supported.
+ * Note: This has no effect on emulated USB serial ports.
+ */
+//#define SERIAL_DMA
 
 /**
  * Set the number of proportional font spaces required to fill up a typical character space.
@@ -2975,7 +3041,7 @@
 #define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         10  // (mm/s) Initial retract feedrate.
-  #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
+  #define PAUSE_PARK_RETRACT_LENGTH            1  // (mm) Initial retract.
                                                   // This short retract is done immediately, before parking the nozzle.
   #define FILAMENT_CHANGE_UNLOAD_FEEDRATE      2  // (mm/s) Unload filament feedrate. This can be pretty fast.
   #define FILAMENT_CHANGE_UNLOAD_ACCEL        25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
@@ -3020,6 +3086,7 @@
 
   #define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
   #define FILAMENT_UNLOAD_ALL_EXTRUDERS         // Allow M702 to unload all extruders above a minimum target temp (as set by M302)
+  #define CONFIGURE_FILAMENT_CHANGE               // Add M603 G-code and menu items. Requires ~1.3K bytes of flash.
 #endif
 
 // @section tmc_smart
@@ -3592,9 +3659,8 @@
 /**
  * TWI/I2C BUS
  *
- * This feature is an EXPERIMENTAL feature so it shall not be used on production
- * machines. Enabling this will allow you to send and receive I2C data from slave
- * devices on the bus.
+ * This feature is EXPERIMENTAL but may be useful for custom I2C peripherals.
+ * Enable this to send and receive I2C data from slave devices on the bus.
  *
  * ; Example #1
  * ; This macro send the string "Marlin" to the slave device with address 0x63 (99)
@@ -3948,38 +4014,6 @@
  */
 //#define CNC_COORDINATE_SYSTEMS
 
-// @section reporting
-
-/**
- * Auto-report fan speed with M123 S<seconds>
- * Requires fans with tachometer pins
- */
-//#define AUTO_REPORT_FANS
-
-/**
- * Auto-report temperatures with M155 S<seconds>
- */
-#define AUTO_REPORT_TEMPERATURES
-#if ENABLED(AUTO_REPORT_TEMPERATURES) && TEMP_SENSOR_REDUNDANT
-  //#define AUTO_REPORT_REDUNDANT // Include the "R" sensor in the auto-report
-#endif
-
-/**
- * Auto-report position with M154 S<seconds>
- */
-//#define AUTO_REPORT_POSITION
-#if ENABLED(AUTO_REPORT_POSITION)
-  //#define AUTO_REPORT_REAL_POSITION // Auto-report the real position
-#endif
-
-/**
- * Include capabilities in M115 output
- */
-#define EXTENDED_CAPABILITIES_REPORT
-#if ENABLED(EXTENDED_CAPABILITIES_REPORT)
-  //#define M115_GEOMETRY_REPORT
-#endif
-
 // @section security
 
 /**
@@ -4022,12 +4056,22 @@
 
 // @section reporting
 
-// Extra options for the M114 "Current Position" report
+/**
+ * Extra options for the M114 "Current Position" report
+ */
 #define M114_DETAIL         // Use 'M114` for details to check planner calculations
 //#define M114_REALTIME       // Real current position based on forward kinematics
 //#define M114_LEGACY         // M114 used to synchronize on every call. Enable if needed.
 
+/**
+ * Auto-report fan speed with M123 S<seconds>
+ * Requires fans with tachometer pins
+ */
+//#define AUTO_REPORT_FANS
+
 //#define REPORT_FAN_CHANGE   // Report the new fan speed when changed by M106 (and others)
+
+// @section gcode
 
 /**
  * Spend 28 bytes of SRAM to optimize the G-code parser
@@ -4038,13 +4082,21 @@
   //#define GCODE_QUOTED_STRINGS  // Support for quoted string parameters
 #endif
 
-// Support for MeatPack G-code compression (https://github.com/scottmudge/OctoPrint-MeatPack)
+/**
+ * Support for MeatPack G-code compression (https://github.com/scottmudge/OctoPrint-MeatPack)
+ */
 //#define MEATPACK_ON_SERIAL_PORT_1
 //#define MEATPACK_ON_SERIAL_PORT_2
 
 //#define GCODE_CASE_INSENSITIVE  // Accept G-code sent to the firmware in lowercase
 
 //#define REPETIER_GCODE_M360     // Add commands originally from Repetier FW
+
+/**
+ * Enable M111 debug flags 1=ECHO, 2=INFO, 4=ERRORS (unimplemented).
+ * Disable to save some flash. Some hosts (Repetier Host) may rely on this feature.
+ */
+#define DEBUG_FLAGS_GCODE
 
 /**
  * Enable this option for a leaner build of Marlin that removes
@@ -4072,8 +4124,6 @@
 #ifdef G0_FEEDRATE
   //#define VARIABLE_G0_FEEDRATE // The G0 feedrate is set by F in G0 motion mode
 #endif
-
-// @section gcode
 
 /**
  * Startup commands
@@ -4126,28 +4176,29 @@
     #define E_CURRENT_TWNB285 "M906 T0 E850 T1 E850"
   #endif
 
-
-  #define MAIN_MENU_ITEM_1_DESC "Park for TH Swap"
-  #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"
+  #if DISABLED(TAZPro, TAZProV2, TAZProXT)
+    #define MAIN_MENU_ITEM_1_DESC "Park for TH Swap"
+    #define MAIN_MENU_ITEM_1_GCODE "G28O\nG0 X100 Y283 Z200"
+  #endif
 
   #if defined(TOOLHEAD_Galaxy_Series)
     #define MAIN_MENU_ITEM_2_DESC "MET175|NKL-PL BRASS"
-    #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\n" E_CURRENT_LGX175 "\nM900 K0.05\nM500\nM117 MET-1.75|0.50mm|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM306 A0.0622 C15.44 F0.1844 P50 R0.1128\n" E_CURRENT_LGX175 "\nM900 K0.05\nM500\nM117 MET175|NKL-PL BRASS"
 
     #define MAIN_MENU_ITEM_3_DESC "MET285|NKL-PL BRASS"
-    #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\n" E_CURRENT_LGX285 "\nM900 K0.05\nM500\nM117 MET-2.85|0.50mm|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM306 A0.0622 C15.44 F0.1844 P50 R0.1128\n" E_CURRENT_LGX285 "\nM900 K0.05\nM500\nM117 MET285|NKL-PL BRASS"
 
     #if NONE(MiniV2, Sidekick_289) // Mini2 and 289 do not have the power to supply 100w to the tool head
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
-      #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM301P" charAST285_DEFAULT_Kp "I" charAST285_DEFAULT_Ki "D" charAST285_DEFAULT_Kd "\n" E_CURRENT_LGX285 "\nM900 K0.03\nM500\nM117 AST-2.85|0.50mm|GM STEEL"
+      #define MAIN_MENU_ITEM_4_GCODE "M891 T3\nM92E439\nM306 A0.098 C36.75 F0.1632 P100 R0.0027\n" E_CURRENT_LGX285 "\nM900 K0.03\nM500\nM117 AST285|GM STEEL"
     #endif
 
   #elif defined(TOOLHEAD_Galaxy_DualExtruder)
     #define MAIN_MENU_ITEM_2_DESC "TWNB175|NKL-PL BRASS"
-    #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\nM301P" charMET175_DEFAULT_Kp "I" charMET175_DEFAULT_Ki "D" charMET175_DEFAULT_Kd "\n" E_CURRENT_TWNB175 "\nM900 K0.05\nM500\nM117 TWNB-1.75|0.50mm|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_2_GCODE "M891 T1\nM92E415\n" E_CURRENT_TWNB175 "\nM500\nM117 TWNB175|NKL-PL BRASS"
 
     #define MAIN_MENU_ITEM_3_DESC "TWNB285|NKL-PL BRASS"
-    #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\nM301P" charMET285_DEFAULT_Kp "I" charMET285_DEFAULT_Ki "D" charMET285_DEFAULT_Kd "\n" E_CURRENT_TWNB285 "\nM900 K0.05\nM500\nM117 TWNB-2.85|0.50mm|NKL-PL BRASS"
+    #define MAIN_MENU_ITEM_3_GCODE "M891 T2\nM92E439\n" E_CURRENT_TWNB285 "\nM500\nM117 TWNB285|NKL-PL BRASS"
 
   #elif defined(TOOLHEAD_Legacy_Universal)
     #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT, TAZProV2)

@@ -141,9 +141,9 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1         BTN_POS(1,1), BTN_SIZE(3,4)
   #define TEMP_RECT_E0        BTN_POS(1,1), BTN_SIZE(3,2)
   #define TEMP_RECT_E1        BTN_POS(4,1), BTN_SIZE(3,2)
+  #define TEMP_RECT_BED       BTN_POS(1,3), BTN_SIZE(3,2)
   #define NOZ_1_POS           BTN_POS(1,1), BTN_SIZE(3,2)
   #define NOZ_2_POS           BTN_POS(4,1), BTN_SIZE(3,2)
   #define BED_POS             BTN_POS(1,3), BTN_SIZE(3,2)
@@ -170,14 +170,14 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
     cmd.font(Theme::font_small)
 
        .tag(5)
-       .fgcolor(temp).button(TEMP_RECT_1, F(""), OPT_FLAT)
        .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
        #if HAS_MULTI_EXTRUDER
         .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #else
         .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #endif
-       .fgcolor(fan_speed).button(FAN_POS,     F(""), OPT_FLAT)
+       .fgcolor(temp).button(TEMP_RECT_BED, F(""), OPT_FLAT)
+       .fgcolor(temp).button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
     // Draw Extruder Bitmap on Extruder Temperature Button
@@ -257,7 +257,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .font(font_medium)
        .fgcolor(temp_button)
        .button(TEXT_POS(BED_POS), bed_str)
-       .fgcolor(fan_speed_button)
+       .fgcolor(temp_button)
        .button(TEXT_POS(FAN_POS), fan_str);
   }
 }
