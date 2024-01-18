@@ -477,13 +477,19 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
-  #define LULZBOT_TOOLHEAD_WATT              { 50.0f }
-  #define TOOL_HEAD_ID                       1
+    #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
     #define LULZBOT_MOTOR_CURRENT_E0         750 // mA
   #endif
+  /********************* MPC Settings **********************/
+  #define LULZBOT_TOOLHEAD_WATT                 { 50.0f }
+  #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.44f }
+  #define LULZBOT_MPC_SENSOR_RESPONSIVENESS     { 0.1128f }
+  #define LULZBOT_MPC_AMBIENT_XFER_COEFF        { 0.0622f }
+  #define LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255 { 0.1844f }
+  #define LULZBOT_FILAMENT_HEAT_CAPACITY_PERMM  { 5.6e-3f }
 #endif
 
 /*********************************** TAZ PRO TOOLHEADS ************************/
@@ -539,12 +545,18 @@
     #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
     #define LULZBOT_E_STEPS                        410
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
-    #define LULZBOT_TOOLHEAD_WATT                  { 50.0f }
     #define LULZBOT_TEMP_SENSOR_1                  5
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
     #define SWITCHING_NOZZLE
-#endif /* TOOLHEAD_Galaxy_DualExtruder */
+    /********************* MPC Settings **********************/
+    #define LULZBOT_TOOLHEAD_WATT                 { 50.0f, 50.0f }
+    #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.44f, 15.44f }
+    #define LULZBOT_MPC_SENSOR_RESPONSIVENESS     { 0.1128f, 0.1128f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF        { 0.0622f, 0.0622f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255 { 0.1844f, 0.1844f }
+    #define LULZBOT_FILAMENT_HEAT_CAPACITY_PERMM  { 5.6e-3f, 5.6e-3f }
+  #endif /* TOOLHEAD_Galaxy_DualExtruder */
 
 /********************************* OTHER TOOLHEADS ***************************/
 
@@ -1144,22 +1156,22 @@
   #define MPC_INCLUDE_FAN                             // Model the fan speed?
 
   // Measured physical constants from M306
-  #define MPC_BLOCK_HEAT_CAPACITY { 15.44f }           // (J/K) Heat block heat capacities.
-  #define MPC_SENSOR_RESPONSIVENESS { 0.1128f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
-  #define MPC_AMBIENT_XFER_COEFF { 0.0622f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  #define MPC_BLOCK_HEAT_CAPACITY LULZBOT_MPC_BLOCK_HEAT_CAPACITY                // (J/K) Heat block heat capacities.
+  #define MPC_SENSOR_RESPONSIVENESS LULZBOT_MPC_SENSOR_RESPONSIVENESS            // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF LULZBOT_MPC_AMBIENT_XFER_COEFF                  // (W/K) Heat transfer coefficients from heat block to room air with fan off.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.1844f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
   #endif
 
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
   #if ENABLED(MPC_INCLUDE_FAN)
     //#define MPC_FAN_0_ALL_HOTENDS
-    //#define MPC_FAN_0_ACTIVE_HOTEND
+    #define MPC_FAN_0_ACTIVE_HOTEND
   #endif
 
   // Filament Heat Capacity (joules/kelvin/mm)
   // Set at runtime with M306 H<value>
-  #define FILAMENT_HEAT_CAPACITY_PERMM { 5.6e-3f }    // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
+  #define FILAMENT_HEAT_CAPACITY_PERMM LULZBOT_FILAMENT_HEAT_CAPACITY_PERMM    // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
                                                       // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
                                                       // 0.00515 J/K/mm for 1.75mm ABS (0.0137 J/K/mm for 2.85mm ABS).
                                                       // 0.00522 J/K/mm for 1.75mm Nylon (0.0138 J/K/mm for 2.85mm Nylon).

@@ -231,6 +231,7 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
 
     cmd.colors(normal_btn)
        .font(font_medium)
+       .tag(0)
        .button(GROUP_1_POS, F(""), OPT_FLAT)
        .button(GROUP_2_POS, F(""), OPT_FLAT)
        .button(GROUP_3_POS, F(""), OPT_FLAT)
@@ -252,6 +253,7 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
 
     cmd.colors(normal_btn)
        .font(font_medium)
+       .tag(0)
        .text(GROUP_1_LABL_POS, F("PLA, PVA, PVB"))
        .text(GROUP_2_LABL_POS, F("TPU, Flexibles"))
        .text(GROUP_3_LABL_POS, F("ABS, PETg, ASA"))
