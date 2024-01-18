@@ -1322,10 +1322,10 @@
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
   #if ANY(TAZPro, TAZProXT)
-    #define BACKLASH_DISTANCE_MM {0.252, 0.183, 0.075} // <-- changed:  (mm)
+    #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // <-- changed:  (mm)
     #define BACKLASH_CORRECTION    1.0 // <-- changed:  0.0 = no correction; 1.0 = full correction
   #else
-    #define BACKLASH_DISTANCE_MM { 0, 0, 0 } // (mm)
+    #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // (mm)
     #define BACKLASH_CORRECTION    0.0       // 0.0 = no correction; 1.0 = full correction
   #endif
 
