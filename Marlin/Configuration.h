@@ -472,7 +472,7 @@
   #define LULZBOT_UNIVERSAL_MOUNT
   #define LULZBOT_EXTRUDERS                  1
   #define LULZBOT_M115_EXTRUDER_TYPE         "Galaxy Series"
-  #define LULZBOT_E_STEPS                    410
+  #define LULZBOT_E_STEPS                    439
   #define LULZBOT_TOOLHEAD_X_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_X_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Y_MAX_ADJ         0
@@ -481,9 +481,9 @@
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
     #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
-    #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+    #define LULZBOT_MOTOR_CURRENT_E0         155 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
-    #define LULZBOT_MOTOR_CURRENT_E0         750 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0         850 // mA
   #endif
   /********************* MPC Settings **********************/
   #define LULZBOT_TOOLHEAD_WATT                 { 50.0f }
