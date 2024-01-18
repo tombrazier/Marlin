@@ -39,12 +39,12 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(3,2)
-    #define Y_LBL_POS             BTN_POS(4,7), BTN_SIZE(3,2)
-    #define Z_LBL_POS             BTN_POS(7,7), BTN_SIZE(3,2)
-    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(3,2)
-    #define Y_VAL_POS             BTN_POS(4,9), BTN_SIZE(3,2)
-    #define Z_VAL_POS             BTN_POS(7,9), BTN_SIZE(3,2)
+    #define X_LBL_POS             BTN_POS(1,9), BTN_SIZE(2,2)
+    #define Y_LBL_POS             BTN_POS(4,9), BTN_SIZE(2,2)
+    #define Z_LBL_POS             BTN_POS(7,9), BTN_SIZE(2,2)
+    #define X_VAL_POS             BTN_POS(2,9), BTN_SIZE(2,2)
+    #define Y_VAL_POS             BTN_POS(5,9), BTN_SIZE(2,2)
+    #define Z_VAL_POS             BTN_POS(8,9), BTN_SIZE(2,2)
     #define ALL_VAL_POS           BTN_POS(1,9), BTN_SIZE(9,2)
     #define Home_X_POS            BTN_POS(2,7), BTN_SIZE(1,2)
     #define Home_Y_POS            BTN_POS(5,7), BTN_SIZE(1,2)
@@ -65,15 +65,13 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     cmd.tag(6)
        .colors(normal_btn)
        .font(Theme::font_medium)
+       .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+       .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+       .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
        .button(X_VAL_POS, F(""), OPT_FLAT)
        .button(Y_VAL_POS, F(""), OPT_FLAT)
        .button(Z_VAL_POS, F(""), OPT_FLAT)
-       .button(ALL_VAL_POS, F(""))
-       .font(Theme::font_small)
-                               .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-                               .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-                               .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-       .colors(normal_btn);
+       .button(ALL_VAL_POS, F(""));
   }
 
   if (what & FOREGROUND) {
@@ -83,54 +81,39 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     char z_str[15];
 
     if (isAxisPositionKnown(X))
-      format_position(x_str, getAxisPosition_mm(X));
+      format_position(x_str, getAxisPosition_mm(X), 0);
     else
       strcpy_P(x_str, PSTR("?"));
 
     if (isAxisPositionKnown(Y))
-      format_position(y_str, getAxisPosition_mm(Y));
+      format_position(y_str, getAxisPosition_mm(Y), 0);
     else
       strcpy_P(y_str, PSTR("?"));
 
     if (isAxisPositionKnown(Z))
-      format_position(z_str, getAxisPosition_mm(Z), 2);
+      format_position(z_str, getAxisPosition_mm(Z), 0);
     else
       strcpy_P(z_str, PSTR("?"));
 
-    cmd.colors(normal_text)
-          .font(Theme::font_medium)
-          .tag(0).button(ALL_VAL_POS, F(""));
     cmd.tag(6)
-      .font(Theme::font_medium)
-      .text(X_VAL_POS, x_str)
-      .text(Y_VAL_POS, y_str)
-      .text(Z_VAL_POS, z_str);
+       .colors(normal_text)
+       .font(Theme::font_medium)
+       .text(X_VAL_POS, x_str)
+       .text(Y_VAL_POS, y_str)
+       .text(Z_VAL_POS, z_str);
 
     if (!ExtUI::isOngoingPrintJob()) {
-      cmd.colors(text_x_axis_btn)
-        .cmd (BITMAP_SOURCE(Home_icon_Info))
-        .cmd (BITMAP_LAYOUT(Home_icon_Info))
-        .cmd (BITMAP_SIZE  (Home_icon_Info))
-        .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
-        .colors(normal_btn)
-        .icon(Home_X_POS, Home_icon_Info, icon_scale_lg);
-      cmd.colors(text_y_axis_btn)
-        .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
-        .colors(normal_btn)
-        .icon(Home_Y_POS, Home_icon_Info, icon_scale_lg);
-      cmd.colors(text_z_axis_btn)
-        .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
-        .colors(normal_btn)
-        .icon(Home_Z_POS, Home_icon_Info, icon_scale_lg);
+      cmd.tag(6)
+         .colors(normal_btn)
+         .text(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+         .text(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+         .text(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
     }
     else{
-      cmd.colors(text_x_axis)
-          .font(font_medium)
-          .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
-      cmd.colors(text_y_axis)
-          .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
-      cmd.colors(text_z_axis)
-          .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+      cmd.colors(normal_btn)
+         .text(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+         .text(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+         .text(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
     }
   }
 }
@@ -148,12 +131,10 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   #define NOZ_2_POS           BTN_POS(4,1), BTN_SIZE(3,2)
   #define BED_POS             BTN_POS(1,3), BTN_SIZE(3,2)
   #define FAN_POS             BTN_POS(4,3), BTN_SIZE(3,2)
-  #define HOME_ALL_POS        BTN_POS(1,5), BTN_SIZE(3,2)
+  #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(3,2)
   #define TOOL_HEAD_POS       BTN_POS(4,5), BTN_SIZE(3,2)
-  #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(2,2)
-  #define PRINT_SPEED_POS     BTN_POS(3,5), BTN_SIZE(2,2)
-  #define FILAMENT_SENSOR_POS BTN_POS(5,5), BTN_SIZE(2,2)
-  #define BLANKSPACE_5_6_POS  BTN_POS(1,5), BTN_SIZE(6,2)
+  #define HOME_ALL_POS        BTN_POS(1,7), BTN_SIZE(3,2)
+  #define PRESENT_BED_POS     BTN_POS(4,7), BTN_SIZE(3,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -204,22 +185,22 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   }
 
   if (ExtUI::isOngoingPrintJob()) {
-    cmd.colors(disabled_btn)
-       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
-        .tag(6).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
-        .tag(7).button(PRINT_SPEED_POS, GET_TEXT_F(MSG_SPEED))
-        .tag(8).button(FILAMENT_SENSOR_POS, GET_TEXT_F(MSG_SENSOR));
+        .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
+        .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_SPEED))
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_SENSOR))
+        .tag(!ExtUI::isPrintingPaused() ? 17 : 18)
+        .button(PRESENT_BED_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_PAUSE) : GET_TEXT_F(MSG_RESUME));
   }
   else{
-    cmd.colors(disabled_btn)
-       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
-        .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
         .enabled(ENABLED(CUSTOM_MENU_MAIN))
-        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
+        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
+        .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .tag(16).button(PRESENT_BED_POS, GET_TEXT_F(MSG_PRESENT_BED));
   }
 
   if (what & FOREGROUND) {
@@ -546,6 +527,10 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 13: injectCommands(F("G28Z")); break;
     }
     case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
+    case 15: GOTO_SCREEN(ZOffsetScreen); break;
+    case 16: injectCommands(F(PRESENT_BED_GCODE)); break;
+    case 17: injectCommands(F("M117 Print Paused")); pausePrint();  break;
+    case 18: injectCommands(F("M117 Print Resumed")); resumePrint(); break;
     default:
       return true;
   }

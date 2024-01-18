@@ -510,10 +510,12 @@ namespace LanguageNarrow_en {
   LSTR MSG_BUTTON_PURGE                   = _UxGT("Purge");
   LSTR MSG_PAUSING                        = _UxGT("Pausing...");
   LSTR MSG_PAUSE_PRINT                    = _UxGT("Pause Print");
+  LSTR MSG_PAUSE                          = _UxGT("Pause");
   LSTR MSG_ADVANCED_PAUSE                 = _UxGT("Advanced Pause");
   LSTR MSG_RESUME_PRINT                   = _UxGT("Resume Print");
+  LSTR MSG_RESUME                         = _UxGT("Resume");
   LSTR MSG_STOP_PRINT                     = _UxGT("Stop Print");
-  LSTR MSG_CANCEL_PRINT                     = _UxGT("Cancel Print");
+  LSTR MSG_CANCEL_PRINT                   = _UxGT("Cancel Print");
   LSTR MSG_OUTAGE_RECOVERY                = _UxGT("Power Outage");
   LSTR MSG_RESUME_BED_TEMP                = _UxGT("Resume Bed Temp");
   LSTR MSG_HOST_START_PRINT               = _UxGT("Host Start");
