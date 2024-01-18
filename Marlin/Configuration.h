@@ -92,6 +92,7 @@
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 #define LULZBOT_FW_VERSION "2.1.3.0.20" 
+#define CAPABILITIES_REPORT
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -131,6 +132,7 @@
 #if ENABLED(TAZPro)
   #define EMI_MITIGATION
 #endif
+
 
 #if (MOTHERBOARD == BOARD_ARCHIM2) || (MOTHERBOARD == BOARD_EINSY_RETRO)
   #define LULZBOT_RSENSE 0.12
