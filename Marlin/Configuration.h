@@ -92,6 +92,7 @@
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 #define LULZBOT_FW_VERSION "2.1.3.0.20" 
+#define CAPABILITIES_REPORT
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -2134,12 +2135,16 @@
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.1 }
 #elif ANY(TAZ6, Workhorse)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.2 }
-#elif ANY(TAZPro, TAZProXT, TAZProV2) && DISABLED(LULZBOT_BLTouch)
+#elif ANY(TAZPro, TAZProXT) && DISABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.102 }
 #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { -38, -20, -3.2 }
 #elif ENABLED(TAZProV2, TOOLHEAD_Galaxy_DualExtruder)
-  #define NOZZLE_TO_PROBE_OFFSET { 100, 70, -3.2 }
+  #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+    #define NOZZLE_TO_PROBE_OFFSET { 100, 70, -3.2 }
+  #else
+    #define NOZZLE_TO_PROBE_OFFSET { 100, 70, -3.2 }
+  #endif
 #elif ANY(Sidekick_289, Sidekick_747)
   #define NOZZLE_TO_PROBE_OFFSET { -1, 50, -1.23 }
 #endif
@@ -2165,7 +2170,7 @@
     #define PROBING_MARGIN -8
   #elif ENABLED(Workhorse)
     #define PROBING_MARGIN -10
-  #elif ANY(TAZPro, TAZProXT, TAZProV2)
+  #elif ANY(TAZPro, TAZProXT)
     #define PROBING_MARGIN -8
   #endif
 #endif
@@ -2573,7 +2578,7 @@
     #define LULZBOT_X_MAX_POS 308 // <-- changed
     #define LULZBOT_Y_MAX_POS 338 // <-- changed   change this
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
-    #define LULZBOT_Z_MAX_POS 299 // <-- changed
+    #define LULZBOT_Z_MAX_POS 303 // <-- changed
   #elif defined(LULZBOT_LONG_BED)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570
@@ -2583,7 +2588,7 @@
     #define LULZBOT_Y_MAX_POS 613
     #define LULZBOT_Y_MIN_POS -18.2//-15
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 289
+    #define LULZBOT_Z_MAX_POS 293
   #else
     #define X_BED_SIZE 285
     #define Y_BED_SIZE 285
@@ -2593,7 +2598,7 @@
     #define LULZBOT_X_MAX_POS 313
     #define LULZBOT_Y_MAX_POS 330
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 299
+    #define LULZBOT_Z_MAX_POS 303
   #endif
 #elif defined(Sidekick_289)
   #define X_BED_SIZE 161
@@ -2935,9 +2940,9 @@
     #if defined (Sidekick_289)
       #define GRID_MAX_POINTS_X 3  //3x3 grid to avoid hitting the handle on the flex bed
     #elif defined(Sidekick_747)
-      #define GRID_MAX_POINTS_X 4  //4x4 grid to increase startup speed
+      #define GRID_MAX_POINTS_X 3  //3x3 grid to increase startup speed
     #elif defined(LULZBOT_BLTouch) && ANY(TAZPro, TAZProXT, TAZProV2, Workhorse, TAZ6)
-      #define GRID_MAX_POINTS_X 4  //4x4 grid to increase startup speed
+      #define GRID_MAX_POINTS_X 3  //3x3 grid to increase startup speed
     #else
       #define GRID_MAX_POINTS_X 2  //2x2 grid of mounted washers
     #endif
@@ -3382,12 +3387,18 @@
   #if ANY(MiniV2, MiniV3)
     #define NOZZLE_CLEAN_START_POINT {  45, 177, 0 }
     #define NOZZLE_CLEAN_END_POINT   { 115, 177, 0 }
-  #elif ANY(TAZPro, TAZProXT, TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define NOZZLE_CLEAN_START_POINT { 300, 95, 0.5 }
     #define NOZZLE_CLEAN_END_POINT   { 300, 25, 0.5 }
-  #elif ANY(TAZPro, TAZProXT, TAZProV2) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
     #define NOZZLE_CLEAN_START_POINT {{ -17, 95, 0 }, { 297, 95, 0 }}
     #define NOZZLE_CLEAN_END_POINT   {{ -17, 25, 0 }, { 297, 25, 0 }}
+  #elif ENABLED(TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+    #define NOZZLE_CLEAN_START_POINT { 125, 320, 0 }
+    #define NOZZLE_CLEAN_END_POINT   { 170, 320, 0 }
+  #elif ENABLED(TAZProV2) && ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+    #define NOZZLE_CLEAN_START_POINT {{ 125, 320, 0 }, { 125, 320, 0 }}
+    #define NOZZLE_CLEAN_END_POINT   {{ 170, 320, 0 }, { 170, 320, 0 }}
   #else
     #define NOZZLE_CLEAN_START_POINT { -17, 95, 0 }
     #define NOZZLE_CLEAN_END_POINT   { -17, 25, 0 }
@@ -3419,9 +3430,14 @@
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Y25\nG1 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
   #elif ENABLED(Workhorse)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM117 Wipe Complete"
-  #elif ANY(TAZPro, TAZProXT, TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z0.5 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000\nM117 Wipe Complete"
-  #elif ANY(TAZPro, TAZProXT, TAZProV2) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
+  #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
+    #define WIPE_SEQUENCE_COMMANDS "T0\nG1 X-17 Y25 Z15 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
+    #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT1\nG1 X296 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nG1 X150\nT0\nM400"
+  #elif ENABLED(TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+    #define WIPE_SEQUENCE_COMMANDS "G28O\nM117 Wiping nozzle\nT0\nG1 X125 Y320 Z5 F4000\nG1 Z0 F6000\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nG0 X170\nG0 X125\nM114\nM117 Wipe Complete"
+  #elif ENABLED(TAZProV2) && ENABLED(TOOLHEAD_Galaxy_DualExtruder)
     #define WIPE_SEQUENCE_COMMANDS "T0\nG1 X-17 Y25 Z15 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
     #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT1\nG1 X296 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nG1 X150\nT0\nM400"
   #endif
