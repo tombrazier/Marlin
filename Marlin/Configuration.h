@@ -91,7 +91,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.20" 
+#define LULZBOT_FW_VERSION "2.1.3.0.21"
 #define CAPABILITIES_REPORT
 
 /**
@@ -132,6 +132,7 @@
 #if ENABLED(TAZPro)
   #define EMI_MITIGATION
 #endif
+
 
 #if (MOTHERBOARD == BOARD_ARCHIM2) || (MOTHERBOARD == BOARD_EINSY_RETRO)
   #define LULZBOT_RSENSE 0.12
@@ -478,7 +479,7 @@
   #define LULZBOT_UNIVERSAL_MOUNT
   #define LULZBOT_EXTRUDERS                  1
   #define LULZBOT_M115_EXTRUDER_TYPE         "Galaxy Series"
-  #define LULZBOT_E_STEPS                    410
+  #define LULZBOT_E_STEPS                    439
   #define LULZBOT_TOOLHEAD_X_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_X_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Y_MAX_ADJ         0
@@ -487,9 +488,9 @@
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
     #define TOOL_HEAD_ID                       1
   #if ANY(TAZ6, Workhorse)
-    #define LULZBOT_MOTOR_CURRENT_E0         135 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+    #define LULZBOT_MOTOR_CURRENT_E0         155 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
-    #define LULZBOT_MOTOR_CURRENT_E0         750 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0         850 // mA
   #endif
   /********************* MPC Settings **********************/
   #define LULZBOT_TOOLHEAD_WATT                 { 50.0f }
@@ -551,7 +552,7 @@
     #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
     #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44}
     #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
-    #define LULZBOT_E_STEPS                        410
+    #define LULZBOT_E_STEPS                        415
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
     #define LULZBOT_TEMP_SENSOR_1                  5
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
@@ -1666,7 +1667,7 @@
 
 #define X_MAX_ENDSTOP_HIT_STATE HIGH
 
-#if ANY(Sidekick_289, Sidekick_747)
+#if ANY(TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define Y_MIN_ENDSTOP_HIT_STATE LOW
 #else
   #define Y_MIN_ENDSTOP_HIT_STATE HIGH
@@ -2403,7 +2404,7 @@
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
-#if ANY(TAZProV2, Workhorse, Sidekick_289, Sidekick_747)
+#if ANY(TAZProV2, TAZPro, TAZProXT, Workhorse, Sidekick_289, Sidekick_747)
   #define Y_HOME_DIR -1
 #else
   #define Y_HOME_DIR 1
@@ -3316,13 +3317,15 @@
 
 #if ENABLED(PRESENT_BED_FEATURE)
   #if ENABLED(MiniV2)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y190 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y188 F10000\nG0 Y190 F10000\nM117 Printer Ready"
   #elif ENABLED(Sidekick_289)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y160 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y158 F10000\nG0 Y160 F10000\nM117 Printer Ready"
   #elif ENABLED(Sidekick_747)
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y233 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y231 F10000\nG0 Y233 F10000\nM117 Printer Ready"
+  #elif ENABLED(TAZWorkhorse)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y304 F10000\nG0 Y306 F10000\nM117 Printer Ready"
   #else
-    #define PRESENT_BED_GCODE "G28 O\nG0 Y300 F10000\nM117 Printer Ready"
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y311 F10000\nG0 Y313 F10000\nM117 Printer Ready"
   #endif
 #endif
 

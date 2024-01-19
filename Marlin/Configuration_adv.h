@@ -1321,11 +1321,16 @@
 #if ENABLED(BACKLASH_COMPENSATION)
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
+<<<<<<< HEAD
   #if ANY(TAZPro, TAZProXT, TAZProV2)
     #define BACKLASH_DISTANCE_MM {0.252, 0.183, 0.075} // <-- changed:  (mm)
+=======
+  #if ANY(TAZPro, TAZProXT)
+    #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // <-- changed:  (mm)
+>>>>>>> 09de6315dc05118b1187412b1abd30c9aa38d154
     #define BACKLASH_CORRECTION    1.0 // <-- changed:  0.0 = no correction; 1.0 = full correction
   #else
-    #define BACKLASH_DISTANCE_MM { 0, 0, 0 } // (mm)
+    #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // (mm)
     #define BACKLASH_CORRECTION    0.0       // 0.0 = no correction; 1.0 = full correction
   #endif
 
@@ -4174,8 +4179,8 @@
     #define E_CURRENT_BMG  "M906 E960"
     #define E_CURRENT_LGX175 "M906 E750"
     #define E_CURRENT_LGX285 "M906 E850"
-    #define E_CURRENT_TWNB175 "M906 T0 E750 T1 E750"
-    #define E_CURRENT_TWNB285 "M906 T0 E850 T1 E850"
+    #define E_CURRENT_TWNB175 "M906 T0 E750\n M906 T1 E750"
+    #define E_CURRENT_TWNB285 "M906 T0 E850\n M906 T1 E850"
   #endif
 
   #if DISABLED(TAZPro, TAZProV2, TAZProXT)
