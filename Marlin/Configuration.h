@@ -545,7 +545,7 @@
     #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
     #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44}
     #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
-    #define LULZBOT_E_STEPS                        410
+    #define LULZBOT_E_STEPS                        415
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
     #define LULZBOT_TEMP_SENSOR_1                  5
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
