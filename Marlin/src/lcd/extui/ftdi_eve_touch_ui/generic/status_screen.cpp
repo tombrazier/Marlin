@@ -188,10 +188,10 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
     cmd.colors(normal_btn)
         .font(font_medium)
         .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
-        .tag(7).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_SPEED))
-        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_SENSOR))
         .tag(!ExtUI::isPrintingPaused() ? 17 : 18)
-        .button(PRESENT_BED_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_PAUSE) : GET_TEXT_F(MSG_RESUME));
+        .button(TOOL_HEAD_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_PAUSE) : GET_TEXT_F(MSG_RESUME))
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_SENSOR))
+        .tag(7).button(PRESENT_BED_POS, GET_TEXT_F(MSG_SPEED));
   }
   else{
     cmd.colors(normal_btn)
