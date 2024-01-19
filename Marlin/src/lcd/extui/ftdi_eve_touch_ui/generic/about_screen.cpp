@@ -46,9 +46,9 @@ void AboutScreen::onRedraw(draw_mode_t) {
      .tag(0);
 
   draw_text_box(cmd, BTN_POS(1,1), BTN_SIZE(4,6), F(
-      #if defined(LULZBOT_LONG_BED)
+      #if ENABLED(LULZBOT_LONG_BED)
         "" LULZBOT_LCD_MACHINE_NAME " \nWith Long Bed"
-      #elif defined(LULZBOT_BLTouch) && !defined(LULZBOT_LONG_BED)
+      #elif ENABLED(LULZBOT_BLTouch) && NONE(LULZBOT_LONG_BED, TAZProV2)
         "" LULZBOT_LCD_MACHINE_NAME " \nWith BLTouch"
       #else
         "" LULZBOT_LCD_MACHINE_NAME "\n"
