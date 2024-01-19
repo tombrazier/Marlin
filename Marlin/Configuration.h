@@ -1660,7 +1660,7 @@
 
 #define X_MAX_ENDSTOP_HIT_STATE HIGH 
 
-#if ANY(Sidekick_289, Sidekick_747)
+#if ANY(TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define Y_MIN_ENDSTOP_HIT_STATE LOW 
 #else
   #define Y_MIN_ENDSTOP_HIT_STATE HIGH 
@@ -2383,7 +2383,7 @@
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
-#if ANY(Workhorse, Sidekick_289, Sidekick_747)
+#if ANY(TAZPro, TAZProXT, Workhorse, Sidekick_289, Sidekick_747)
   #define Y_HOME_DIR -1
 #else
   #define Y_HOME_DIR 1
