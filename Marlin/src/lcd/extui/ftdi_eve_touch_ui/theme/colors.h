@@ -155,6 +155,8 @@ namespace Theme {
   constexpr uint32_t e_axis                 = axis_label;
   constexpr uint32_t feedrate               = axis_label;
   constexpr uint32_t other                  = axis_label;
+  constexpr uint32_t cold_pull              = hsl_to_rgb(190, 0.5, 0.50);
+  constexpr uint32_t cancel              = hsl_to_rgb( 25, 0.7, 0.50);
 
   // Status screen
   constexpr uint32_t progress               = axis_label;
@@ -163,8 +165,8 @@ namespace Theme {
     constexpr uint32_t fan_speed            = hsl_to_rgb(240, 0.5, 0.13);
     constexpr uint32_t temp                 = hsl_to_rgb(343, 1.0, 0.23);
   #else
-    constexpr uint32_t fan_speed            = hsl_to_rgb(204, 0.47, 0.41);
-    constexpr uint32_t fan_speed_button     = hsl_to_rgb(204, 0.47, 0.41);
+    constexpr uint32_t fan_speed            = hsl_to_rgb(30, 0.85, 0.50);
+    constexpr uint32_t fan_speed_button     = hsl_to_rgb(30, 0.85, 0.50);
     constexpr uint32_t temp                 = hsl_to_rgb(accent_hue, accent_sat, 0.30);
     constexpr uint32_t temp_button          = hsl_to_rgb(accent_hue, accent_sat, 0.39);
   #endif
@@ -194,12 +196,14 @@ namespace Theme {
   constexpr btn_colors text_x_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = x_axis };
   constexpr btn_colors text_y_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = y_axis };
   constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = z_axis };
+  constexpr btn_colors cold_pull_btn        = {.bg = fg_action,     .grad = fg_normal,   .fg = cold_pull,       .rgb = 0xFFFFFF };
+  constexpr btn_colors cancel_btn           = {.bg = fg_action,     .grad = fg_normal,   .fg = cancel,          .rgb = 0xFFFFFF };
 
 
   // Temperature color scale
 
-  const rgb_t cool_rgb (  0,   0,   0);
-  const rgb_t low_rgb  (128,   0,   0);
-  const rgb_t med_rgb  (255, 128,   0);
-  const rgb_t high_rgb (255, 255, 128);
+  const rgb_t cool_rgb (100, 100,  80);
+  const rgb_t low_rgb  (128,  50,   0);
+  const rgb_t med_rgb  (200,  85,   0);
+  const rgb_t high_rgb (255,  85,   0);
 };

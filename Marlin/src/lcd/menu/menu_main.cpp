@@ -296,7 +296,7 @@ void menu_main() {
               #if ENABLED(TFT_COLOR_UI)
                 // Menu display issue on item removal with multi language selection menu
                 if (encoderTopLine > 0) encoderTopLine--;
-                ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);
+                ui.refresh(LCDVIEW_CLEAR_CALL_REDRAW);
               #endif
             });
           #endif
@@ -327,6 +327,10 @@ void menu_main() {
 
     #if ENABLED(PREHEAT_SHORTCUT_MENU_ITEM)
       SUBMENU(MSG_PREHEAT_CUSTOM, menu_preheat_only);
+    #endif
+
+    #if ENABLED(PRESENT_BED_FEATURE)
+      GCODES_ITEM(MSG_PRESENT_BED, F(PRESENT_BED_GCODE));
     #endif
 
     SUBMENU(MSG_MOTION, menu_motion);
@@ -411,7 +415,7 @@ void menu_main() {
             #if ENABLED(TFT_COLOR_UI)
               // Menu display issue on item removal with multi language selection menu
               if (encoderTopLine > 0) encoderTopLine--;
-              ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);
+              ui.refresh(LCDVIEW_CLEAR_CALL_REDRAW);
             #endif
           });
         #endif

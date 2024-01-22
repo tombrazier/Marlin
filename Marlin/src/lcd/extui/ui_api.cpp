@@ -676,16 +676,18 @@ namespace ExtUI {
     return planner.settings.axis_steps_per_mm[E_AXIS_N(extruder - E0)];
   }
 
-  void setAxisSteps_per_mm(const_float_t value, const axis_t axis) {
-    planner.settings.axis_steps_per_mm[axis] = value;
-    planner.refresh_positioning();
-  }
+  #if ENABLED(EDITABLE_STEPS_PER_UNIT)
+    void setAxisSteps_per_mm(const_float_t value, const axis_t axis) {
+      planner.settings.axis_steps_per_mm[axis] = value;
+      planner.refresh_positioning();
+    }
 
-  void setAxisSteps_per_mm(const_float_t value, const extruder_t extruder) {
-    UNUSED(extruder);
-    planner.settings.axis_steps_per_mm[E_AXIS_N(extruder - E0)] = value;
-    planner.refresh_positioning();
-  }
+    void setAxisSteps_per_mm(const_float_t value, const extruder_t extruder) {
+      UNUSED(extruder);
+      planner.settings.axis_steps_per_mm[E_AXIS_N(extruder - E0)] = value;
+      planner.refresh_positioning();
+    }
+  #endif
 
   feedRate_t getAxisMaxFeedrate_mm_s(const axis_t axis) {
     return planner.settings.max_feedrate_mm_s[axis];
@@ -899,7 +901,7 @@ namespace ExtUI {
 
   void setZOffset_mm(const_float_t value) {
     #if HAS_BED_PROBE
-      if (WITHIN(value, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX))
+      if (WITHIN(value, PROBE_OFFSET_ZMIN, PROBE_OFFSET_ZMAX))
         probe.offset.z = value;
     #elif ENABLED(BABYSTEP_DISPLAY_TOTAL)
       babystep.add_mm(Z_AXIS, value - getZOffset_mm());
@@ -1142,6 +1144,10 @@ namespace ExtUI {
     return isPrinting() && (isPrintingFromMediaPaused() || print_job_timer.isPaused());
   }
 
+  bool isOngoingPrintJob() {
+    return isPrintingFromMedia() || printJobOngoing();
+  }
+
   bool isMediaInserted() { return TERN0(HAS_MEDIA, IS_SD_INSERTED()); }
 
   // Pause/Resume/Stop are implemented in MarlinUI
@@ -1157,6 +1163,16 @@ namespace ExtUI {
       onUserConfirmRequired(msg);
     #else
       onUserConfirmRequired(FTOP(fstr));
+    #endif
+  }
+
+  void onPrintCompleteScreen(FSTR_P const fstr) {
+    #ifdef __AVR__
+      char msg[strlen_P(FTOP(fstr)) + 1];
+      strcpy_P(msg, FTOP(fstr));
+      onPrintCompleteScreen(msg);
+    #else
+      onPrintCompleteScreen(FTOP(fstr));
     #endif
   }
 

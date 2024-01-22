@@ -122,14 +122,16 @@ void GcodeSuite::say_units() {
  * Return -1 if the T parameter is out of range
  */
 int8_t GcodeSuite::get_target_extruder_from_command() {
-  if (parser.seenval('T')) {
-    const int8_t e = parser.value_byte();
-    if (e < EXTRUDERS) return e;
-    SERIAL_ECHO_START();
-    SERIAL_CHAR('M'); SERIAL_ECHO(parser.codenum);
-    SERIAL_ECHOLNPGM(" " STR_INVALID_EXTRUDER " ", e);
-    return -1;
-  }
+  #if HAS_TOOLCHANGE
+    if (parser.seenval('T')) {
+      const int8_t e = parser.value_byte();
+      if (e < EXTRUDERS) return e;
+      SERIAL_ECHO_START();
+      SERIAL_CHAR('M'); SERIAL_ECHO(parser.codenum);
+      SERIAL_ECHOLNPGM(" " STR_INVALID_EXTRUDER " ", e);
+      return -1;
+    }
+  #endif
   return active_extruder;
 }
 
@@ -473,6 +475,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1: M0_M1(); break;                                   // M1: Conditional stop - Wait for user button press on LCD
       #endif
 
+      #if HAS_END_PRINT_SCREEN
+        case 2: M2(); break;                                      // M1: Conditional stop - Wait for user button press on LCD
+      #endif
+
       #if HAS_CUTTER
         case 3: M3_M4(false); break;                              // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
         case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
@@ -667,9 +673,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 87: M87(); break;                                    // M87: Cancel Hotend Idle Timeout
       #endif
 
-      case 92: M92(); break;                                      // M92: Set the steps-per-unit for one or more axes
+      #if ENABLED(EDITABLE_STEPS_PER_UNIT)
+        case 92: M92(); break;                                    // M92: Set the steps-per-unit for one or more axes
+      #endif
+
       case 114: M114(); break;                                    // M114: Report current position
-      case 115: M115(); break;                                    // M115: Report capabilities
+
+      #if ENABLED(CAPABILITIES_REPORT)
+        case 115: M115(); break;                                  // M115: Report capabilities
+      #endif
 
       case 117: TERN_(HAS_STATUS_MESSAGE, M117()); break;         // M117: Set LCD message text, if possible
 
@@ -793,7 +805,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 250: M250(); break;                                  // M250: Set LCD contrast
       #endif
 
-      #if HAS_GCODE_M255
+      #if ENABLED(EDITABLE_DISPLAY_TIMEOUT)
         case 255: M255(); break;                                  // M255: Set LCD Sleep/Backlight Timeout (Minutes)
       #endif
 
@@ -945,7 +957,9 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
       #if ENABLED(ADVANCED_PAUSE_FEATURE)
         case 600: M600(); break;                                  // M600: Pause for Filament Change
-        case 603: M603(); break;                                  // M603: Configure Filament Change
+        #if ENABLED(CONFIGURE_FILAMENT_CHANGE)
+          case 603: M603(); break;                                  // M603: Configure Filament Change
+        #endif
       #endif
 
       #if HAS_DUPLICATION_MODE

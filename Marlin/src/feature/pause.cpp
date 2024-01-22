@@ -83,13 +83,16 @@
 // private:
 
 static xyze_pos_t resume_position;
+celsius_t resume_temp;
 
 #if M600_PURGE_MORE_RESUMABLE
   PauseMenuResponse pause_menu_response;
   PauseMode pause_mode = PAUSE_MODE_PAUSE_PRINT;
 #endif
 
-fil_change_settings_t fc_settings[EXTRUDERS];
+#if ENABLED(CONFIGURE_FILAMENT_CHANGE)
+  fil_change_settings_t fc_settings[EXTRUDERS];
+#endif
 
 #if HAS_MEDIA
   #include "../sd/cardreader.h"
@@ -299,7 +302,6 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
   #endif
 
   TERN_(MPCTEMP, MPC::e_paused = false);
-
   TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_end());
 
   return true;
@@ -404,6 +406,7 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
 uint8_t did_pause_print = 0;
 
 bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool show_lcd/*=false*/, const_float_t unload_length/*=0*/ DXC_ARGS) {
+
   DEBUG_SECTION(pp, "pause_print", true);
   DEBUG_ECHOLNPGM("... park.x:", park_point.x, " y:", park_point.y, " z:", park_point.z, " unloadlen:", unload_length, " showlcd:", show_lcd DXC_SAY);
 
@@ -419,7 +422,8 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   #endif
 
   TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_open(PROMPT_INFO, F("Pause"), FPSTR(DISMISS_STR)));
-  TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(F("Pausing")));
+
+  //TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(F("Pausing")));
 
   // Indicate that the printer is paused
   ++did_pause_print;
@@ -437,7 +441,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // Save current position
   resume_position = current_position;
-
+  resume_temp = thermalManager.degTargetHotend(active_extruder);
   // Will the nozzle be parking?
   const bool do_park = !axes_should_home();
 
@@ -479,7 +483,8 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   #endif
 
   // Unload the filament, if specified
-  if (unload_length){
+  if (unload_length)
+  {
     unload_filament(unload_length, show_lcd, PAUSE_MODE_CHANGE_FILAMENT);
   }
 
@@ -538,7 +543,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
   // Wait for filament insert by user and press button
   KEEPALIVE_STATE(PAUSED_FOR_USER);
   TERN_(HOST_PROMPT_SUPPORT, hostui.continue_prompt(GET_TEXT_F(MSG_NOZZLE_PARKED)));
-  TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_NOZZLE_PARKED)));
+  //TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_NOZZLE_PARKED)));
 
   wait_for_user = true;    // LCD click or M108 will clear this
   while (wait_for_user) {
@@ -619,11 +624,14 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
  * - Send host action for resume, if configured
  * - Resume the current SD print job, if any
  */
-void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_length/*=0*/, const_float_t purge_length/*=ADVANCED_PAUSE_PURGE_LENGTH*/, const int8_t max_beep_count/*=0*/, const celsius_t targetTemp/*=0*/ DXC_ARGS) {
+void resume_print(const bool loading_filament/*=false*/, const_float_t slow_load_length/*=0*/, const_float_t fast_load_length/*=0*/, const_float_t purge_length/*=ADVANCED_PAUSE_PURGE_LENGTH*/, const int8_t max_beep_count/*=0*/, const celsius_t targetTemp/*=0*/ DXC_ARGS) {
   DEBUG_SECTION(rp, "resume_print", true);
   DEBUG_ECHOLNPGM("... slowlen:", slow_load_length, " fastlen:", fast_load_length, " purgelen:", purge_length, " maxbeep:", max_beep_count, " targetTemp:", targetTemp DXC_SAY);
 
-  if (!did_pause_print) return;
+  if (!did_pause_print) 
+  {
+    return;
+  }
 
   // Re-enable the heaters if they timed out
   bool nozzle_timed_out = false;
@@ -635,14 +643,21 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
   if (targetTemp > thermalManager.degTargetHotend(active_extruder))
     thermalManager.setTargetHotend(targetTemp, active_extruder);
 
-  // Load the new filament
-  load_filament(slow_load_length, fast_load_length, purge_length, max_beep_count, true, nozzle_timed_out, PAUSE_MODE_SAME DXC_PASS);
+  if(loading_filament)
+  {
+    // Load the new filament
+    load_filament(slow_load_length, fast_load_length, purge_length, max_beep_count, true, nozzle_timed_out, PAUSE_MODE_SAME DXC_PASS);
+  }
 
   if (targetTemp > 0) {
     thermalManager.setTargetHotend(targetTemp, active_extruder);
     thermalManager.wait_for_hotend(active_extruder, false);
   }
   ui.pause_show_message(PAUSE_MESSAGE_RESUME);
+
+  // Reset Temperature to when it was paused
+  thermalManager.setTargetHotend(resume_temp, active_extruder);
+  thermalManager.wait_for_hotend(active_extruder);
 
   // Check Temperature before moving hotend
   ensure_safe_temperature(DISABLED(BELTPRINTER));

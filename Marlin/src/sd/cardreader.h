@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../inc/MarlinConfig.h"
+#include "../module/temperature.h"
 
 #if HAS_MEDIA
 
@@ -236,9 +237,9 @@ public:
   static bool eof()              { return getIndex() >= getFileSize(); }
 
   // File data operations
-  static int16_t get()                            { int16_t out = (int16_t)file.read(); sdpos = file.curPosition(); return out; }
-  static int16_t read(void *buf, uint16_t nbyte)  { return file.isOpen() ? file.read(buf, nbyte) : -1; }
-  static int16_t write(void *buf, uint16_t nbyte) { return file.isOpen() ? file.write(buf, nbyte) : -1; }
+  static int16_t get()                            { thermalManager.pause_heaters(true); int16_t out = (int16_t)file.read(); sdpos = file.curPosition(); thermalManager.pause_heaters(false); return out; }
+  static int16_t read(void *buf, uint16_t nbyte)  { thermalManager.pause_heaters(true); int16_t out = file.isOpen() ? file.read(buf, nbyte) : -1; thermalManager.pause_heaters(false); return out;}
+  static int16_t write(void *buf, uint16_t nbyte) { thermalManager.pause_heaters(true); int16_t out = file.isOpen() ? file.write(buf, nbyte) : -1; thermalManager.pause_heaters(false); return out;}
   static void setIndex(const uint32_t index)      { file.seekSet((sdpos = index)); }
 
   // TODO: rename to diskIODriver()

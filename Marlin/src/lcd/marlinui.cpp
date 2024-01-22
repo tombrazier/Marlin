@@ -24,7 +24,7 @@
 
 #include "../MarlinCore.h" // for printingIsPaused
 
-#if LED_POWEROFF_TIMEOUT > 0 || ALL(HAS_WIRED_LCD, PRINTER_EVENT_LEDS) || (defined(LCD_BACKLIGHT_TIMEOUT_MINS) && defined(NEOPIXEL_BKGD_INDEX_FIRST))
+#if LED_POWEROFF_TIMEOUT > 0 || ALL(HAS_WIRED_LCD, PRINTER_EVENT_LEDS) || (HAS_BACKLIGHT_TIMEOUT && defined(NEOPIXEL_BKGD_INDEX_FIRST))
   #include "../feature/leds/leds.h"
 #endif
 
@@ -194,10 +194,14 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
   volatile int8_t encoderDiff; // Updated in update_buttons, added to encoderPosition every LCD update
 #endif
 
-#if LCD_BACKLIGHT_TIMEOUT_MINS
+#if HAS_BACKLIGHT_TIMEOUT
 
+  #if ENABLED(EDITABLE_DISPLAY_TIMEOUT)
+    uint8_t MarlinUI::backlight_timeout_minutes; // Initialized by settings.load()
+  #else
+    constexpr uint8_t MarlinUI::backlight_timeout_minutes;
+  #endif
   constexpr uint8_t MarlinUI::backlight_timeout_min, MarlinUI::backlight_timeout_max;
-  uint8_t MarlinUI::backlight_timeout_minutes; // Initialized by settings.load()
   millis_t MarlinUI::backlight_off_ms = 0;
 
   void MarlinUI::refresh_backlight_timeout() {
@@ -212,12 +216,16 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
 
 #elif HAS_DISPLAY_SLEEP
 
+  #if ENABLED(EDITABLE_DISPLAY_TIMEOUT)
+    uint8_t MarlinUI::sleep_timeout_minutes; // Initialized by settings.load()
+  #else
+    constexpr uint8_t MarlinUI::sleep_timeout_minutes;
+  #endif
   constexpr uint8_t MarlinUI::sleep_timeout_min, MarlinUI::sleep_timeout_max;
 
-  uint8_t MarlinUI::sleep_timeout_minutes; // Initialized by settings.load()
-  millis_t MarlinUI::screen_timeout_millis = 0;
+  millis_t MarlinUI::screen_timeout_ms = 0;
   void MarlinUI::refresh_screen_timeout() {
-    screen_timeout_millis = sleep_timeout_minutes ? millis() + sleep_timeout_minutes * 60UL * 1000UL : 0;
+    screen_timeout_ms = sleep_timeout_minutes ? millis() + sleep_timeout_minutes * 60UL * 1000UL : 0;
     sleep_display(false);
   }
 
@@ -228,6 +236,10 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
 #endif
 
 void MarlinUI::init() {
+
+  #if HAS_U8GLIB_I2C_OLED && PINS_EXIST(I2C_SCL, I2C_SDA) && DISABLED(SOFT_I2C_EEPROM)
+    Wire.begin(uint8_t(I2C_SDA_PIN), uint8_t(I2C_SCL_PIN));
+  #endif
 
   init_lcd();
 
@@ -283,10 +295,6 @@ void MarlinUI::init() {
 
   #if ALL(HAS_ENCODER_ACTION, HAS_SLOW_BUTTONS)
     slow_buttons = 0;
-  #endif
-
-  #if HAS_U8GLIB_I2C_OLED && PINS_EXIST(I2C_SCL, I2C_SDA) && DISABLED(SOFT_I2C_EEPROM)
-    Wire.begin(int(I2C_SDA_PIN), int(I2C_SCL_PIN));
   #endif
 
   update_buttons();
@@ -419,7 +427,7 @@ void MarlinUI::init() {
 
     #if HAS_TOUCH_BUTTONS
       uint8_t MarlinUI::touch_buttons;
-      uint8_t MarlinUI::repeat_delay;
+      uint16_t MarlinUI::repeat_delay;
     #endif
 
     #if ANY(AUTO_BED_LEVELING_UBL, G26_MESH_VALIDATION)
@@ -455,8 +463,9 @@ void MarlinUI::init() {
             p = get_utf8_value_cb(p, cb_read_byte, wc);
             const bool eol = !wc;         // zero ends the string
             // End or a break between phrases?
-            if (eol || wc == ' ' || wc == '-' || wc == '+' || wc == '.') {
-              if (!c && wc == ' ') { if (wrd) wrd++; continue; } // collapse extra spaces
+            if (eol || wc == ' ' || wc == '-' || wc == '+' || wc == '.' || wc == '\n') {
+              const bool newline_after = wc == '\n';
+              if (!c && (wc == ' ' || newline_after)) { if (wrd) wrd++; continue; } // collapse extra spaces
               // Past the right and the word is not too long?
               if (col + c > LCD_WIDTH && col >= (LCD_WIDTH) / 4) _newline(); // should it wrap?
               c += !eol;                  // +1 so the space will be printed
@@ -467,6 +476,7 @@ void MarlinUI::init() {
                 lcd_put_lchar(wc);        // character to the LCD
               }
               if (eol) break;             // all done!
+              if (newline_after) _newline();
               wrd = nullptr;              // set up for next word
             }
             else c++;                     // count word characters
@@ -483,20 +493,20 @@ void MarlinUI::init() {
         }
       }
 
-      void MarlinUI::draw_select_screen_prompt(FSTR_P const pref, const char * const string/*=nullptr*/, FSTR_P const suff/*=nullptr*/) {
-        const uint8_t plen = utf8_strlen(pref), slen = suff ? utf8_strlen(suff) : 0;
+      void MarlinUI::draw_select_screen_prompt(FSTR_P const fpre, const char * const string/*=nullptr*/, FSTR_P const fsuf/*=nullptr*/) {
+        const uint8_t plen = utf8_strlen_P(FTOP(fpre)), slen = fsuf ? utf8_strlen_P(FTOP(fsuf)) : 0;
         uint8_t col = 0, row = 0;
         if (!string && plen + slen <= LCD_WIDTH) {
           col = (LCD_WIDTH - plen - slen) / 2;
           row = LCD_HEIGHT > 3 ? 1 : 0;
         }
         if (LCD_HEIGHT >= 8) row = LCD_HEIGHT / 2 - 2;
-        wrap_string_P(col, row, FTOP(pref), true);
+        wrap_string_P(col, row, FTOP(fpre), true);
         if (string) {
           if (col) { col = 0; row++; } // Move to the start of the next line
           wrap_string(col, row, string);
         }
-        if (suff) wrap_string_P(col, row, FTOP(suff));
+        if (fsuf) wrap_string_P(col, row, FTOP(fsuf));
       }
 
     #endif // !HAS_GRAPHICAL_TFT
@@ -704,7 +714,7 @@ void MarlinUI::init() {
       else if ((old_frm < 100 && new_frm > 100) || (old_frm > 100 && new_frm < 100))
         new_frm = 100;
 
-      LIMIT(new_frm, 10, 999);
+      LIMIT(new_frm, SPEED_EDIT_MIN, SPEED_EDIT_MAX);
 
       if (old_frm != new_frm) {
         feedrate_percentage = new_frm;
@@ -864,7 +874,7 @@ void MarlinUI::init() {
             TERN_(MULTI_E_MANUAL, axis == E_AXIS ? e_index :) active_extruder
           );
 
-          //SERIAL_ECHOLNPGM("Add planner.move with Axis ", AS_CHAR(AXIS_CHAR(axis)), " at FR ", fr_mm_s);
+          //SERIAL_ECHOLNPGM("Add planner.move with Axis ", C(AXIS_CHAR(axis)), " at FR ", fr_mm_s);
 
           axis = NO_AXIS_ENUM;
 
@@ -881,7 +891,7 @@ void MarlinUI::init() {
       TERN_(MULTI_E_MANUAL, if (move_axis == E_AXIS) e_index = eindex);
       start_time = millis() + (menu_scale < 0.99f ? 0UL : 250UL); // delay for bigger moves
       axis = move_axis;
-      //SERIAL_ECHOLNPGM("Post Move with Axis ", AS_CHAR(AXIS_CHAR(axis)), " soon.");
+      //SERIAL_ECHOLNPGM("Post Move with Axis ", C(AXIS_CHAR(axis)), " soon.");
     }
 
     #if ENABLED(AUTO_BED_LEVELING_UBL)
@@ -889,8 +899,8 @@ void MarlinUI::init() {
       void MarlinUI::external_encoder() {
         if (external_control && encoderDiff) {
           bedlevel.encoder_diff += encoderDiff; // Encoder for UBL G29 mesh editing
-          encoderDiff = 0;                  // Hide encoder events from the screen handler
-          refresh(LCDVIEW_REDRAW_NOW);      // ...but keep the refresh.
+          encoderDiff = 0;                      // Hide encoder events from the screen handler
+          refresh(LCDVIEW_REDRAW_NOW);          // ...but keep the refresh.
         }
       }
 
@@ -941,7 +951,7 @@ void MarlinUI::init() {
   void MarlinUI::update() {
 
     static uint16_t max_display_update_time = 0;
-    millis_t ms = millis();
+    const millis_t ms = millis();
 
     #if LED_POWEROFF_TIMEOUT > 0
       leds.update_timeout(powerManager.psu_on);
@@ -1092,7 +1102,7 @@ void MarlinUI::init() {
 
           reset_status_timeout(ms);
 
-          #if LCD_BACKLIGHT_TIMEOUT_MINS
+          #if HAS_BACKLIGHT_TIMEOUT
             refresh_backlight_timeout();
           #elif HAS_DISPLAY_SLEEP
             refresh_screen_timeout();
@@ -1202,8 +1212,7 @@ void MarlinUI::init() {
           return_to_status();
       #endif
 
-      #if LCD_BACKLIGHT_TIMEOUT_MINS
-
+      #if HAS_BACKLIGHT_TIMEOUT
         if (backlight_off_ms && ELAPSED(ms, backlight_off_ms)) {
           #ifdef NEOPIXEL_BKGD_INDEX_FIRST
             neo.set_background_off();
@@ -1214,7 +1223,7 @@ void MarlinUI::init() {
           backlight_off_ms = 0;
         }
       #elif HAS_DISPLAY_SLEEP
-        if (screen_timeout_millis && ELAPSED(ms, screen_timeout_millis))
+        if (screen_timeout_ms && ELAPSED(ms, screen_timeout_ms))
           sleep_display();
       #endif
 
@@ -1708,7 +1717,14 @@ void MarlinUI::host_notify(const char * const cstr) {
 
     #if ENABLED(PARK_HEAD_ON_PAUSE)
       pause_show_message(PAUSE_MESSAGE_PARKING, PAUSE_MODE_PAUSE_PRINT); // Show message immediately to let user know about pause in progress
-      queue.inject(F("M25 P\nM24"));
+      if(ENABLED(TOUCH_UI_FTDI_EVE))
+      {
+        queue.inject(F("M25"));
+      }
+      else
+      {
+        queue.inject(F("M25 P\nM24"));
+      }
     #elif HAS_MEDIA
       queue.inject(F("M25"));
     #elif defined(ACTION_ON_PAUSE)
@@ -1883,7 +1899,7 @@ void MarlinUI::host_notify(const char * const cstr) {
     pause_mode = mode;
     ExtUI::pauseModeStatus = message;
     switch (message) {
-      case PAUSE_MESSAGE_PARKING:  ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_PAUSE_PRINT_PARKING)); break;
+      case PAUSE_MESSAGE_PARKING:  ExtUI::injectCommands(F("M300 T")); break; // Play tone when parking
       case PAUSE_MESSAGE_CHANGING: ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_INIT)); break;
       case PAUSE_MESSAGE_UNLOAD:   ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_UNLOAD)); break;
       case PAUSE_MESSAGE_WAITING:  ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_ADVANCED_PAUSE_WAITING)); break;
@@ -1892,9 +1908,9 @@ void MarlinUI::host_notify(const char * const cstr) {
       case PAUSE_MESSAGE_PURGE:
         ExtUI::onUserConfirmRequired(GET_TEXT_F(TERN(ADVANCED_PAUSE_CONTINUOUS_PURGE, MSG_FILAMENT_CHANGE_CONT_PURGE, MSG_FILAMENT_CHANGE_PURGE)));
         break;
-      case PAUSE_MESSAGE_RESUME:   ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_RESUME)); break;
+      //case PAUSE_MESSAGE_RESUME:   ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_RESUME)); break;
       case PAUSE_MESSAGE_HEAT:     ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_HEAT)); break;
-      case PAUSE_MESSAGE_HEATING:  ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_HEATING)); break;
+      //case PAUSE_MESSAGE_HEATING:  ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_HEATING)); break;
       case PAUSE_MESSAGE_OPTION:   ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_OPTION_HEADER)); break;
       case PAUSE_MESSAGE_STATUS:   break;
       default: break;

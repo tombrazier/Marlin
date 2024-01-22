@@ -39,12 +39,12 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   CommandProcessor cmd;
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
-    #define X_LBL_POS             BTN_POS(1,7), BTN_SIZE(3,2)
-    #define Y_LBL_POS             BTN_POS(4,7), BTN_SIZE(3,2)
-    #define Z_LBL_POS             BTN_POS(7,7), BTN_SIZE(3,2)
-    #define X_VAL_POS             BTN_POS(1,9), BTN_SIZE(3,2)
-    #define Y_VAL_POS             BTN_POS(4,9), BTN_SIZE(3,2)
-    #define Z_VAL_POS             BTN_POS(7,9), BTN_SIZE(3,2)
+    #define X_LBL_POS             BTN_POS(1,9), BTN_SIZE(2,2)
+    #define Y_LBL_POS             BTN_POS(4,9), BTN_SIZE(2,2)
+    #define Z_LBL_POS             BTN_POS(7,9), BTN_SIZE(2,2)
+    #define X_VAL_POS             BTN_POS(2,9), BTN_SIZE(2,2)
+    #define Y_VAL_POS             BTN_POS(5,9), BTN_SIZE(2,2)
+    #define Z_VAL_POS             BTN_POS(8,9), BTN_SIZE(2,2)
     #define ALL_VAL_POS           BTN_POS(1,9), BTN_SIZE(9,2)
     #define Home_X_POS            BTN_POS(2,7), BTN_SIZE(1,2)
     #define Home_Y_POS            BTN_POS(5,7), BTN_SIZE(1,2)
@@ -61,39 +61,17 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
   #define _UNION_POS(x1,y1,w1,h1,x2,y2,w2,h2) x1,y1,max(x1+w1,x2+w2)-x1,max(y1+h1,y2+h2)-y1
   #define UNION_POS(p1, p2) _UNION_POS(p1, p2)
 
-  if (!ExtUI::isPrinting()) {
-    cmd.colors(normal_btn)
-       //.fgcolor(Theme::axis_label)
+  if (what & BACKGROUND) {
+    cmd.tag(6)
+       .colors(normal_btn)
        .font(Theme::font_medium)
-       .tag(6).button(ALL_VAL_POS, F(""));
-    cmd.colors(text_x_axis_btn)
-        .font(font_medium)
-        .tag(11).button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
-    cmd.colors(text_y_axis_btn)
-        .tag(12).button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
-    cmd.colors(text_z_axis_btn)
-        .tag(13).button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
-    cmd.colors(normal_btn)
-        .cmd (BITMAP_SOURCE(Home_icon_Info))
-        .cmd (BITMAP_LAYOUT(Home_icon_Info))
-        .cmd (BITMAP_SIZE  (Home_icon_Info))
-        .tag(11).icon(Home_X_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-    cmd.colors(normal_btn)
-        .tag(12).icon(Home_Y_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-    cmd.colors(normal_btn)
-        .tag(13).icon(Home_Z_POS, Home_icon_Info, icon_scale_lg); // Draw Home icon next to axis
-  }
-  else{
-    cmd.colors(normal_text)
-       .font(Theme::font_medium)
-       .tag(0).button(ALL_VAL_POS, F(""));
-    cmd.colors(text_x_axis)
-       .font(font_medium)
-       .button(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X));
-    cmd.colors(text_y_axis)
-       .button(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y));
-    cmd.colors(text_z_axis)
-       .button(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+       .text  ( X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+       .text  ( Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+       .text  ( Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z))
+       .button(X_VAL_POS, F(""), OPT_FLAT)
+       .button(Y_VAL_POS, F(""), OPT_FLAT)
+       .button(Z_VAL_POS, F(""), OPT_FLAT)
+       .button(ALL_VAL_POS, F(""));
   }
 
   if (what & FOREGROUND) {
@@ -103,26 +81,40 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
     char z_str[15];
 
     if (isAxisPositionKnown(X))
-      format_position(x_str, getAxisPosition_mm(X));
+      format_position(x_str, getAxisPosition_mm(X), 0);
     else
       strcpy_P(x_str, PSTR("?"));
 
     if (isAxisPositionKnown(Y))
-      format_position(y_str, getAxisPosition_mm(Y));
+      format_position(y_str, getAxisPosition_mm(Y), 0);
     else
       strcpy_P(y_str, PSTR("?"));
 
     if (isAxisPositionKnown(Z))
-      format_position(z_str, getAxisPosition_mm(Z), 2);
+      format_position(z_str, getAxisPosition_mm(Z), 0);
     else
       strcpy_P(z_str, PSTR("?"));
 
     cmd.tag(6)
-       .colors(normal_btn)
+       .colors(normal_text)
        .font(Theme::font_medium)
        .text(X_VAL_POS, x_str)
        .text(Y_VAL_POS, y_str)
        .text(Z_VAL_POS, z_str);
+
+    if (!ExtUI::isOngoingPrintJob()) {
+      cmd.tag(6)
+         .colors(normal_btn)
+         .text(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+         .text(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+         .text(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+    }
+    else{
+      cmd.colors(normal_btn)
+         .text(X_LBL_POS, GET_TEXT_F(MSG_AXIS_X))
+         .text(Y_LBL_POS, GET_TEXT_F(MSG_AXIS_Y))
+         .text(Z_LBL_POS, GET_TEXT_F(MSG_AXIS_Z));
+    }
   }
 }
 
@@ -132,19 +124,17 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
-  #define TEMP_RECT_1         BTN_POS(1,1), BTN_SIZE(3,4)
   #define TEMP_RECT_E0        BTN_POS(1,1), BTN_SIZE(3,2)
   #define TEMP_RECT_E1        BTN_POS(4,1), BTN_SIZE(3,2)
+  #define TEMP_RECT_BED       BTN_POS(1,3), BTN_SIZE(3,2)
   #define NOZ_1_POS           BTN_POS(1,1), BTN_SIZE(3,2)
   #define NOZ_2_POS           BTN_POS(4,1), BTN_SIZE(3,2)
   #define BED_POS             BTN_POS(1,3), BTN_SIZE(3,2)
   #define FAN_POS             BTN_POS(4,3), BTN_SIZE(3,2)
-  #define HOME_ALL_POS        BTN_POS(1,5), BTN_SIZE(3,2)
+  #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(3,2)
   #define TOOL_HEAD_POS       BTN_POS(4,5), BTN_SIZE(3,2)
-  #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(2,2)
-  #define PRINT_SPEED_POS     BTN_POS(3,5), BTN_SIZE(2,2)
-  #define FILAMENT_SENSOR_POS BTN_POS(5,5), BTN_SIZE(2,2)
-  #define BLANKSPACE_5_6_POS  BTN_POS(1,5), BTN_SIZE(6,2)
+  #define HOME_ALL_POS        BTN_POS(1,7), BTN_SIZE(3,2)
+  #define PRESENT_BED_POS     BTN_POS(4,7), BTN_SIZE(3,2)
 
   #define _ICON_POS(x,y,w,h) x, y, w/3, h
   #define _TEXT_POS(x,y,w,h) x + w/3, y, w - w/3, h
@@ -154,17 +144,21 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   CommandProcessor cmd;
 
   if (what & BACKGROUND) {
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+       .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
     cmd.font(Theme::font_small)
 
        .tag(5)
-       .fgcolor(temp).button(TEMP_RECT_1, F(""), OPT_FLAT)
        .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
        #if HAS_MULTI_EXTRUDER
         .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #else
         .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
        #endif
-       .fgcolor(fan_speed).button(FAN_POS,     F(""), OPT_FLAT)
+       .fgcolor(temp).button(TEMP_RECT_BED, F(""), OPT_FLAT)
+       .fgcolor(temp).button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
     // Draw Extruder Bitmap on Extruder Temperature Button
@@ -191,22 +185,22 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   }
 
   if (ExtUI::isPrinting()) {
-    cmd.colors(disabled_btn)
-       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
-        .tag(6).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
-        .tag(7).button(PRINT_SPEED_POS, GET_TEXT_F(MSG_SPEED))
-        .tag(8).button(FILAMENT_SENSOR_POS, GET_TEXT_F(MSG_SENSOR));
+        .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
+        .tag(!ExtUI::isPrintingPaused() ? 17 : 18)
+        .button(TOOL_HEAD_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_PAUSE) : GET_TEXT_F(MSG_RESUME))
+        .tag(8).button(HOME_ALL_POS, GET_TEXT_F(MSG_SENSOR))
+        .tag(7).button(PRESENT_BED_POS, GET_TEXT_F(MSG_SPEED));
   }
   else{
-    cmd.colors(disabled_btn)
-       .tag(0).button(BLANKSPACE_5_6_POS, F(""));
     cmd.colors(normal_btn)
         .font(font_medium)
+        .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
+        .enabled(ENABLED(CUSTOM_MENU_MAIN))
+        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
         .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
-        .enabled(ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series))
-        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
+        .tag(16).button(PRESENT_BED_POS, GET_TEXT_F(MSG_PRESENT_BED));
   }
 
   if (what & FOREGROUND) {
@@ -244,7 +238,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .font(font_medium)
        .fgcolor(temp_button)
        .button(TEXT_POS(BED_POS), bed_str)
-       .fgcolor(fan_speed_button)
+       .fgcolor(temp_button)
        .button(TEXT_POS(FAN_POS), fan_str);
   }
 }
@@ -265,7 +259,7 @@ void StatusScreen::draw_progress(draw_mode_t what) {
 
   CommandProcessor cmd;
 
-  #undef GRID_COLS
+ #undef GRID_COLS
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define GRID_COLS 3
@@ -294,7 +288,8 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESS_POS     BTN_POS(5,3), BTN_SIZE(2,2)
     #define PROGRESSBAR_POS  BTN_POS(5,2), BTN_SIZE(2,2)
   #endif
-  if (ExtUI::isPrinting()) {
+
+  if ((ExtUI::isPrinting() && !ExtUI::isPrintingPaused())) {
     if (what & BACKGROUND) {
       cmd.colors(disabled_btn)
          .tag(0).button(PROGRESSZONE_POS, F(""));
@@ -456,7 +451,7 @@ void StatusScreen::loadBitmaps() {
   CLCD::mem_write_xbm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
   CLCD::mem_write_xbm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
   CLCD::mem_write_xbm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
-  CLCD::mem_write_xbm(base + Home_icon_Info.RAMG_offset,     Home_icon,     sizeof(Home_icon));
+  CLCD::mem_write_pgm(base + Home_icon_Info.RAMG_offset,     Home_icon,     sizeof(Home_icon));
 
   // Load fonts for internationalization
   #if ENABLED(TOUCH_UI_USE_UTF8)
@@ -523,15 +518,19 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 7:  GOTO_SCREEN(FeedratePercentScreen); break;
     case 8:  GOTO_SCREEN(FilamentRunoutScreen); break;
     case 9:  injectCommands(F("G28")); break;
-    #if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
+    #if ENABLED(CUSTOM_MENU_MAIN)
       case 10:  GOTO_SCREEN(CustomUserMenus); break;
     #endif
-    if (!ExtUI::isPrinting()) {
+    if (!ExtUI::isOngoingPrintJob()) {
     case 11: injectCommands(F("G28X")); break;
     case 12: injectCommands(F("G28Y")); break;
     case 13: injectCommands(F("G28Z")); break;
     }
     case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
+    case 15: GOTO_SCREEN(ZOffsetScreen); break;
+    case 16: injectCommands(F(PRESENT_BED_GCODE)); break;
+    case 17: injectCommands(F("M117 Print Paused")); pausePrint();  break;
+    case 18: injectCommands(F("M117 Print Resumed")); resumePrint(); break;
     default:
       return true;
   }

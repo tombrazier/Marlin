@@ -40,6 +40,7 @@
 HotendIdleProtection hotend_idle;
 
 millis_t HotendIdleProtection::next_protect_ms = 0;
+millis_t HotendIdleProtection::next_bed_protect_ms = 0;
 hotend_idle_settings_t HotendIdleProtection::cfg; // Initialized by settings.load()
 
 void HotendIdleProtection::check_hotends(const millis_t &ms) {
@@ -47,23 +48,42 @@ void HotendIdleProtection::check_hotends(const millis_t &ms) {
   bool do_prot = false;
   if (!busy && cfg.timeout != 0) {
     HOTEND_LOOP() {
-      if (thermalManager.degHotend(e) >= cfg.trigger) {
-        do_prot = true; break;
+      if ((thermalManager.degHotend(e) >= cfg.trigger) &&
+          (thermalManager.degTargetHotend(e) != cfg.nozzle_target)) {
+            do_prot = true; break;
       }
     }
   }
+
   if (!do_prot)
     next_protect_ms = 0;                          // No hotends are hot so cancel timeout
   else if (!next_protect_ms)                      // Timeout is possible?
     next_protect_ms = ms + 1000UL * cfg.timeout;  // Start timeout if not already set
+
+  #if HAS_HEATED_BED
+    bool do_bed_prot = false;
+    if (!busy && cfg.bed_timeout != 0 &&
+      (thermalManager.degBed() >= cfg.bed_trigger) &&
+      (thermalManager.degTargetBed() != cfg.bed_target)) {
+        do_bed_prot = true;
+    }
+    if (!do_bed_prot)
+      next_bed_protect_ms = 0;                              // Bed is not hot so cancel timeout
+    else if (!next_bed_protect_ms)                          // Timeout is possible?
+      next_bed_protect_ms = ms + 1000UL * cfg.bed_timeout;  // Start timeout of bed if not already set
+  #endif
 }
 
 void HotendIdleProtection::check_e_motion(const millis_t &ms) {
   static float old_e_position = 0;
   if (old_e_position != current_position.e) {
     old_e_position = current_position.e;            // Track filament motion
-    if (next_protect_ms)                            // If some heater is on then...
+    if (next_protect_ms){                           // If some heater is on then...
       next_protect_ms = ms + 1000UL * cfg.timeout;  // ...delay the timeout till later
+      #if HAS_HEATED_BED
+        next_bed_protect_ms = ms + 1000UL * cfg.bed_timeout;  // ...delay the timeout till later
+      #endif
+    }
   }
 }
 
@@ -76,9 +96,11 @@ void HotendIdleProtection::check() {
   // Hot and not moving for too long...
   if (next_protect_ms && ELAPSED(ms, next_protect_ms))
     timed_out();
+  if (next_bed_protect_ms && ELAPSED(ms, next_bed_protect_ms))
+    bed_timed_out();
 }
 
-// Lower (but don't raise) hotend / bed temperatures
+// Lower (but don't raise) hotend
 void HotendIdleProtection::timed_out() {
   next_protect_ms = 0;
   SERIAL_ECHOLNPGM("Hotend Idle Timeout");
@@ -87,9 +109,17 @@ void HotendIdleProtection::timed_out() {
     if (cfg.nozzle_target < thermalManager.degTargetHotend(e))
       thermalManager.setTargetHotend(cfg.nozzle_target, e);
   }
+}
+
+// Lower (but don't raise) hotend
+void HotendIdleProtection::bed_timed_out() {
+  next_bed_protect_ms = 0;
+  SERIAL_ECHOLNPGM("Bed Idle Timeout");
+  LCD_MESSAGE(MSG_BED_IDLE_TIMEOUT);
   #if HAS_HEATED_BED
-    if (cfg.bed_target < thermalManager.degTargetBed())
-      thermalManager.setTargetBed(cfg.bed_target);
+    if (!printingIsPaused())
+      if (cfg.bed_trigger < thermalManager.degTargetBed())
+        thermalManager.setTargetBed(cfg.bed_target);
   #endif
 }
 

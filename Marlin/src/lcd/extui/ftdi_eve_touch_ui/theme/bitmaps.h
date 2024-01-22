@@ -285,7 +285,7 @@ namespace Theme {
     .filter       = BILINEAR,
     .wrapx        = BORDER,
     .wrapy        = BORDER,
-    .RAMG_offset  = 8813,
+    .RAMG_offset  = 8941,
     .width        = 32,
     .height       = 32,
   };

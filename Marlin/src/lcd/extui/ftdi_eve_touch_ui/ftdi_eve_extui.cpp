@@ -116,7 +116,14 @@ namespace ExtUI {
     else
       ConfirmUserRequestAlertBox::hide();
   }
-  
+
+  void onPrintCompleteScreen(const char * const msg) {
+    if (msg)
+      EndPrintScreenDialogBox::show(msg);
+    else
+      EndPrintScreenDialogBox::hide();
+  }
+
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     void filament_load_prompt(const char * const msg) {
       if (msg)

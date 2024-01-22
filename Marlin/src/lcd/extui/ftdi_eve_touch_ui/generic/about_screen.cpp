@@ -47,9 +47,9 @@ void AboutScreen::onRedraw(draw_mode_t) {
      .tag(0);
 
   draw_text_box(cmd, BTN_POS(1,1), BTN_SIZE(4,6), F(
-      #if defined(LULZBOT_LONG_BED)
+      #if ENABLED(LULZBOT_LONG_BED)
         "" LULZBOT_LCD_MACHINE_NAME " \nWith Long Bed"
-      #elif defined(LULZBOT_BLTouch) && !defined(LULZBOT_LONG_BED)
+      #elif ENABLED(LULZBOT_BLTouch) && NONE(LULZBOT_LONG_BED, TAZProV2)
         "" LULZBOT_LCD_MACHINE_NAME " \nWith BLTouch"
       #else
         "" LULZBOT_LCD_MACHINE_NAME "\n"
@@ -138,7 +138,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
 
   cmd.font(font_medium).colors(normal_btn).tag(1).button(BTN_POS(1,24), BTN_SIZE(4,3), GET_TEXT_F(MSG_INFO_PRINTER_STATS_MENU));
 
-  cmd.font(font_medium).colors(action_btn).tag(2).button(BTN_POS(1,27), BTN_SIZE(4,3), F("Okay"));
+  cmd.font(font_medium).colors(action_btn).tag(2).button(BTN_POS(1,27), BTN_SIZE(4,3), GET_TEXT_F(MSG_BUTTON_DONE));
 
 }
 

@@ -53,7 +53,7 @@ constexpr static float gaugeThickness = 0.25;
 #endif
 
 static float meshGetter(uint8_t x, uint8_t y, void*) {
-  xy_uint8_t pos;
+  return ExtUI::getMeshPoint(xy_uint8_t({ x, y }));
 }
 
 void BedMeshViewScreen::onEntry() {

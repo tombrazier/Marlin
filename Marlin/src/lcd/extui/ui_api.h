@@ -265,8 +265,10 @@ namespace ExtUI {
   void setAxisPosition_mm(const_float_t, const extruder_t, const feedRate_t=0);
 
   // Planner Control
-  void setAxisSteps_per_mm(const_float_t, const axis_t);
-  void setAxisSteps_per_mm(const_float_t, const extruder_t);
+  #if ENABLED(EDITABLE_STEPS_PER_UNIT)
+    void setAxisSteps_per_mm(const_float_t, const axis_t);
+    void setAxisSteps_per_mm(const_float_t, const extruder_t);
+  #endif
   void setAxisMaxFeedrate_mm_s(const feedRate_t, const axis_t);
   void setAxisMaxFeedrate_mm_s(const feedRate_t, const extruder_t);
   void setAxisMaxAcceleration_mm_s2(const_float_t, const axis_t);
@@ -431,6 +433,7 @@ namespace ExtUI {
   bool isPrintingFromMedia();
   bool isPrinting();
   bool isPrintingPaused();
+  bool isOngoingPrintJob();
 
   void printFile(const char *filename);
   void stopPrint();
@@ -473,6 +476,8 @@ namespace ExtUI {
   void onFilamentRunout(const extruder_t extruder);
   void onUserConfirmRequired(const char * const msg);
   void onUserConfirmRequired(FSTR_P const fstr);
+  void onPrintCompleteScreen(const char * const msg);
+  void onPrintCompleteScreen(FSTR_P const fstr);
   void filament_load_prompt(const char * const msg);
   void filament_load_prompt(FSTR_P const fstr);
   void onStatusChanged(const char * const msg);

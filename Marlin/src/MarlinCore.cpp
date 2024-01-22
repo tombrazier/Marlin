@@ -29,6 +29,7 @@
  */
 
 #include "MarlinCore.h"
+#include "Lulzbot_Extras.h"
 
 #include "HAL/shared/Delay.h"
 #include "HAL/shared/esp_wifi.h"
@@ -219,7 +220,9 @@
   #include "feature/fanmux.h"
 #endif
 
-#include "module/tool_change.h"
+#if HAS_TOOLCHANGE
+  #include "module/tool_change.h"
+#endif
 
 #if HAS_FANCHECK
   #include "feature/fancheck.h"
@@ -776,7 +779,7 @@ void idle(const bool no_stepper_sleep/*=false*/) {
   if (marlin_state == MF_INITIALIZING) goto IDLE_DONE;
 
   // TODO: Still causing errors
-  (void)check_tool_sensor_stats(active_extruder, true);
+  TERN_(TOOL_SENSOR, (void)check_tool_sensor_stats(active_extruder, true));
 
   // Handle filament runout sensors
   #if HAS_FILAMENT_SENSOR
@@ -817,7 +820,7 @@ void idle(const bool no_stepper_sleep/*=false*/) {
   TERN_(HAS_BEEPER, buzzer.tick());
 
   // Handle UI input / draw events
-  TERN(DWIN_CREALITY_LCD, dwinUpdate(), ui.update());
+  ui.update();
 
   // Run i2c Position Encoders
   #if ENABLED(I2C_POSITION_ENCODERS)
@@ -1219,6 +1222,12 @@ void setup() {
   #if TEMP_SENSOR_IS_MAX_TC(1) || (TEMP_SENSOR_IS_MAX_TC(REDUNDANT) && REDUNDANT_TEMP_MATCH(SOURCE, E1))
     OUT_WRITE(TEMP_1_CS_PIN, HIGH);
   #endif
+  #if TEMP_SENSOR_IS_MAX_TC(2) || (TEMP_SENSOR_IS_MAX_TC(REDUNDANT) && REDUNDANT_TEMP_MATCH(SOURCE, E2))
+    OUT_WRITE(TEMP_2_CS_PIN, HIGH);
+  #endif
+  #if TEMP_SENSOR_IS_MAX_TC(BED)
+    OUT_WRITE(TEMP_BED_CS_PIN, HIGH);
+  #endif
 
   #if ENABLED(DUET_SMART_EFFECTOR) && PIN_EXISTS(SMART_EFFECTOR_MOD)
     OUT_WRITE(SMART_EFFECTOR_MOD_PIN, LOW);   // Put Smart Effector into NORMAL mode
@@ -1523,6 +1532,8 @@ void setup() {
     i2c.onReceive(i2c_on_receive);
     i2c.onRequest(i2c_on_request);
   #endif
+
+  LULZBOT_ON_STARTUP();
 
   #if DO_SWITCH_EXTRUDER
     SETUP_RUN(move_extruder_servo(0));  // Initialize extruder servo

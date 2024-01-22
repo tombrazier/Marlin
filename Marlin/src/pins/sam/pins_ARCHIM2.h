@@ -52,7 +52,11 @@
 //
 // Servos
 //
-#if defined (LULZBOT_BLTouch)
+#if ENABLED(TAZProV2)
+  #define SERVO0_PIN                            15  // PD5 MAX ES2 (Y_MAX_PIN)
+  #define SERVO1_PIN                            21  // D21 PB13 (Header J20 19)
+  #define SERVO2_PIN                            20  // D20 PB12 (Header J20 20)
+#elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
   #define SERVO0_PIN                            21  // D21 PB13 (Header J20 19)
   #define SERVO1_PIN                            20  // D20 PB12 (Header J20 20)
 #else
@@ -96,13 +100,16 @@
 #else
 
   #define X_MIN_PIN                           14  // PD4 MIN ES1
-  #define X_MAX_PIN                           32  // PD10 MAX ES1
+  #if DISABLED(TAZProV2)
+    #define X_MAX_PIN                           32  // PD10 MAX ES1
+    #define Y_MAX_PIN                           15  // PD5 MAX ES2
+  #endif
   #define Y_MIN_PIN                           29  // PD6 MIN ES2
-  #define Y_MAX_PIN                           15  // PD5 MAX ES2
-
 #endif
 
-#if defined (LULZBOT_BLTouch)
+#if ENABLED(LULZBOT_BLTouch, TAZProV2)
+  #define Z_MIN_PIN        32   // X_MAX_PIN
+#elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
   #define Z_MIN_PIN        63   // PB18/RD/PWML2/AD11 THERM AN2
 #else
   #define Z_MIN_PIN        31   // PA7 MIN ES3
@@ -172,7 +179,7 @@
 // Temperature Sensors
 //
 #define TEMP_0_PIN                            10  // D10 PB19 THERM AN1 *
-#if DISABLED(LULZBOT_BLTouch)
+#if DISABLED(LULZBOT_BLTouch) || ENABLED(TAZProV2)
   #define TEMP_1_PIN        9   // D9 PB18 THERM AN2 *
 #endif
 #define TEMP_2_PIN                             8  // D8 PB17 THERM AN4 *
