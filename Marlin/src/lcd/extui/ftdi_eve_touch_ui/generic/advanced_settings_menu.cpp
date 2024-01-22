@@ -94,8 +94,11 @@ void AdvancedSettingsMenu::onRedraw(draw_mode_t what) {
       .tag(3) .button(STEPS_PER_MM_POS,       GET_TEXT_F(MSG_STEPS_PER_MM))
       .enabled(ENABLED(HAS_TRINAMIC_CONFIG))
       .tag(13).button(TMC_CURRENT_POS,        GET_TEXT_F(MSG_TMC_CURRENT))
-      .enabled(ENABLED(SENSORLESS_HOMING))
-      .tag(14).button(TMC_HOMING_THRS_POS,    GET_TEXT_F(MSG_TMC_HOMING_THRS))
+      #if ENABLED(SENSORLESS_HOMING)
+        .tag(14).button(TMC_HOMING_THRS_POS,  GET_TEXT_F(MSG_TMC_HOMING_THRS))
+      #else
+        .tag(17).button(TMC_HOMING_THRS_POS,  GET_TEXT_F(MSG_CLEAN_NOZZLE))
+      #endif
       .enabled(ENABLED(HAS_MULTI_HOTEND))
       .tag(4) .button(OFFSETS_POS,            GET_TEXT_F(MSG_OFFSETS_MENU))
       .enabled(ANY(LIN_ADVANCE, FILAMENT_RUNOUT_SENSOR))
@@ -144,6 +147,7 @@ bool AdvancedSettingsMenu::onTouchEnd(uint8_t tag) {
     #endif
     case 15: GOTO_SCREEN(DisplayTuningScreen); break;
     case 16: GOTO_SCREEN(FlowPercentScreen);   break;
+    case 17: injectCommands(F(CLEAN_SCRIPT));  break;
     default: return false;
   }
   return true;
