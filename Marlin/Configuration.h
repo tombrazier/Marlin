@@ -20,7 +20,9 @@
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
 
 /************** Uncomment Options for Printer From Below *********************/
-#define SHOW_TOOL_HEAD_ID
+#if ANY(TAZPro, TAZProXT, TAZProV2)
+  #define SHOW_TOOL_HEAD_ID
+#endif
 #define LULZBOT_FILAMENT_RUNOUT
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LONG_BED
@@ -444,7 +446,7 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
-  #define TOOL_HEAD_ID                       1
+  #define TOOL_HEAD_ID                       3
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         177 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
@@ -486,7 +488,7 @@
   #define LULZBOT_TOOLHEAD_Y_MIN_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MAX_ADJ         0
   #define LULZBOT_TOOLHEAD_Z_MIN_ADJ         0
-    #define TOOL_HEAD_ID                       1
+  #define TOOL_HEAD_ID                       9
   #if ANY(TAZ6, Workhorse)
     #define LULZBOT_MOTOR_CURRENT_E0         155 // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
   #else
@@ -558,6 +560,7 @@
     #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
     #define SWITCHING_NOZZLE
+    #define TOOL_HEAD_ID                           11
     /********************* MPC Settings **********************/
     #define LULZBOT_TOOLHEAD_WATT                 { 50.0f, 50.0f }
     #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.44f, 15.44f }
