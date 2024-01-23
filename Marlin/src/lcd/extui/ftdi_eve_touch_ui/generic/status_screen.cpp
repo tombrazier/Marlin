@@ -527,7 +527,12 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 13: injectCommands(F("G28Z")); break;
     }
     case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
-    case 15: GOTO_SCREEN(ZOffsetScreen); break;
+    case 15:
+            #if EXTRUDERS > 1
+              GOTO_SCREEN(NudgeNozzleScreen);
+            #else
+              GOTO_SCREEN(ZOffsetScreen); break;
+            #endif
     case 16: injectCommands(F(PRESENT_BED_GCODE)); break;
     case 17: injectCommands(F("M117 Print Paused")); pausePrint();  break;
     case 18: injectCommands(F("M117 Print Resumed")); resumePrint(); break;
