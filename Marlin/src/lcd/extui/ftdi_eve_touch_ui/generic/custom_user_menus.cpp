@@ -61,10 +61,10 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
     #define BACK_POS          BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
   #endif
 
-btn_colors thcolor[7] = {normal_btn};
+btn_colors thcolor[8] = {normal_btn};
 
-for (int i = 0; i < 7; ++i) {
-    if (i == getToolHeadIdNumber()) {
+for (int i = 0; i < 8; ++i) {
+    if (i == getToolHeadIdNumber() || i == (getToolHeadIdNumber()-7) || i == (getToolHeadIdNumber()-10)) {
         thcolor[i] = action_btn;
     } else {
         thcolor[i] = normal_btn;
@@ -83,7 +83,7 @@ for (int i = 0; i < 7; ++i) {
         //_USER_ITEM(1)
         .tag(_ITEM_TAG(11)).button(USER_ITEM_POS(1), MAIN_MENU_ITEM_1_DESC)
        #endif
-      .colors(thcolor[2])
+      .colors(thcolor[1])
        #if defined(MAIN_MENU_ITEM_2_DESC)
         //_USER_ITEM(2)
         .tag(_ITEM_TAG(12)).button(USER_ITEM_POS(2), MAIN_MENU_ITEM_2_DESC)
