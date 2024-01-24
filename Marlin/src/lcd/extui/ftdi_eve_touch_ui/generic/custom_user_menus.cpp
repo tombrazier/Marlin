@@ -61,6 +61,17 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
     #define BACK_POS          BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
   #endif
 
+btn_colors thcolor[7] = {normal_btn};
+
+for (int i = 0; i < 7; ++i) {
+    if (i == getToolHeadIdNumber()) {
+        thcolor[i] = action_btn;
+    } else {
+        thcolor[i] = normal_btn;
+    }
+}
+
+//.color(TH_color[1])
   if (what & FOREGROUND) {
     CommandProcessor cmd;
     cmd.colors(normal_btn)
@@ -72,31 +83,37 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
         //_USER_ITEM(1)
         .tag(_ITEM_TAG(11)).button(USER_ITEM_POS(1), MAIN_MENU_ITEM_1_DESC)
        #endif
-      .colors(normal_btn)
+      .colors(thcolor[2])
        #if defined(MAIN_MENU_ITEM_2_DESC)
         //_USER_ITEM(2)
         .tag(_ITEM_TAG(12)).button(USER_ITEM_POS(2), MAIN_MENU_ITEM_2_DESC)
        #endif
+       .colors(thcolor[2])
        #if defined(MAIN_MENU_ITEM_3_DESC)
         //_USER_ITEM(3)
         .tag(_ITEM_TAG(13)).button(USER_ITEM_POS(3), MAIN_MENU_ITEM_3_DESC)
        #endif
+       .colors(thcolor[3])
        #if defined(MAIN_MENU_ITEM_4_DESC)
         //_USER_ITEM(4)
         .tag(_ITEM_TAG(14)).button(USER_ITEM_POS(4), MAIN_MENU_ITEM_4_DESC)
        #endif
+       .colors(thcolor[4])
        #if defined(MAIN_MENU_ITEM_5_DESC)
         //_USER_ITEM(5)
         .tag(_ITEM_TAG(15)).button(USER_ITEM_POS(5), MAIN_MENU_ITEM_5_DESC)
        #endif
+       .colors(thcolor[5])
        #if defined(MAIN_MENU_ITEM_6_DESC)
         //_USER_ITEM(6)
         .tag(_ITEM_TAG(16)).button(USER_ITEM_POS(6), MAIN_MENU_ITEM_6_DESC)
        #endif
+       .colors(thcolor[6])
        #if defined(MAIN_MENU_ITEM_7_DESC)
         //_USER_ITEM(7)
         .tag(_ITEM_TAG(17)).button(USER_ITEM_POS(7), MAIN_MENU_ITEM_7_DESC)
        #endif
+       .colors(thcolor[7])
        #if defined(MAIN_MENU_ITEM_8_DESC)
         //_USER_ITEM(8)
         .tag(_ITEM_TAG(18)).button(USER_ITEM_POS(8), MAIN_MENU_ITEM_8_DESC)
