@@ -26,15 +26,17 @@
 
 #include "tool_head_id.h"
 
-#include "../module/motion.h"
-#include "../module/planner.h"
-
-#if ENABLED(SHOW_TOOL_HEAD_ID)
-  #ifdef TOOL_HEAD_ID
-    uint8_t Tool_head::id = TOOL_HEAD_ID;
-  #endif
+#ifndef TOOL_HEAD_ID
+  #define TOOL_HEAD_ID 0 // If default isnt set, just define to 0 as we will init from eeprom anyway
 #endif
 
-Tool_head tool_head;
+uint8_t Toolhead::id_number = TOOL_HEAD_ID; // declare with default for now if set before settings.cpp overrides
+
+
+Toolhead tool_head;
+
+void Toolhead::setToolHeadId(uint8_t v) {
+  Toolhead::id_number = v;
+}
 
 #endif // TOOL_HEAD_ID

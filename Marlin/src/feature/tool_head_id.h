@@ -22,17 +22,14 @@
 #pragma once
 
 #include "../inc/MarlinConfigPre.h"
-#include "../module/planner.h"
 
+class Toolhead {
+private:
+  static uint8_t id_number;
 
-class Tool_head {
 public:
- 
-
-    #ifdef TOOL_HEAD_ID
-      static uint8_t id;
-    #endif
-
+    static void setToolHeadId(uint8_t v);
+    static uint8_t getToolHeadId() {return id_number;}
 };
 
-extern Tool_head tool_head;
+extern Toolhead tool_head;

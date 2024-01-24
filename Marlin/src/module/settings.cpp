@@ -36,7 +36,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V90"
+#define EEPROM_VERSION "V91"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -1607,11 +1607,11 @@ void MarlinSettings::postprocess() {
     //
     #if ENABLED(SHOW_TOOL_HEAD_ID)
     {
-      const uint8_t &tool_head_id = tool_head.id;
+      const uint8_t tool_head_id = tool_head.getToolHeadId();
       EEPROM_WRITE(tool_head_id);
     }
     #endif
-    
+
     //
     // Extensible UI User Data
     //
@@ -2699,8 +2699,9 @@ void MarlinSettings::postprocess() {
       //
       #if ENABLED(SHOW_TOOL_HEAD_ID)
       {
-        uint8_t &tool_head_id = tool_head.id;
+        uint8_t tool_head_id;
         EEPROM_READ(tool_head_id);
+        tool_head.setToolHeadId(tool_head_id);
       }
       #endif
 
@@ -3234,9 +3235,9 @@ void MarlinSettings::reset() {
   // TOOL_HEAD_ID
   //
   #if ENABLED(SHOW_TOOL_HEAD_ID)
-    tool_head.id = TOOL_HEAD_ID;
+    tool_head.setToolHeadId(TOOL_HEAD_ID);
   #endif
-  
+
   TERN_(DWIN_CREALITY_LCD_JYERSUI, jyersDWIN.resetSettings());
 
   //
@@ -3989,9 +3990,7 @@ void MarlinSettings::reset() {
     //
     // TOOL_HEAD_ID
     //
-    #if ENABLED(SHOW_TOOL_HEAD_ID)
-      TERN_(TOOL_HEAD_ID, gcode.M891_report(forReplay));
-    #endif
+    TERN_(SHOW_TOOL_HEAD_ID, gcode.M891_report(forReplay));
     //
     // Filament Runout Sensor
     //
