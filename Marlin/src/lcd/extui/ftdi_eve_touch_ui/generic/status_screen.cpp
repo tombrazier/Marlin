@@ -31,6 +31,7 @@
 
 using namespace FTDI;
 using namespace Theme;
+using namespace ExtUI;
 
 #define GRID_COLS 9
 #define GRID_ROWS 16
@@ -198,8 +199,49 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
         .font(font_medium)
         .tag(15).button(Z_OFFSET_POS, GET_TEXT_F(MSG_ZOFFSET))
         .enabled(ENABLED(CUSTOM_MENU_MAIN))
-        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE))
-        .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
+        .tag(10).button(TOOL_HEAD_POS, F(""));
+        draw_text_box(cmd, TOOL_HEAD_POS, F("" CUSTOM_MENU_MAIN_TITLE " \n "), OPT_CENTER, font_medium);
+        switch(getToolHeadIdNumber()){
+          case 1:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n M175"), OPT_CENTER, font_small);
+            break;
+          case 2:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n SL"), OPT_CENTER, font_small);
+            break;
+          case 3:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n SE"), OPT_CENTER, font_small);
+            break;
+          case 4:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n HE"), OPT_CENTER, font_small);
+            break;
+          case 5:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n HS"), OPT_CENTER, font_small);
+            break;
+          case 6:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n HS+"), OPT_CENTER, font_small);
+            break;
+          case 7:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n H175"), OPT_CENTER, font_small);
+            break;
+          case 8:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n MET175"), OPT_CENTER, font_small);
+            break;
+          case 9:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n MET285"), OPT_CENTER, font_small);
+            break;
+          case 10:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n AST285"), OPT_CENTER, font_small);
+            break;
+          case 11:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n Twin Nebula 175"), OPT_CENTER, font_small);
+            break;
+          case 12:
+            draw_text_box(cmd, TOOL_HEAD_POS, F(" \n Twin Nebula 285"), OPT_CENTER, font_small);
+            break;
+        }
+
+
+     cmd.tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
         .tag(16).button(PRESENT_BED_POS, GET_TEXT_F(MSG_PRESENT_BED));
   }
 

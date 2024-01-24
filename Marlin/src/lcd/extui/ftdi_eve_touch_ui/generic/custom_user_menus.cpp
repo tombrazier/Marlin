@@ -44,7 +44,7 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
 
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #if defined(TOOLHEAD_Legacy_Universal)
-      #define GRID_ROWS 9
+      #define GRID_ROWS 10
     #else
       #define GRID_ROWS 7
     #endif
@@ -61,6 +61,17 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
     #define BACK_POS          BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1)
   #endif
 
+btn_colors thcolor[8] = {normal_btn};
+
+for (int i = 0; i < 8; ++i) {
+    if (i == getToolHeadIdNumber() || i == (getToolHeadIdNumber()-7) || i == (getToolHeadIdNumber()-10)) {
+        thcolor[i] = action_btn;
+    } else {
+        thcolor[i] = normal_btn;
+    }
+}
+
+//.color(TH_color[1])
   if (what & FOREGROUND) {
     CommandProcessor cmd;
     cmd.colors(normal_btn)
@@ -72,39 +83,47 @@ void CustomUserMenus::onRedraw(draw_mode_t what) {
         //_USER_ITEM(1)
         .tag(_ITEM_TAG(11)).button(USER_ITEM_POS(1), MAIN_MENU_ITEM_1_DESC)
        #endif
-      .colors(normal_btn)
+      .colors(thcolor[1])
        #if defined(MAIN_MENU_ITEM_2_DESC)
         //_USER_ITEM(2)
         .tag(_ITEM_TAG(12)).button(USER_ITEM_POS(2), MAIN_MENU_ITEM_2_DESC)
        #endif
+       .colors(thcolor[2])
        #if defined(MAIN_MENU_ITEM_3_DESC)
         //_USER_ITEM(3)
         .tag(_ITEM_TAG(13)).button(USER_ITEM_POS(3), MAIN_MENU_ITEM_3_DESC)
        #endif
+       .colors(thcolor[3])
        #if defined(MAIN_MENU_ITEM_4_DESC)
         //_USER_ITEM(4)
         .tag(_ITEM_TAG(14)).button(USER_ITEM_POS(4), MAIN_MENU_ITEM_4_DESC)
        #endif
+       .colors(thcolor[4])
        #if defined(MAIN_MENU_ITEM_5_DESC)
         //_USER_ITEM(5)
         .tag(_ITEM_TAG(15)).button(USER_ITEM_POS(5), MAIN_MENU_ITEM_5_DESC)
        #endif
+       .colors(thcolor[5])
        #if defined(MAIN_MENU_ITEM_6_DESC)
         //_USER_ITEM(6)
         .tag(_ITEM_TAG(16)).button(USER_ITEM_POS(6), MAIN_MENU_ITEM_6_DESC)
        #endif
+       .colors(thcolor[6])
        #if defined(MAIN_MENU_ITEM_7_DESC)
         //_USER_ITEM(7)
         .tag(_ITEM_TAG(17)).button(USER_ITEM_POS(7), MAIN_MENU_ITEM_7_DESC)
        #endif
+       .colors(thcolor[7])
        #if defined(MAIN_MENU_ITEM_8_DESC)
         //_USER_ITEM(8)
         .tag(_ITEM_TAG(18)).button(USER_ITEM_POS(8), MAIN_MENU_ITEM_8_DESC)
        #endif
 
-       #undef GRID_ROWS
-       #define GRID_ROWS 8
-      .tag(17).colors(normal_btn).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP))
+       #if DISABLED(TOOLHEAD_Legacy_Universal)
+        #undef GRID_ROWS
+        #define GRID_ROWS 8
+       #endif
+      .tag(20).colors(normal_btn).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP))
       .tag(1).colors(action_btn).button(BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
   }
 }
