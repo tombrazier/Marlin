@@ -123,7 +123,7 @@ for (int i = 0; i < 8; ++i) {
         #undef GRID_ROWS
         #define GRID_ROWS 8
        #endif
-      .tag(17).colors(normal_btn).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP))
+      .tag(20).colors(normal_btn).button(TOOLHEAD_SWAP_POS, GET_TEXT_F(MSG_TOOL_HEAD_SWAP))
       .tag(1).colors(action_btn).button(BACK_POS, GET_TEXT_F(MSG_BUTTON_DONE));
   }
 }
