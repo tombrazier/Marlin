@@ -244,6 +244,7 @@
   #define LULZBOT_BLTouch                                     // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
+  #define TazDualZ
 #elif ENABLED(Sidekick_289)
   #define CUSTOM_MACHINE_NAME "Taz SideKick 289"
   #define LULZBOT_LCD_MACHINE_NAME "SideKick 289"
@@ -2163,7 +2164,9 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#if defined (LULZBOT_BLTouch)
+#if ENABLED(LULZBOT_BLTouch, TazDualZ)
+  #define PROBING_MARGIN 5
+#elif ENABLED(LULZBOT_BLTouch)
   #define PROBING_MARGIN 50
 #else
   #if ENABLED(MiniV2)
@@ -2180,7 +2183,7 @@
 #endif
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (100*60)
+#define XY_PROBE_FEEDRATE (150*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #if defined(LULZBOT_BLTouch)
@@ -2412,7 +2415,7 @@
 #else
   #define Y_HOME_DIR 1
 #endif
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Workhorse, Sidekick289, Sidekick747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Workhorse, Sidekick289, Sidekick747)
   #define Z_HOME_DIR 1
 #else
   #define Z_HOME_DIR -1
@@ -2431,7 +2434,9 @@
  */
 //#define X_SAFETY_STOP
 //#define Y_SAFETY_STOP
-//#define Z_SAFETY_STOP
+#if ANY(Workhorse, TAZProV2, TazDualZ)
+  #define Z_SAFETY_STOP
+#endif
 //#define I_SAFETY_STOP
 //#define J_SAFETY_STOP
 //#define K_SAFETY_STOP
@@ -2901,11 +2906,7 @@
    * The height can be set with M420 Z<height>
    */
   #define ENABLE_LEVELING_FADE_HEIGHT
-  #if ENABLED(BLTouch)
-    #define FADE_HEIGHT  10.0
-  #else
-    #define FADE_HEIGHT  0.0
-  #endif
+  #define FADE_HEIGHT  0.0
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
     #define DEFAULT_LEVELING_FADE_HEIGHT FADE_HEIGHT // (mm) Default fade height.
   #endif
@@ -3104,7 +3105,7 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-#if ANY(TAZ6, Sidekick_289, Sidekick_747)
+#if ANY(TAZ6, Sidekick_289, Sidekick_747, TAZProV2)
   #define Z_SAFE_HOMING
 #endif
 
@@ -3112,7 +3113,7 @@
   #if ENABLED(TAZ6)
     #define Z_SAFE_HOMING_X_POINT -20.1  // (mm) X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT 259.5  // (mm) Y point for Z homing
-  #elif ANY(Sidekick_289, Sidekick_747)
+  #elif ANY(Sidekick_289, Sidekick_747, TAZProV2)
     #define Z_SAFE_HOMING_X_POINT (X_CENTER)  // (mm) X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT (Y_BED_SIZE/2)  // (mm) Y point for Z homing
   //#define Z_SAFE_HOMING_POINT_ABSOLUTE  // Ignore home offsets (M206) for Z homing position

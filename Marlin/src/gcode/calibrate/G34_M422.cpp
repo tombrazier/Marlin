@@ -238,6 +238,13 @@ void GcodeSuite::G34() {
         z_maxdiff = z_measured_max - z_measured_min;
         z_probe = (Z_TWEEN_SAFE_CLEARANCE + zoffs) + z_measured_max + z_maxdiff; //Not sure we need z_maxdiff, but leaving it in for safety.
 
+        SERIAL_ECHOLNPGM(
+          LIST_N(DOUBLE(NUM_Z_STEPPERS),
+            "Calculated Z1=", z_measured[0],
+                      " Z2=", z_measured[1]
+          )
+        );
+
         #if HAS_Z_STEPPER_ALIGN_STEPPER_XY
           // Replace the initial values in z_measured with calculated heights at
           // each stepper position. This allows the adjustment algorithm to be

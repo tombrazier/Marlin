@@ -335,8 +335,8 @@
  * Thermal Protection parameters for the bed are just as above for hotends.
  */
 #if ENABLED(THERMAL_PROTECTION_BED)
-  #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
-  #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
+  #define THERMAL_PROTECTION_BED_PERIOD        60 // Seconds
+  #define THERMAL_PROTECTION_BED_HYSTERESIS     3 // Degrees Celsius
 
   /**
    * As described above, except for the bed (M140/M190/M303).
@@ -1051,7 +1051,13 @@
    * If not defined, probe limits will be used.
    * Override with 'M422 S<index> X<pos> Y<pos>'.
    */
-  //#define Z_STEPPER_ALIGN_XY { {  10, 190 }, { 100,  10 }, { 190, 190 } }
+  #if ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
+    #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+  #elif ENABLED(TAZProV2)
+    #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+  #else
+    #define Z_STEPPER_ALIGN_XY { {  -10, -9 }, { (X_BED_SIZE + 8),  -9 } }
+  #endif
 
   /**
    * Orientation for the automatically-calculated probe positions.
@@ -1089,13 +1095,13 @@
   #ifndef Z_STEPPER_ALIGN_STEPPER_XY
     // Amplification factor. Used to scale the correction step up or down in case
     // the stepper (spindle) position is farther out than the test point.
-    #define Z_STEPPER_ALIGN_AMP 1.0       // Use a value > 1.0 NOTE: This may cause instability!
+    #define Z_STEPPER_ALIGN_AMP 1       // Use a value > 1.0 NOTE: This may cause instability!
   #endif
 
   // On a 300mm bed a 5% grade would give a misalignment of ~1.5cm
-  #define G34_MAX_GRADE              5    // (%) Maximum incline that G34 will handle
+  #define G34_MAX_GRADE              15    // (%) Maximum incline that G34 will handle
   #define Z_STEPPER_ALIGN_ITERATIONS 5    // Number of iterations to apply during alignment
-  #define Z_STEPPER_ALIGN_ACC        0.02 // Stop iterating early if the accuracy is better than this
+  #define Z_STEPPER_ALIGN_ACC        0.05 // Stop iterating early if the accuracy is better than this
   #define RESTORE_LEVELING_AFTER_G34      // Restore leveling after G34 is done?
   // After G34, re-home Z (G28 Z) or just calculate it from the last probe heights?
   // Re-homing might be more precise in reproducing the actual 'G28 Z' homing height, especially on an uneven bed.
@@ -3445,7 +3451,7 @@
     //#define STEALTHCHOP_U
     //#define STEALTHCHOP_V
     //#define STEALTHCHOP_W
-    #define STEALTHCHOP_E
+    //#define STEALTHCHOP_E
   #endif
 
   /**
@@ -4467,7 +4473,7 @@
  * Implemented as G34 because M915 is deprecated.
  * @section calibrate
  */
-#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747) && DISABLED(TazDualZ)
   #define MECHANICAL_GANTRY_CALIBRATION
 #endif
 #if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
@@ -4491,7 +4497,7 @@
   #define GANTRY_CALIBRATION_COMMANDS_POST  "G28"
 #endif
 
-#if ANY(TAZPro,TAZProXT,Workhorse)
+#if ANY(TAZPro,TAZProXT,Workhorse) && DISABLED(TazDualZ)
   #define X_LEVEL_SEQUENCE
 #endif
 #if defined (X_LEVEL_SEQUENCE)
