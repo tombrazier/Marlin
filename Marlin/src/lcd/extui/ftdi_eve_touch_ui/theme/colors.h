@@ -60,7 +60,7 @@ namespace Theme {
   // Shades of gray
 
   constexpr float    gray_sat               = 0.14;
-  constexpr uint32_t gray_color_0           = hsl_to_rgb(accent_hue, gray_sat, 0.15); // Darkest
+  constexpr uint32_t gray_color_0           = hsl_to_rgb(accent_hue, gray_sat, 0.10); // Darkest
   constexpr uint32_t gray_color_1           = hsl_to_rgb(accent_hue, gray_sat, 0.26);
   constexpr uint32_t gray_color_2           = hsl_to_rgb(accent_hue, gray_sat, 0.39);
   constexpr uint32_t gray_color_3           = hsl_to_rgb(accent_hue, gray_sat, 0.52);
@@ -113,8 +113,10 @@ namespace Theme {
     constexpr uint32_t theme_darkest        = gray_color_1;
     constexpr uint32_t theme_dark           = gray_color_2;
 
+    constexpr uint32_t bg_dark_color        = gray_color_0;
     constexpr uint32_t bg_color             = gray_color_1;
     constexpr uint32_t axis_label           = gray_color_2;
+    constexpr uint32_t bg_light_color       = gray_color_3;
 
     constexpr uint32_t bg_text_enabled      = 0xFFFFFF;
     constexpr uint32_t bg_text_disabled     = gray_color_2;
@@ -198,7 +200,8 @@ namespace Theme {
   constexpr btn_colors text_z_axis          = {.bg = fg_action,     .grad = fg_normal,   .fg = fg_normal,       .rgb = z_axis };
   constexpr btn_colors cold_pull_btn        = {.bg = fg_action,     .grad = fg_normal,   .fg = cold_pull,       .rgb = 0xFFFFFF };
   constexpr btn_colors cancel_btn           = {.bg = fg_action,     .grad = fg_normal,   .fg = cancel,          .rgb = 0xFFFFFF };
-
+  constexpr btn_colors temp_btn             = {.bg = bg_color,      .grad = fg_disabled, .fg = fg_disabled,     .rgb = 0xFFFFFF };
+  constexpr btn_colors temp_disabled_btn    = {.bg = bg_color,      .grad = bg_dark_color, .fg = bg_dark_color, .rgb = bg_light_color };
 
   // Temperature color scale
 

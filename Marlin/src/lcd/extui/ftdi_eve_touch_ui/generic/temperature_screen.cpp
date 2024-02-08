@@ -37,7 +37,7 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
   #else
     w.precision(0, getTargetTemp_celsius(E0) == 0 ? DEFAULT_HIGHEST : DEFAULT_MIDRANGE)
   #endif
-   .color(temp).units(GET_TEXT_F(MSG_UNITS_C));
+   .color(temp_button).units(GET_TEXT_F(MSG_UNITS_C));
   w.heading(GET_TEXT_F(MSG_TEMPERATURE));
   //w.button(30, GET_TEXT_F(MSG_COOLDOWN));
   #ifndef NO_TOOLHEAD_HEATER_GCODE
@@ -68,7 +68,7 @@ void TemperatureScreen::onRedraw(draw_mode_t what) {
     w.adjuster(    22, GET_TEXT_F(MSG_CHAMBER), getTargetTemp_celsius(CHAMBER));
   #endif
   #if HAS_FAN0
-    w.color(temp).units(GET_TEXT_F(MSG_UNITS_PERCENT));
+    w.units(GET_TEXT_F(MSG_UNITS_PERCENT));
     w.adjuster(    10, GET_TEXT_F(MSG_FAN_SPEED), getTargetFan_percent(FAN0));
   #endif
   w.increments();

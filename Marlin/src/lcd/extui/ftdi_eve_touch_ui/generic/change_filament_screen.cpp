@@ -171,30 +171,37 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
       else
         format_temp_and_temp(e1_str, getActualTemp_celsius(H1), getTargetTemp_celsius(H1));
     #else
-      strcpy_P(e1_str, PSTR("-"));
+      strcpy_P(e1_str, PSTR("N/A"));
     #endif
 
-    const rgb_t t0col = getWarmColor(getActualTemp_celsius(ExtUI::E0), COOL_TEMP, LOW_TEMP, MED_TEMP, HIGH_TEMP);
-    cmd.cmd(COLOR_RGB(t0col))
-       .tag(15)
+
+    if (getTargetTemp_celsius(H0) > 0) {
+      cmd.cmd(COLOR_RGB(temp_button));
+    }
+    else{
+      cmd.cmd(COLOR_RGB(gray_color_1));
+    }
+    cmd.tag(15)
        .rectangle(E0_TEMP_POS)
-       .cmd(COLOR_RGB(t0col.luminance() > 128 ? 0x000000 : 0xFFFFFF))
        .font(font_medium)
+       .colors(normal_btn)
        .text(TEXT_POS(E0_TEMP_POS), e0_str)
        .colors(normal_btn);
 
-    #if HAS_MULTI_EXTRUDER
-      const rgb_t t1col = getWarmColor(getActualTemp_celsius(ExtUI::E1), COOL_TEMP, LOW_TEMP, MED_TEMP, HIGH_TEMP);
-    #else
-      const rgb_t t1col = bg_color;
-    #endif
-    cmd.cmd(COLOR_RGB(t1col))
-       .tag(15)
-       .rectangle(E1_TEMP_POS)
-       .cmd(COLOR_RGB(t1col.luminance() > 128 ? 0x000000 : 0xFFFFFF))
-       .font(font_medium)
+    if DISABLED(HAS_MULTI_HOTEND){
+      cmd.font(font_small).cmd(COLOR_RGB(gray_color_1));
+    }
+    else if (getTargetTemp_celsius(H1) > 0) {
+      cmd.font(font_medium).cmd(COLOR_RGB(temp_button));
+    }
+    else{
+      cmd.font(font_medium).cmd(COLOR_RGB(gray_color_1));
+    }
+    cmd.tag(15)
+       .colors(normal_btn)
        .text(TEXT_POS(E1_TEMP_POS), e1_str)
        .colors(normal_btn);
+
     cmd.tag(5)
        .cmd (BITMAP_SOURCE(Extruder_Icon_Info))
        .cmd (BITMAP_LAYOUT(Extruder_Icon_Info))
@@ -216,13 +223,13 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
     #endif
 
     cmd.TOG_STYLE(tog10)
-       .tag(10).button (E1_SEL_POS, F("Extruder 1"))
+       .tag(10).font(font_large).button (E1_SEL_POS, F("Extruder 1"))
     #if HOTENDS < 2
-       .enabled(false)
+       .tag(0).fgcolor(gray_color_1)
     #else
-       .TOG_STYLE(tog11)
+       .TOG_STYLE(tog11).tag(11)
     #endif
-       .tag(11).button (E2_SEL_POS, F("Extruder 2"));
+       .button (E2_SEL_POS, F("Extruder 2"));
 
     if (!t_ok) reset_menu_timeout();
 

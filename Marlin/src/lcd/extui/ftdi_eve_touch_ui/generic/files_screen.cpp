@@ -221,7 +221,6 @@ bool FilesScreen::onTouchEnd(uint8_t tag) {
       return true;
     case 241: // Print highlighted file
       printFile(getSelectedShortFilename());
-      StatusScreen::setStatusMessage(GET_TEXT_F(MSG_PRINT_STARTING));
       GOTO_SCREEN(StatusScreen);
       return true;
     case 242: // Previous page

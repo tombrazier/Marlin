@@ -42,7 +42,8 @@ void MainMenu::onRedraw(draw_mode_t what) {
 
     #define MOVE_AXIS_POS         BTN_POS(1,1), BTN_SIZE(1,1)
     #define DISABLE_STEPPERS_POS  BTN_POS(2,1), BTN_SIZE(1,1)
-    #define BACKLASH_POS          BTN_POS(1,2), BTN_SIZE(2,1)
+    #define BACKLASH_POS          BTN_POS(1,2), BTN_SIZE(1,1)
+    #define CLEAN_NOZZLE_POS      BTN_POS(2,2), BTN_SIZE(1,1)
     #define LEVELING_POS          BTN_POS(1,3), BTN_SIZE(2,1)
     #define TEMPERATURE_POS       BTN_POS(1,4), BTN_SIZE(2,1)
     #define ABOUT_PRINTER_POS     BTN_POS(1,5), BTN_SIZE(2,1)
@@ -67,12 +68,13 @@ void MainMenu::onRedraw(draw_mode_t what) {
        .tag(2).button(MOVE_AXIS_POS,         GET_TEXT_F(MSG_MOVE_AXIS))
        .tag(3).button(DISABLE_STEPPERS_POS,  GET_TEXT_F(MSG_DISABLE_STEPPERS))
        .tag(4).button(BACKLASH_POS,          GET_TEXT_F(MSG_BACKLASH))
-       .tag(5).button(TEMPERATURE_POS,       GET_TEXT_F(MSG_TEMPERATURE))
+       .tag(5).button(CLEAN_NOZZLE_POS,      GET_TEXT_F(MSG_CLEAN_NOZZLE))
+       .tag(6).button(TEMPERATURE_POS,       GET_TEXT_F(MSG_TEMPERATURE))
           .enabled(DISABLED(TOUCH_UI_LULZBOT_BIO))
-       .tag(6).button(ADVANCED_SETTINGS_POS, GET_TEXT_F(MSG_ADVANCED_SETTINGS))
+       .tag(7).button(ADVANCED_SETTINGS_POS, GET_TEXT_F(MSG_ADVANCED_SETTINGS))
           .enabled(ENABLED(HAS_LEVELING))
-       .tag(7).button(LEVELING_POS,          GET_TEXT_F(MSG_LEVELING))
-       .tag(8).button(ABOUT_PRINTER_POS,     GET_TEXT_F(MSG_INFO_MENU))
+       .tag(8).button(LEVELING_POS,          GET_TEXT_F(MSG_LEVELING))
+       .tag(9).button(ABOUT_PRINTER_POS,     GET_TEXT_F(MSG_INFO_MENU))
        .colors(action_btn)
        .tag(1).button(BACK_POS,               GET_TEXT_F(MSG_BUTTON_DONE));
   }
@@ -86,12 +88,13 @@ bool MainMenu::onTouchEnd(uint8_t tag) {
     case 2:  GOTO_SCREEN(MoveAxisScreen);                                break;
     case 3:  injectCommands(F("M84"));                                   break;
     case 4:  GOTO_SCREEN(BacklashCompensationScreen);                    break;
-    case 5:  GOTO_SCREEN(TemperatureScreen);                             break;
-    case 6:  GOTO_SCREEN(AdvancedSettingsMenu);                          break;
+    case 5:  injectCommands(F(CLEAN_SCRIPT));                                   break;
+    case 6:  GOTO_SCREEN(TemperatureScreen);                             break;
+    case 7:  GOTO_SCREEN(AdvancedSettingsMenu);                          break;
     #if HAS_LEVELING
-      case 7:  GOTO_SCREEN(LevelingMenu);                                break;
+      case 8:  GOTO_SCREEN(LevelingMenu);                                break;
     #endif
-    case 8: GOTO_SCREEN(AboutScreen);                                   break;
+    case 9: GOTO_SCREEN(AboutScreen);                                   break;
     default:
       return false;
   }
