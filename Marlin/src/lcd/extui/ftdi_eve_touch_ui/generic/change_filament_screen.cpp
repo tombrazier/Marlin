@@ -198,6 +198,7 @@ void ChangeFilamentScreen::onRedraw(draw_mode_t what) {
       cmd.font(font_medium).cmd(COLOR_RGB(gray_color_1));
     }
     cmd.tag(15)
+       .rectangle(E1_TEMP_POS)
        .colors(normal_btn)
        .text(TEXT_POS(E1_TEMP_POS), e1_str)
        .colors(normal_btn);

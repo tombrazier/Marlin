@@ -32,6 +32,9 @@ using namespace ExtUI;
 
 constexpr static NudgeNozzleScreenData &mydata = screen_data.NudgeNozzleScreen;
 
+#define GRID_COLS 13
+#define GRID_ROWS (9+EXTRUDERS)
+
 void NudgeNozzleScreen::onEntry() {
   mydata.show_offsets = false;
   #if HAS_MULTI_EXTRUDER
@@ -44,6 +47,7 @@ void NudgeNozzleScreen::onEntry() {
 
 void NudgeNozzleScreen::onRedraw(draw_mode_t what) {
   widgets_t w(what);
+  CommandProcessor cmd;
   w.precision(2, BaseNumericAdjustmentScreen::DEFAULT_MIDRANGE).units(GET_TEXT_F(MSG_UNITS_MM));
 
   w.heading(GET_TEXT_F(MSG_ZOFFSET));
@@ -79,6 +83,11 @@ void NudgeNozzleScreen::onRedraw(draw_mode_t what) {
       #endif
     }
   #endif
+  if (what & FOREGROUND) {
+    cmd.colors(normal_btn)
+       .font(font_medium)
+       .tag(10).colors(action_btn).button(BTN_POS(1,GRID_ROWS), BTN_SIZE(GRID_COLS,1), GET_TEXT_F(MSG_BUTTON_DONE));
+  }
 }
 
 bool NudgeNozzleScreen::onTouchHeld(uint8_t tag) {
@@ -100,6 +109,7 @@ bool NudgeNozzleScreen::onTouchHeld(uint8_t tag) {
       case 8: mydata.link_nozzles = !link; break;
     #endif
     case 9: mydata.show_offsets = !mydata.show_offsets; break;
+    case 10: GOTO_SCREEN(SaveSettingsDialogBox); break;
     default: return false;
   }
   #if HAS_MULTI_EXTRUDER || HAS_BED_PROBE

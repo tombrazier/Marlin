@@ -594,7 +594,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
     case 15:
             #if EXTRUDERS > 1
-              GOTO_SCREEN(NudgeNozzleScreen);
+              GOTO_SCREEN(NudgeNozzleScreen); break;
             #else
               GOTO_SCREEN(ZOffsetScreen); break;
             #endif
