@@ -125,6 +125,7 @@ void StatusScreen::draw_axis_position(draw_mode_t what) {
 void StatusScreen::draw_temperature(draw_mode_t what) {
   using namespace Theme;
 
+  #define BACKGROUND_POS      BTN_POS(1,1), BTN_SIZE(9,16)
   #define TEMP_RECT_E0        BTN_POS(1,1), BTN_SIZE(3,2)
   #define TEMP_RECT_E1        BTN_POS(4,1), BTN_SIZE(3,2)
   #define TEMP_RECT_BED       BTN_POS(1,3), BTN_SIZE(3,2)
@@ -132,6 +133,7 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
   #define NOZ_2_POS           BTN_POS(4,1), BTN_SIZE(3,2)
   #define BED_POS             BTN_POS(1,3), BTN_SIZE(3,2)
   #define FAN_POS             BTN_POS(4,3), BTN_SIZE(3,2)
+  #define ALL_TEMP_POS        BTN_POS(1,1), BTN_SIZE(6,4)
   #define Z_OFFSET_POS        BTN_POS(1,5), BTN_SIZE(3,2)
   #define TOOL_HEAD_POS       BTN_POS(4,5), BTN_SIZE(3,2)
   #define HOME_ALL_POS        BTN_POS(1,7), BTN_SIZE(3,2)
@@ -149,17 +151,16 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
        .font(font_medium)
        .tag(9).button(HOME_ALL_POS, GET_TEXT_F(MSG_HOME_ALL))
        .tag(10).button(TOOL_HEAD_POS, GET_TEXT_F(MSG_CUSTOM_MENU_MAIN_TITLE));
+    cmd.tag(0)
+       .fgcolor(temp).button(BACKGROUND_POS, F(""), OPT_FLAT);
     cmd.font(Theme::font_small)
 
        .tag(5)
-       .fgcolor(temp).button(TEMP_RECT_E0, F(""), OPT_FLAT)
-       #if HAS_MULTI_EXTRUDER
-        .fgcolor(temp).button(TEMP_RECT_E1, F(""), OPT_FLAT)
-       #else
-        .fgcolor(fg_disabled).button(TEMP_RECT_E1, F(""), OPT_FLAT)
-       #endif
-       .fgcolor(temp).button(TEMP_RECT_BED, F(""), OPT_FLAT)
-       .fgcolor(temp).button(FAN_POS,     F(""), OPT_FLAT)
+       .button(ALL_TEMP_POS, F(""), OPT_FLAT)
+       .button(TEMP_RECT_E0, F(""), OPT_FLAT)
+       .button(TEMP_RECT_E1, F(""), OPT_FLAT)
+       .button(TEMP_RECT_BED, F(""), OPT_FLAT)
+       .button(FAN_POS,     F(""), OPT_FLAT)
        .tag(0);
 
     // Draw Extruder Bitmap on Extruder Temperature Button
@@ -267,21 +268,43 @@ void StatusScreen::draw_temperature(draw_mode_t what) {
       else
         format_temp_and_temp(e1_str, getActualTemp_celsius(H1), getTargetTemp_celsius(H1));
     #else
-      strcpy_P(e1_str, PSTR("-"));
+      strcpy_P(e1_str, PSTR("N/A"));
     #endif
 
-    cmd.tag(5)
-       .font(font_medium)
-       .fgcolor(temp_button)
-       .button(TEXT_POS(NOZ_1_POS), e0_str)
-       .enabled(ENABLED(HAS_MULTI_HOTEND))
-       .button(TEXT_POS(NOZ_2_POS), e1_str);
-    cmd.tag(5)
-       .font(font_medium)
-       .fgcolor(temp_button)
-       .button(TEXT_POS(BED_POS), bed_str)
-       .fgcolor(temp_button)
-       .button(TEXT_POS(FAN_POS), fan_str);
+    if (getTargetTemp_celsius(H0) > 0) {
+      cmd.fgcolor(temp_button);
+    }
+    else{
+      cmd.fgcolor(gray_color_1);
+    }
+    cmd.tag(5).font(font_medium).button(TEXT_POS(NOZ_1_POS), e0_str);
+
+    if (getTargetTemp_celsius(BED) > 0) {
+      cmd.fgcolor(temp_button);
+    }
+    else{
+      cmd.fgcolor(gray_color_1);
+    }
+    cmd.tag(5).font(font_medium).button(TEXT_POS(BED_POS), bed_str);
+
+    if (getActualFan_percent(FAN0) > 0) {
+      cmd.fgcolor(temp_button);
+    }
+    else{
+      cmd.fgcolor(gray_color_1);
+    }
+    cmd.tag(5).font(font_medium).button(TEXT_POS(FAN_POS), fan_str);
+
+    if DISABLED(HAS_MULTI_HOTEND){
+      cmd.font(font_xsmall).fgcolor(gray_color_1);
+    }
+    else if (getTargetTemp_celsius(H1) > 0) {
+      cmd.font(font_medium).fgcolor(temp_button);
+    }
+    else{
+      cmd.font(font_medium).fgcolor(gray_color_1);
+    }
+    cmd.tag(5).button(TEXT_POS(NOZ_2_POS), e1_str);
   }
 }
 
@@ -418,8 +441,8 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
     cmd.colors(normal_btn)
        .font(Theme::font_medium)
        .colors(has_media ? action_btn : normal_btn)
-       .enabled(has_media && !isPrinting())
-       .tag(3).button(MEDIA_BTN_POS, isPrinting() ? GET_TEXT_F(MSG_PRINTING) : GET_TEXT_F(MSG_BUTTON_USB))
+       .enabled(has_media || isPrinting())
+       .tag(3).button(MEDIA_BTN_POS, isPrinting() ? GET_TEXT_F(MSG_PRINTING) : GET_TEXT_F(MSG_BUTTON_PRINT))
        .colors(!has_media ? action_btn : normal_btn)
        .tag(4).button(MENU_BTN_POS, GET_TEXT_F(MSG_BUTTON_MENU));
   }
@@ -437,7 +460,7 @@ void StatusScreen::draw_status_message(draw_mode_t what, const char *message) {
 
   if (what & BACKGROUND) {
     CommandProcessor cmd;
-    cmd.fgcolor(Theme::status_msg)
+    cmd.colors(temp_btn)
        .tag(0)
        .button(STATUS_POS, F(""), OPT_FLAT);
 
@@ -571,7 +594,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
     case 14: GOTO_SCREEN(ChangeFilamentScreen);  break;
     case 15:
             #if EXTRUDERS > 1
-              GOTO_SCREEN(NudgeNozzleScreen);
+              GOTO_SCREEN(NudgeNozzleScreen); break;
             #else
               GOTO_SCREEN(ZOffsetScreen); break;
             #endif

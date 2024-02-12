@@ -2562,7 +2562,7 @@
    * Specify the GCODE commands that will be executed when leveling succeeds,
    * between attempts, and after the maximum number of retries have been tried.
    */
-  #define G29_SUCCESS_COMMANDS "M117 Probe successful"
+  #define G29_SUCCESS_COMMANDS ""
   #if ANY(MiniV2, MiniV3)
     #define G29_RECOVER_COMMANDS "M104 S170\nG28\nG0 Z5 F6000\nG0 X150 F9999\nG91\nM211 S0\nM400\nM906 Z600\nG0 Z-15 F500\nG0 Z5 F500\nM400\nG90\nM906 Z960\nM211 S1\nG28 Z0\nG28\nG12\nM109 R160\nM400\nM117 Probing bed"
   #elif ENABLED(TAZ6)

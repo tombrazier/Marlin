@@ -754,7 +754,9 @@ volatile bool Temperature::raw_temps_ready = false;
 
     TERN_(TEMP_TUNING_MAINTAIN_FAN, adaptive_fan_slowing = false);
 
-    LCD_MESSAGE(MSG_HEATING);
+    #if DISABLED(REMOVE_STARING_PRINT_MESSAGES)
+      LCD_MESSAGE(MSG_HEATING);
+    #endif
 
     // PID Tuning loop
     wait_for_heatup = true;
@@ -4448,22 +4450,24 @@ void Temperature::isr() {
   #if HAS_HOTEND && HAS_STATUS_MESSAGE
     void Temperature::set_heating_message(const uint8_t e, const bool isM104/*=false*/) {
       const bool heating = isHeatingHotend(e);
-      ui.status_printf(0,
-        #if HAS_MULTI_HOTEND
-          F("E%c " S_FMT), '1' + e
-        #else
-          F("E1 " S_FMT)
-        #endif
-        , heating ? GET_TEXT(MSG_HEATING) : GET_TEXT(MSG_COOLING)
-      );
+      #if DISABLED(REMOVE_STARING_PRINT_MESSAGES)
+        ui.status_printf(0,
+          #if HAS_MULTI_HOTEND
+            F("E%c " S_FMT), '1' + e
+          #else
+            F("E1 " S_FMT)
+          #endif
+          , heating ? GET_TEXT(MSG_HEATING) : GET_TEXT(MSG_COOLING)
+        );
 
-      if (isM104) {
-        static uint8_t wait_e; wait_e = e;
-        ui.set_status_reset_fn([]{
-          const celsius_t c = degTargetHotend(wait_e);
-          return c < 30 || degHotendNear(wait_e, c);
-        });
-      }
+        if (isM104) {
+          static uint8_t wait_e; wait_e = e;
+          ui.set_status_reset_fn([]{
+            const celsius_t c = degTargetHotend(wait_e);
+            return c < 30 || degHotendNear(wait_e, c);
+          });
+        }
+      #endif
     }
   #endif
 

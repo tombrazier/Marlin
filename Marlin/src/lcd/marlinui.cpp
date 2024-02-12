@@ -1481,9 +1481,8 @@ void MarlinUI::host_notify(const char * const cstr) {
       else if (IS_SD_PRINTING())
         return set_status_no_expire(card.longest_filename());
     #endif
-    else if (print_job_timer.isRunning())
+    else if (print_job_timer.isRunning() && DISABLED(REMOVE_STARING_PRINT_MESSAGES))
       msg = GET_TEXT_F(MSG_PRINTING);
-
     #if SERVICE_INTERVAL_1 > 0
       else if (print_job_timer.needsService(1)) msg = FPSTR(service1);
     #endif
