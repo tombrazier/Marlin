@@ -3496,7 +3496,7 @@
  *
  *   M2 - Go to end print screen
  */
-#if ENABLED(TAZPro, TAZProXT, TAZProV2)
+#if ANY(TAZPro, TAZProXT, TAZProV2)
   #define ALLOW_END_PRINT_SCREEN
 #endif
 
