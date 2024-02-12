@@ -473,6 +473,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_ERR_EEPROM_VERSION             = _UxGT("Err: EEPROM Version");
   LSTR MSG_ERR_EEPROM_CORRUPT             = _UxGT("Err: EEPROM Corrupt");
   LSTR MSG_SETTINGS_STORED                = _UxGT("Settings Stored");
+  LSTR MSG_SETTINGS_SAVED                 = _UxGT("Settings Saved!");
   LSTR MSG_HAS_PREVIEW                    = _UxGT("Has preview");
   LSTR MSG_RESET_PRINTER                  = _UxGT("Reset Printer");
   LSTR MSG_REFRESH                        = LCD_STR_REFRESH _UxGT("Refresh");
