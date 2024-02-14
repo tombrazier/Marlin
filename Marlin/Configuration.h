@@ -2139,7 +2139,9 @@
  */
 #if ANY(MiniV2, MiniV3)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.1 }
-#elif ANY(TAZ6, Workhorse)
+#elif ANY(TAZ6, Workhorse) && DISABLED(TOOLHEAD_Galaxy_Series)
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.2 }
+#elif ANY(TAZ6, Workhorse) && ENABLED(TOOLHEAD_Galaxy_Series)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 #elif ANY(TAZPro, TAZProXT) && DISABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.102 }
