@@ -190,13 +190,14 @@
 //
 #define HEATER_0_PIN                           6  // D6 PC24 FET_PWM3
 #define HEATER_1_PIN                           7  // D7 PC23 FET_PWM4
-#define HEATER_2_PIN                           8  // D8 PC22 FET_PWM5
+//#define HEATER_2_PIN                           8  // D8 PC22 FET_PWM5
 #define HEATER_BED_PIN                         9  // D9 PC21 BED_PWM
 
 #ifndef FAN0_PIN
   #define FAN0_PIN                             4  // D4 PC26 FET_PWM1
 #endif
-#define FAN1_PIN                               5  // D5 PC25 FET_PWM2
+#define FAN2_PIN                               5  // D5 PC25 FET_PWM2
+#define FAN1_PIN                               8  // D8 PC22 FET_PWM5
 
 //
 // Misc. Functions
