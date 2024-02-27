@@ -520,7 +520,8 @@
     #define LULZBOT_EXTRUDERS                       2
     #define LULZBOT_TOOLCHANGE_ZRAISE               0
     #define LULZBOT_NUM_SERVOS                      2
-    #define LULZBOT_SERVO_DELAY                    {1000, 1000}
+    #define LULZBOT_SERVO_E0_DELAY                  1000
+    #define LULZBOT_SERVO_E1_DELAY                  1000
     #define LULZBOT_SWITCHING_NOZZLE
     #define LULZBOT_SWITCHING_NOZZLE_E1_SERVO_NR   1
     #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 55,   120}
@@ -549,7 +550,8 @@
     #define LULZBOT_EXTRUDERS                       2
     #define LULZBOT_TOOLCHANGE_ZRAISE               0
     #define LULZBOT_NUM_SERVOS                      2
-    #define LULZBOT_SERVO_DELAY                    {500, 500}
+    #define LULZBOT_SERVO_E0_DELAY                  500
+    #define LULZBOT_SERVO_E1_DELAY                  500
     #define LULZBOT_SWITCHING_NOZZLE
     #define LULZBOT_SWITCHING_NOZZLE_E1_SERVO_NR   1
     #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 75,   125}
@@ -624,8 +626,8 @@
   #define SWITCHING_NOZZLE
 #endif
 #if ENABLED(SWITCHING_NOZZLE)
-  #define SWITCHING_NOZZLE_SERVO_NR 0
-  #define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
+  #define SWITCHING_NOZZLE_SERVO_NR 1
+  #define SWITCHING_NOZZLE_E1_SERVO_NR 2          // If two servos are used, the index of the second
   #define SWITCHING_NOZZLE_SERVO_ANGLES { LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES, LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES }   // A pair of angles for { E0, E1 }.
                                                     // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 300
@@ -1953,7 +1955,7 @@
  * Z Servo Probe, such as an endstop switch on a rotating arm.
  */
 #if ENABLED(TAZProV2)
-  //#define Z_PROBE_SERVO_NR 2
+  #define Z_PROBE_SERVO_NR 0
 #endif
 #ifdef Z_PROBE_SERVO_NR
   //#define Z_SERVO_ANGLES { 70, 0 }      // Z Servo Deploy and Stow angles
@@ -2167,7 +2169,7 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#if ENABLED(LULZBOT_BLTouch, TazDualZ)
+#if ENABLED(TazDualZ)
   #define PROBING_MARGIN 5
 #elif ENABLED(LULZBOT_BLTouch)
   #define PROBING_MARGIN 50
@@ -2418,7 +2420,7 @@
 #else
   #define Y_HOME_DIR 1
 #endif
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Workhorse, Sidekick289, Sidekick747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Workhorse, Sidekick289, Sidekick747)
   #define Z_HOME_DIR 1
 #else
   #define Z_HOME_DIR -1
@@ -3108,7 +3110,7 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-#if ANY(TAZ6, Sidekick_289, Sidekick_747, TAZProV2)
+#if ANY(TAZ6, Sidekick_289, Sidekick_747)
   #define Z_SAFE_HOMING
 #endif
 
@@ -3116,7 +3118,7 @@
   #if ENABLED(TAZ6)
     #define Z_SAFE_HOMING_X_POINT -20.1  // (mm) X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT 259.5  // (mm) Y point for Z homing
-  #elif ANY(Sidekick_289, Sidekick_747, TAZProV2)
+  #elif ANY(Sidekick_289, Sidekick_747)
     #define Z_SAFE_HOMING_X_POINT (X_CENTER)  // (mm) X point for Z homing
     #define Z_SAFE_HOMING_Y_POINT (Y_BED_SIZE/2)  // (mm) Y point for Z homing
   //#define Z_SAFE_HOMING_POINT_ABSOLUTE  // Ignore home offsets (M206) for Z homing position
@@ -3131,7 +3133,7 @@
 #else
   #define HOMING_FEEDRATE_Z  (4*60)
 #endif
-#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), HOMING_FEEDRATE_Z }
+#define HOMING_FEEDRATE_MM_M { (60*60), (60*60), HOMING_FEEDRATE_Z }
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -3312,6 +3314,7 @@
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE  Z_FEEDRATE   // (mm/s) Z axis feedrate (not used for delta printers)
   #define PARK_NOZZLE_MENU_OPTION       // Adds an option to park the nozzle under motion menu
+  #define PARKING_COMMAND_GCODE "G28O\nG0 X140  Y140 Z71 F3000"
 #endif
 
 /**
@@ -4580,8 +4583,10 @@
 // (ms) Delay before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.
 // If the servo can't reach the requested position, increase it.
-#if defined(LULZBOT_SERVO_DELAY)
-  #define SERVO_DELAY LULZBOT_SERVO_DELAY
+#if ENABLED(TAZProV2) && ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+  #define SERVO_DELAY {100, LULZBOT_SERVO_E0_DELAY, LULZBOT_SERVO_E1_DELAY}
+#elif ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
+  #define SERVO_DELAY {LULZBOT_SERVO_E0_DELAY, LULZBOT_SERVO_E1_DELAY}
 #endif
 
 // Only power servos during movement, otherwise leave off to prevent jitter
@@ -4628,4 +4633,8 @@
 
 #if defined(LULZBOT_LONG_BED) && !defined(LULZBOT_BLTouch)
     #error LULZBOT_Quiver_TAZPro with LULZBOT_LONG_BED requires LULZBOT_BLTouch to be enabled.
+#endif
+
+#if defined(TAZProV2) && defined(TOOLHEAD_Quiver_DualExtruder)
+    #error LULZBOT TAZProV2 is not capatible with Legacy dual extruder, please select a different Tool Head.
 #endif

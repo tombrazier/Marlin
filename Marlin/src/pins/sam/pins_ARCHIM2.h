@@ -53,7 +53,7 @@
 // Servos
 //
 #if ENABLED(TAZProV2)
-  #define SERVO0_PIN                            15  // PD5 MAX ES2 (Y_MAX_PIN)
+  #define SERVO0_PIN                            53  // D53 PB14 (Header J20 17)
   #define SERVO1_PIN                            21  // D21 PB13 (Header J20 19)
   #define SERVO2_PIN                            20  // D20 PB12 (Header J20 20)
 #elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
@@ -102,9 +102,9 @@
   #define X_MIN_PIN                           14  // PD4 MIN ES1
   #if DISABLED(TAZProV2)
     #define X_MAX_PIN                           32  // PD10 MAX ES1
-    #define Y_MAX_PIN                           15  // PD5 MAX ES2
   #endif
   #define Y_MIN_PIN                           29  // PD6 MIN ES2
+  #define Y_MAX_PIN                           15  // PD5 MAX ES2   NOTE: TAZProV2 uses this as second Z Max limit
 #endif
 
 #if ENABLED(LULZBOT_BLTouch, TAZProV2)
@@ -228,7 +228,6 @@
 #define GPIO_PB7_J20_14                       98  // D98 PB7 (Header J20 14)
 #define GPIO_PB15_J20_15                      66  // D66 PB15 (Header J20 15)
 #define GPIO_PB16_J20_16                      67  // D67 PB16 (Header J20 16)
-#define GPIO_PB14_J20_17                      53  // D53 PB14 (Header J20 17)
 #define GPIO_PA18_J20_21                      71  // D71 PA17 (Header J20 21)
 #define GPIO_PA17_J20_22                      70  // D70 PA17 (Header J20 22)
 
