@@ -164,7 +164,7 @@ bool CustomUserMenus::onTouchEnd(uint8_t tag) {
     #endif
 
     case 1: GOTO_PREVIOUS(); break;
-    case 20: injectCommands(F("G28O\nG0 X100 Y283 Z200 F3000"));
+    case 20: injectCommands(F(PARKING_COMMAND_GCODE)); break;
     default: return false;
   }
   return true;
