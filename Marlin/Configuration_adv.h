@@ -1105,7 +1105,7 @@
   #define RESTORE_LEVELING_AFTER_G34      // Restore leveling after G34 is done?
   // After G34, re-home Z (G28 Z) or just calculate it from the last probe heights?
   // Re-homing might be more precise in reproducing the actual 'G28 Z' homing height, especially on an uneven bed.
-  #define HOME_AFTER_G34
+  //#define HOME_AFTER_G34
 #endif
 
 //
@@ -4180,7 +4180,7 @@
   #else
     #define E_CURRENT_Aero "M906 E960"
     #define E_CURRENT_BMG  "M906 E960"
-    #define E_CURRENT_LGX175 "M906 E750"
+    #define E_CURRENT_LGX175 "M906 E850"
     #define E_CURRENT_LGX285 "M906 E850"
     #define E_CURRENT_TWNB175 "M906 T0 E750\n M906 T1 E750"
     #define E_CURRENT_TWNB285 "M906 T0 E850\n M906 T1 E850"

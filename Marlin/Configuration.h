@@ -2153,7 +2153,7 @@
   #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
     #define NOZZLE_TO_PROBE_OFFSET { 100, 70, -3.2 }
   #else
-    #define NOZZLE_TO_PROBE_OFFSET { 23, 63, -3.2 }
+    #define NOZZLE_TO_PROBE_OFFSET { 23, 63, 0 }
   #endif
 #elif ANY(Sidekick_289, Sidekick_747)
   #define NOZZLE_TO_PROBE_OFFSET { -1, 50, -1.23 }
@@ -2612,7 +2612,7 @@
     #define LULZBOT_X_MAX_POS 313
     #define LULZBOT_Y_MAX_POS 330
     #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 303
+    #define LULZBOT_Z_MAX_POS 300
   #endif
 #elif defined(Sidekick_289)
   #define X_BED_SIZE 161
