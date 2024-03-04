@@ -1801,7 +1801,17 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 4000, 4000, 100, 9000 }
+#if ENABLED(MiniV2)
+  #define X_Y_MAX_ACCELERATION   4500
+#elif ENABLED(Sidekick_289)
+  #define X_Y_MAX_ACCELERATION   5000
+#elif ENABLED(Sidekick_747)
+  #define X_Y_MAX_ACCELERATION   4750
+#elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
+  #define X_Y_MAX_ACCELERATION   4000
+#endif
+
+#define DEFAULT_MAX_ACCELERATION      { X_Y_MAX_ACCELERATION, X_Y_MAX_ACCELERATION, 100, 9000 }
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1818,11 +1828,10 @@
  */
 #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
   #define DEFAULT_ACCELERATION          2000    // X, Y, Z and E acceleration for printing moves
-  #define DEFAULT_TRAVEL_ACCELERATION   2000    // X, Y, Z acceleration for travel (non printing) moves
 #else
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
-  #define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
+#define DEFAULT_TRAVEL_ACCELERATION   X_Y_MAX_ACCELERATION    // X, Y, Z acceleration for travel (non printing) moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 
 /**
