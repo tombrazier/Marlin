@@ -1820,7 +1820,7 @@
   #define DEFAULT_ACCELERATION          2000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_TRAVEL_ACCELERATION   2000    // X, Y, Z acceleration for travel (non printing) moves
 #else
-  #define DEFAULT_ACCELERATION          950    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
