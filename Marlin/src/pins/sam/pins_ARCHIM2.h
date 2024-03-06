@@ -207,6 +207,9 @@
 #define FAN2_PIN                               5  // D5 PC25 FET_PWM2
 #define FAN1_PIN                               8  // D8 PC22 FET_PWM5
 
+#define E0_AUTO_FAN_PIN                           99  // D8 PC22 FET_PWM5
+#define E1_AUTO_FAN_PIN                           101 // D8 PC22 FET_PWM5
+
 //
 // Misc. Functions
 //
@@ -228,8 +231,8 @@
 #define GPIO_PB0_J20_6                        95  // D95 PB0 (Header J20 6)
 #define GPIO_PB3_J20_7                       103  // D103 PB3 (Header J20 7)
 #define GPIO_PB2_J20_8                        93  // D93 PB2 (Header J20 8)
-#define GPIO_PB6_J20_9                        99  // D99 PB6 (Header J20 9)
-#define GPIO_PB5_J20_10                      101  // D101 PB5 (Header J20 10)
+//#define GPIO_PB6_J20_9                        99  // D99 PB6 (Header J20 9)
+//#define GPIO_PB5_J20_10                      101  // D101 PB5 (Header J20 10)
 #define GPIO_PB8_J20_11                      100  // D100 PB8 (Header J20 11)
 #define GPIO_PB4_J20_12                      102  // D102 PB4 (Header J20 12)
 #define GPIO_PB9_J20_13                      108  // D108 PB9 (Header J20 13)
