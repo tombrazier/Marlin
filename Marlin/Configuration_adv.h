@@ -1054,7 +1054,7 @@
   #if ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
     #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
   #elif ENABLED(TAZProV2)
-    #define Z_STEPPER_ALIGN_XY { {  25, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+    #define Z_STEPPER_ALIGN_XY { {  100, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
   #else
     #define Z_STEPPER_ALIGN_XY { {  -10, -9 }, { (X_BED_SIZE + 8),  -9 } }
   #endif
