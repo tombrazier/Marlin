@@ -577,7 +577,7 @@
  */
 #define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-    #if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Sidekick_289, Sidekick_747)
+    #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
     #define CONTROLLER_FAN_PIN FAN1_PIN        // Set a custom pin for the controller fan
   #else
     #define CONTROLLER_FAN_PIN FAN2_PIN        // Set a custom pin for the controller fan
@@ -893,9 +893,9 @@
 #ifdef Z2_DRIVER_TYPE
   //#define INVERT_Z2_VS_Z_DIR        // Z2 direction signal is the opposite of Z
 
-  //#define Z_MULTI_ENDSTOPS          // Other Z axes have their own endstops
+  #define Z_MULTI_ENDSTOPS          // Other Z axes have their own endstops
   #if ENABLED(Z_MULTI_ENDSTOPS)
-    //#define Z2_STOP_PIN X_MAX_PIN   // Z2 endstop pin override
+    #define Z2_STOP_PIN Y_MAX_PIN   // Z2 endstop pin override
     #define Z2_ENDSTOP_ADJUSTMENT 0   // Z2 offset relative to Z endstop
   #endif
   #ifdef Z3_DRIVER_TYPE
@@ -934,11 +934,11 @@
  * the position of the toolhead relative to the workspace.
  */
 
-#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, TAZProV2, Sidekick_289, Sidekick_747)
+#if ANY(MiniV2, MiniV3, TAZPro, TAZProXT, Sidekick_289, Sidekick_747)
   #define SENSORLESS_BACKOFF_MM  { 4, 4 , 0}     // (mm) Backoff from endstops before sensorless homing
   #define HOMING_BACKOFF_POST_MM { 5, 5, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 #else
-  #if defined(Workhorse)
+  #if ANY(Workhorse, TAZProV2)
     #define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
     #define QUICK_HOME                          // If G28 contains XY do a diagonal move first
   #elif defined(TAZ6)
@@ -1054,7 +1054,7 @@
   #if ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
     #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
   #elif ENABLED(TAZProV2)
-    #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+    #define Z_STEPPER_ALIGN_XY { {  25, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
   #else
     #define Z_STEPPER_ALIGN_XY { {  -10, -9 }, { (X_BED_SIZE + 8),  -9 } }
   #endif
@@ -1095,7 +1095,7 @@
   #ifndef Z_STEPPER_ALIGN_STEPPER_XY
     // Amplification factor. Used to scale the correction step up or down in case
     // the stepper (spindle) position is farther out than the test point.
-    #define Z_STEPPER_ALIGN_AMP 1       // Use a value > 1.0 NOTE: This may cause instability!
+    #define Z_STEPPER_ALIGN_AMP 1.6       // Use a value > 1.0 NOTE: This may cause instability!
   #endif
 
   // On a 300mm bed a 5% grade would give a misalignment of ~1.5cm
@@ -1105,7 +1105,7 @@
   #define RESTORE_LEVELING_AFTER_G34      // Restore leveling after G34 is done?
   // After G34, re-home Z (G28 Z) or just calculate it from the last probe heights?
   // Re-homing might be more precise in reproducing the actual 'G28 Z' homing height, especially on an uneven bed.
-  #define HOME_AFTER_G34
+  //#define HOME_AFTER_G34
 #endif
 
 //
@@ -4180,7 +4180,7 @@
   #else
     #define E_CURRENT_Aero "M906 E960"
     #define E_CURRENT_BMG  "M906 E960"
-    #define E_CURRENT_LGX175 "M906 E750"
+    #define E_CURRENT_LGX175 "M906 E850"
     #define E_CURRENT_LGX285 "M906 E850"
     #define E_CURRENT_TWNB175 "M906 T0 E750\n M906 T1 E750"
     #define E_CURRENT_TWNB285 "M906 T0 E850\n M906 T1 E850"

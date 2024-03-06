@@ -367,7 +367,7 @@ bool ChangeFilamentScreen::onTouchEnd(uint8_t tag) {
               injectCommands(F("M117 Print Resumed")); resumePrint(); GOTO_SCREEN(StatusScreen); break;
             }
             else{
-              injectCommands(F("G28O\nG0 X100 Y283 Z200 F3000"));
+              injectCommands(F(PARKING_COMMAND_GCODE)); break;
             }
   }
   return true;

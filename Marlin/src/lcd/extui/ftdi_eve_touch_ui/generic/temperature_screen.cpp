@@ -133,7 +133,7 @@ bool TemperatureScreen::onTouchHeld(uint8_t tag) {
     case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(StatusScreen); break;
     case 33: injectCommands_P(PSTR(PREHEAT_3_COMMAND)); GOTO_SCREEN(StatusScreen); break;
     case 34: injectCommands_P(PSTR(PREHEAT_4_COMMAND)); GOTO_SCREEN(StatusScreen); break;
-    case 35: injectCommands(F("G28O\nG0 X100 Y283 Z200 F3000"));
+    case 35: injectCommands(F(PARKING_COMMAND_GCODE)); break;
     default:
       return false;
   }
