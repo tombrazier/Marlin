@@ -108,7 +108,7 @@
 #endif
 
 #if ENABLED(LULZBOT_BLTouch, TAZProV2)
-  #define Z_MIN_PIN        32   // X_MAX_PIN
+  #define Z_MIN_PIN        108  // D108 PB9 (Header J20 13)
 #elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
   #define Z_MIN_PIN        63   // PB18/RD/PWML2/AD11 THERM AN2
 #else
@@ -235,7 +235,7 @@
 //#define GPIO_PB5_J20_10                      101  // D101 PB5 (Header J20 10)
 #define GPIO_PB8_J20_11                      100  // D100 PB8 (Header J20 11)
 #define GPIO_PB4_J20_12                      102  // D102 PB4 (Header J20 12)
-#define GPIO_PB9_J20_13                      108  // D108 PB9 (Header J20 13)
+//#define GPIO_PB9_J20_13                      108  // D108 PB9 (Header J20 13)
 #define GPIO_PB7_J20_14                       98  // D98 PB7 (Header J20 14)
 #define GPIO_PB15_J20_15                      66  // D66 PB15 (Header J20 15)
 #define GPIO_PB16_J20_16                      67  // D67 PB16 (Header J20 16)
