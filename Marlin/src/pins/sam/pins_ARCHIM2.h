@@ -207,8 +207,8 @@
 #define FAN2_PIN                               5  // D5 PC25 FET_PWM2
 #define FAN1_PIN                               8  // D8 PC22 FET_PWM5
 
-#define E0_AUTO_FAN_PIN                           99  // D8 PC22 FET_PWM5
-#define E1_AUTO_FAN_PIN                           101 // D8 PC22 FET_PWM5
+#define E0_AUTO_FAN_PIN                      101  // D101 PB5 (Header J20 10)
+#define E1_AUTO_FAN_PIN                       99  // D99 PB6 (Header J20 9)
 
 //
 // Misc. Functions
