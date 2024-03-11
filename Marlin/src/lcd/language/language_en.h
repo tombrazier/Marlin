@@ -578,6 +578,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Unload Filament");
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Unload * Filament");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Unload All");
+  LSTR MSG_CLEAN_NOZZLE                   = _UxGT("Please Clean Nozzle");
+  LSTR MSG_NOZZLE_TOO_COLD                = _UxGT("Nozzle too Cold - Heating");
   LSTR MSG_ATTACH_MEDIA                   = _UxGT("Attach ") MEDIA_TYPE_EN;
   LSTR MSG_ATTACH_SD_MEDIA                = _UxGT("Attach SD Card");
   LSTR MSG_ATTACH_USB_MEDIA               = _UxGT("Attach USB Drive");

@@ -1054,7 +1054,11 @@
   #if ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
     #define Z_STEPPER_ALIGN_XY { {  10, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
   #elif ENABLED(TAZProV2)
-    #define Z_STEPPER_ALIGN_XY { {  100, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+    #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+      #define Z_STEPPER_ALIGN_XY { {  103, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+    #else
+      #define Z_STEPPER_ALIGN_XY { {  20, (Y_BED_SIZE / 2) }, { (X_BED_SIZE - 10 ),  (Y_BED_SIZE / 2) } }
+    #endif
   #else
     #define Z_STEPPER_ALIGN_XY { {  -10, -9 }, { (X_BED_SIZE + 8),  -9 } }
   #endif
@@ -1375,7 +1379,7 @@
  * Note: HOTEND_OFFSET and CALIBRATION_OBJECT_CENTER must be set to within
  *       ±5mm of true values for G425 to succeed.
  */
-#if ANY(TAZPro,TAZProXT,Workhorse)
+#if ANY(TAZPro, TAZProXT, Workhorse, TAZProV2)
   #define CALIBRATION_GCODE
 #endif
 #if ENABLED(CALIBRATION_GCODE)
@@ -1404,7 +1408,7 @@
   //#define CALIBRATION_REPORTING
 
   // The true location and dimension the cube/bolt/washer on the bed.
-    #if ANY(MiniV2, MiniV3)
+  #if ANY(MiniV2, MiniV3)
     #define CALIBRATION_OBJECT_CENTER     {169.5, 171.3, 0} //  mm
     #define CALIBRATION_OBJECT_DIMENSIONS {22.0, 22.0, 1.5} //  mm
 
@@ -1434,21 +1438,85 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
-  #elif ANY(TAZPro, TAZProXT, TAZProV2)
-    #if defined(TOOLHEAD_Quiver_DualExtruder)
-      #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
-      #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
-      #define CALIBRATION_MEASURE_FRONT
-    #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
-      #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
-      #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
-      #define CALIBRATION_MEASURE_FRONT
-    #elif defined(LULZBOT_LONG_BED)
-      #define CALIBRATION_OBJECT_CENTER     {260,-18,-2.0} //  mm
-      #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  10.0, 10.0} //  mm
-    #else
-      #define CALIBRATION_OBJECT_CENTER     {265,-13.5,-2.0} //  mm
-      #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  1.0, 10.0} //  mm
+  #else
+    #if ANY(TAZPro, TAZProXT)
+      #if defined(TOOLHEAD_Quiver_DualExtruder)
+        #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
+        #define CALIBRATION_MEASURE_FRONT
+      #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+        #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
+        #define CALIBRATION_MEASURE_FRONT
+      #elif defined(LULZBOT_LONG_BED)
+        #define CALIBRATION_OBJECT_CENTER     {260,-18,-2.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  10.0, 10.0} //  mm
+      #else
+        #define CALIBRATION_OBJECT_CENTER     {265,-13.5,-2.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  1.0, 10.0} //  mm
+      #endif
+      #if LULZBOT_EXTRUDERS == 1
+        #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170\nT0\nM218 T1 X43 Y0 Z0\nG28\nM109 R170\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+          /* Status message */
+          /* Start nozzle heating*/
+          /* Auto-Home */
+          /* Wait for nozzle heat to finish*/
+          /* Wipe the Nozzle */
+          /* Status message */
+          /* Calibrate Nozzle */
+          /* Save settings */
+          /* Status message */
+      #elif LULZBOT_EXTRUDERS == 2
+        #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X43 Y0 Z0\nG28\nM109 R170 T0\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+          /* Status message */
+          /* Start both nozzles heating*/
+          /* Switch to first nozzle */
+          /* Restore default nozzle offset */
+          /* Auto-Home */
+          /* Wait for both nozzles to finish heat*/
+          /* Wipe the Nozzles */
+          /* Status message */
+          /* Calibrate Nozzles */
+          /* Save settings */
+          /* Status message */
+      #endif
+    #elif ENABLED(TAZProV2)
+      #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
+        #define CALIBRATION_OBJECT_CENTER     {143, -15.5, -1.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
+        #define CALIBRATION_MEASURE_FRONT
+      #elif defined(LULZBOT_LONG_BED)
+        #define CALIBRATION_OBJECT_CENTER     {260,-18,-2.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  10.0, 10.0} //  mm
+      #else
+        #define CALIBRATION_OBJECT_CENTER     {143, -15.5, -1.0} //  mm
+        #define CALIBRATION_OBJECT_DIMENSIONS {10.0,  1.0, 10.0} //  mm
+      #endif
+      #if LULZBOT_EXTRUDERS == 1
+          #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170\nG28\nM109 R170\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+          /* Status message */
+          /* Start nozzle heating*/
+          /* Auto-Home */
+          /* Wait for nozzle heat to finish*/
+          /* Wipe the Nozzle */
+          /* Status message */
+          /* Calibrate Nozzle */
+          /* Save settings */
+          /* Status message */
+      #elif LULZBOT_EXTRUDERS == 2
+          #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X44 Y0 Z0\nG28\nM109 R170 T0\nG12\nT1\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+          /* Status message */
+          /* Start both nozzles heating*/
+          /* Switch to first nozzle */
+          /* Restore default nozzle offset */
+          /* Auto-Home */
+          /* Wait for both nozzles to finish heat*/
+          /* Wipe the Nozzles */
+          /* Status message */
+          /* Calibrate Nozzles */
+          /* Save settings */
+          /* Status message */
+      #endif
     #endif
     // Comment out any sides which are unreachable by the probe. For best
     // auto-calibration results, all sides must be reachable.
@@ -1456,35 +1524,6 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
-
-    #if LULZBOT_EXTRUDERS == 1
-      #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170\nT0\nM218 T1 X43 Y0 Z0\nG28\nM109 R170\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
-        /* Status message */
-        /* Start nozzle heating*/
-        /* Switch to first nozzle */
-        /* Restore default nozzle offset */
-        /* Auto-Home */
-        /* Wait for nozzle heat to finish*/
-        /* Wipe the Nozzles */
-        /* Status message */
-        /* Calibrate Nozzles */
-        /* Save settings */
-        /* Status message */
-    #elif LULZBOT_EXTRUDERS == 2
-      #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X43 Y0 Z0\nG28\nM109 R170 T0\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
-        /* Status message */
-        /* Start both nozzles heating*/
-        /* Switch to first nozzle */
-        /* Restore default nozzle offset */
-        /* Auto-Home */
-        /* Wait for both nozzles to finish heat*/
-        /* Wipe the Nozzles */
-        /* Status message */
-        /* Calibrate Nozzles */
-        /* Save settings */
-        /* Status message */
-    #endif   
-
   #endif
 
   //#define CALIBRATION_MEASURE_IMIN
