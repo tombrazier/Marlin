@@ -114,7 +114,7 @@ namespace ExtUI {
     if (msg)
       ConfirmUserRequestAlertBox::show(msg);
     else
-      ConfirmUserRequestAlertBox::hide();
+      ConfirmUserRequestAlertBox::show("Press Resume to Continue");
   }
 
   void onPrintCompleteScreen(const char * const msg) {

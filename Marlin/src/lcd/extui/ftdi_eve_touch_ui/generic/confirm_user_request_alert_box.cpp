@@ -35,6 +35,8 @@ void ConfirmUserRequestAlertBox::onRedraw(draw_mode_t mode) {
 bool ConfirmUserRequestAlertBox::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:
+      if (ExtUI::pauseModeStatus == PAUSE_MESSAGE_PURGE || ExtUI::pauseModeStatus == PAUSE_MESSAGE_OPTION)
+        ExtUI::setPauseMenuResponse(PAUSE_RESPONSE_RESUME_PRINT);
       ExtUI::setUserConfirmed();
       #ifdef FTDI_TUNE_MENU
         if (ExtUI::awaitingUserConfirm()) {
@@ -57,8 +59,9 @@ void ConfirmUserRequestAlertBox::show(const char *msg) {
   drawMessage(msg);
   storeBackground();
   screen_data.AlertDialogBox.isError = false;
-  if (!AT_SCREEN(ConfirmUserRequestAlertBox))
+  //if (!AT_SCREEN(ConfirmUserRequestAlertBox))
     GOTO_SCREEN(ConfirmUserRequestAlertBox);
+
 }
 
 void ConfirmUserRequestAlertBox::hide() {

@@ -186,7 +186,7 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#if defined(MiniV3)
+#if ANY(TAZPro, TAZProXT, TAZProV2, MiniV3)
   #define SERIAL_PORT_2 1
 #endif
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
@@ -199,6 +199,7 @@
 #if defined(MiniV3)
   #define SERIAL_PORT_3 3
 #endif
+#define SERIAL_PORT_3 0
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
@@ -246,7 +247,6 @@
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
   #define TazDualZ
-  #define LULZBOT_MANUAL_NOZZLE_CLEAN
 #elif ENABLED(Sidekick_289)
   #define CUSTOM_MACHINE_NAME "Taz SideKick 289"
   #define LULZBOT_LCD_MACHINE_NAME "SideKick 289"
@@ -296,7 +296,6 @@
   #endif
   #define E0_DRIVER_TYPE TMC2130
   #define E1_DRIVER_TYPE TMC2130
-  #define E2_DRIVER_TYPE TMC2130
 #elif ENABLED(MiniV3)
   #define X_DRIVER_TYPE  TMC2209
   #define Y_DRIVER_TYPE  TMC2209
