@@ -1277,9 +1277,7 @@
  */
 #define DEFAULT_STEPPER_TIMEOUT_SEC 600
 #define DISABLE_IDLE_X
-#if NONE(Sidekick_289, Sidekick_747)
-  #define DISABLE_IDLE_Y
-#endif
+//#define DISABLE_IDLE_Y
 //#define DISABLE_IDLE_Z    // Disable if the nozzle could fall onto your printed part!
 //#define DISABLE_IDLE_I
 //#define DISABLE_IDLE_J
