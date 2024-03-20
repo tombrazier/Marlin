@@ -198,8 +198,9 @@
  */
 #if defined(MiniV3)
   #define SERIAL_PORT_3 3
+#elif ANY(TAZPro, TAZProXT, TAZProV2)
+  #define SERIAL_PORT_3 0
 #endif
-#define SERIAL_PORT_3 0
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
@@ -239,6 +240,7 @@
   #define MACHINE_UUID "28ac1ce7-ca05-4f8e-8f1f-1d2f4496a1eb" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
+  #define REMOVE_STARING_PRINT_MESSAGES
 #elif ENABLED(TAZProV2)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ Pro 2"
   #define LULZBOT_LCD_MACHINE_NAME "LulzBot TAZ Pro 2"
@@ -247,6 +249,7 @@
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
   #define TazDualZ
+  #define REMOVE_STARING_PRINT_MESSAGES
 #elif ENABLED(Sidekick_289)
   #define CUSTOM_MACHINE_NAME "Taz SideKick 289"
   #define LULZBOT_LCD_MACHINE_NAME "SideKick 289"
@@ -627,8 +630,13 @@
   #define SWITCHING_NOZZLE
 #endif
 #if ENABLED(SWITCHING_NOZZLE)
-  #define SWITCHING_NOZZLE_SERVO_NR 1
-  #define SWITCHING_NOZZLE_E1_SERVO_NR 2          // If two servos are used, the index of the second
+  #if ENABLED(LULZBOT_BLTouch)
+    #define BLTOUCH_ADDITIONAL_SERVO 1
+  #else
+      #define BLTOUCH_ADDITIONAL_SERVO 0
+  #endif
+  #define SWITCHING_NOZZLE_SERVO_NR (0 + BLTOUCH_ADDITIONAL_SERVO)
+  #define SWITCHING_NOZZLE_E1_SERVO_NR (1 + BLTOUCH_ADDITIONAL_SERVO)          // If two servos are used, the index of the second
   #define SWITCHING_NOZZLE_SERVO_ANGLES { LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES, LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES }   // A pair of angles for { E0, E1 }.
                                                     // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 300
@@ -3329,7 +3337,7 @@
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE  Z_FEEDRATE   // (mm/s) Z axis feedrate (not used for delta printers)
   #define PARK_NOZZLE_MENU_OPTION       // Adds an option to park the nozzle under motion menu
-  #define PARKING_COMMAND_GCODE "G28O\nG0 X140  Y140 Z71 F3000"
+  #define PARKING_COMMAND_GCODE "G28O\nG0 X180 Y160 Z71 F3000"
 #endif
 
 /**
