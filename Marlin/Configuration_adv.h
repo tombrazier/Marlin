@@ -1407,6 +1407,12 @@
   // Uncomment to enable reporting (required for "G425 V", but consumes flash).
   //#define CALIBRATION_REPORTING
 
+  #if ENABLED(TAZProV2)
+    #define CALIBRATION_MEASUREMENT_UNKNOWN 2
+  #else
+      #define CALIBRATION_MEASUREMENT_UNKNOWN 5
+  #endif
+
   // The true location and dimension the cube/bolt/washer on the bed.
   #if ANY(MiniV2, MiniV3)
     #define CALIBRATION_OBJECT_CENTER     {169.5, 171.3, 0} //  mm
@@ -1480,6 +1486,12 @@
           /* Save settings */
           /* Status message */
       #endif
+      // Comment out any sides which are unreachable by the probe. For best
+      // auto-calibration results, all sides must be reachable.
+      #define CALIBRATION_MEASURE_RIGHT
+      //#define CALIBRATION_MEASURE_FRONT
+      #define CALIBRATION_MEASURE_LEFT
+      #define CALIBRATION_MEASURE_BACK
     #elif ENABLED(TAZProV2)
       #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
         #define CALIBRATION_OBJECT_CENTER     {143, -15.5, -1.0} //  mm
@@ -1504,7 +1516,7 @@
           /* Save settings */
           /* Status message */
       #elif LULZBOT_EXTRUDERS == 2
-          #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X44 Y0 Z0\nG28\nM109 R170 T0\nG12\nT1\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+        #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X44 Y0 Z0\nG28\nM109 R170 T0\nG12\nT1\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
           /* Status message */
           /* Start both nozzles heating*/
           /* Switch to first nozzle */
@@ -1517,13 +1529,13 @@
           /* Save settings */
           /* Status message */
       #endif
+      // Comment out any sides which are unreachable by the probe. For best
+      // auto-calibration results, all sides must be reachable.
+      #define CALIBRATION_MEASURE_RIGHT
+      #define CALIBRATION_MEASURE_FRONT
+      #define CALIBRATION_MEASURE_LEFT
+      #define CALIBRATION_MEASURE_BACK
     #endif
-    // Comment out any sides which are unreachable by the probe. For best
-    // auto-calibration results, all sides must be reachable.
-    #define CALIBRATION_MEASURE_RIGHT
-    //#define CALIBRATION_MEASURE_FRONT
-    #define CALIBRATION_MEASURE_LEFT
-    #define CALIBRATION_MEASURE_BACK
   #endif
 
   //#define CALIBRATION_MEASURE_IMIN
