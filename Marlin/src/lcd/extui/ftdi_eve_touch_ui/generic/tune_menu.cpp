@@ -116,7 +116,7 @@ void TuneMenu::pausePrint() {
     ExtUI::pausePrint();
   }
   #ifdef ACTION_ON_PAUSE
-    else 
+    else
     {
       SERIAL_ECHOLNPGM("Pause: hostui.pause");
       hostui.pause();
@@ -129,12 +129,14 @@ void TuneMenu::resumePrint() {
   // This
   sound.play(twinkle, PLAY_ASYNCHRONOUS);
 
+
   // Something is wrong with this
-  // if (ExtUI::awaitingUserConfirm()) 
-  // {
-  //   SERIAL_ECHOLNPGM("Resume: Awaiting User Confirm");
-  //   ExtUI::setUserConfirmed();
-  // }
+  if (ExtUI::awaitingUserConfirm() && ExtUI::isPrintingPaused())
+  {
+     SERIAL_ECHOLNPGM("Resume: Awaiting User Confirm");
+     ExtUI::setPauseMenuResponse(PAUSE_RESPONSE_RESUME_PRINT);
+     ExtUI::setUserConfirmed();
+  }
   if (ExtUI::isPrintingFromMedia())
   {
     ExtUI::setUserConfirmed();
@@ -142,7 +144,7 @@ void TuneMenu::resumePrint() {
     ExtUI::resumePrint();
   }
   #ifdef ACTION_ON_RESUME
-    else 
+    else
     {
       SERIAL_ECHOLNPGM("Resume: hostui.resume");
       hostui.resume();
