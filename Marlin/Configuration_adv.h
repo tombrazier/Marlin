@@ -1309,7 +1309,11 @@
 // Increase the slowdown divisor for larger buffer sizes.
 #define SLOWDOWN
 #if ENABLED(SLOWDOWN)
-  #define SLOWDOWN_DIVISOR 2
+  #if ANY(TAZPro, TAZProXT, TAXProV2)
+    #define BUFSIZE 16
+  #else
+    #define BUFSIZE 8
+  #endif
 #endif
 
 /**
@@ -2817,7 +2821,11 @@
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#define BUFSIZE 4
+#if ANY(TAZPro, TAZProXT, TAXProV2)
+  #define BUFSIZE 16
+#else
+  #define BUFSIZE 8
+#endif
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of flash (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
