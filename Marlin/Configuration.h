@@ -1820,7 +1820,11 @@
 #elif ENABLED(Sidekick_747)
   #define X_Y_MAX_ACCELERATION   4750
 #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
-  #define X_Y_MAX_ACCELERATION   4000
+  #if ENABLED(LULZBOT_LONG_BED)
+      #define X_Y_MAX_ACCELERATION   4000
+  #else
+    #define X_Y_MAX_ACCELERATION   4000
+  #endif
 #endif
 
 #define DEFAULT_MAX_ACCELERATION      { X_Y_MAX_ACCELERATION, X_Y_MAX_ACCELERATION, 100, 9000 }
@@ -1839,10 +1843,15 @@
  *   M204 T    Travel Acceleration
  */
 #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
-  #define DEFAULT_ACCELERATION          2000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_ACCELERATION       2000    // X, Y, Z and E acceleration for printing moves
+#elif ENABLED(LULZBOT_LONG_BED)
+  #define DEFAULT_ACCELERATION       750
+#elif ENABLED(TAZProXT)
+  #define DEFAULT_ACCELERATION       500
 #else
-  #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_ACCELERATION       1000    // X, Y, Z and E acceleration for printing moves
 #endif
+
 #define DEFAULT_TRAVEL_ACCELERATION   X_Y_MAX_ACCELERATION    // X, Y, Z acceleration for travel (non printing) moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 
