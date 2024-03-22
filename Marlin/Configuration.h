@@ -94,7 +94,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.24"
+#define LULZBOT_FW_VERSION "2.1.3.0.25"
 #define CAPABILITIES_REPORT
 
 /**
@@ -540,6 +540,7 @@
     #define LULZBOT_MOTOR_CURRENT_E0               960 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               960 // mA
     #define SWITCHING_NOZZLE
+    #define TOOL_HEAD_ID                           13
 #endif /* TOOLHEAD_Quiver_DualExtruder */
 
 #if defined(TOOLHEAD_Galaxy_DualExtruder)
