@@ -27,6 +27,7 @@
 //#define LULZBOT_BLTouch
 //#define LULZBOT_LONG_BED
 //#define TazDualZ
+#define AUTO_REPORT_TEMPERATURES
 
 /**
  * Marlin 3D Printer Firmware
@@ -93,7 +94,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.24"
+#define LULZBOT_FW_VERSION "2.1.3.0.25"
 #define CAPABILITIES_REPORT
 
 /**
@@ -186,7 +187,7 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#if defined(MiniV3)
+#if ANY(TAZPro, TAZProXT, TAZProV2, MiniV3)
   #define SERIAL_PORT_2 1
 #endif
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
@@ -198,6 +199,8 @@
  */
 #if defined(MiniV3)
   #define SERIAL_PORT_3 3
+#elif ANY(TAZPro, TAZProXT, TAZProV2)
+  #define SERIAL_PORT_3 0
 #endif
 //#define BAUDRATE_3 250000   // Enable to override BAUDRATE
 
@@ -238,6 +241,7 @@
   #define MACHINE_UUID "28ac1ce7-ca05-4f8e-8f1f-1d2f4496a1eb" // <-- changed
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
+  #define REMOVE_STARING_PRINT_MESSAGES
 #elif ENABLED(TAZProV2)
   #define CUSTOM_MACHINE_NAME "LulzBot TAZ Pro 2"
   #define LULZBOT_LCD_MACHINE_NAME "LulzBot TAZ Pro 2"
@@ -246,6 +250,7 @@
   #define LULZBOT_FILAMENT_RUNOUT                             // <-- changed
   #define LULZBOT_WIPE
   #define TazDualZ
+  #define REMOVE_STARING_PRINT_MESSAGES
 #elif ENABLED(Sidekick_289)
   #define CUSTOM_MACHINE_NAME "Taz SideKick 289"
   #define LULZBOT_LCD_MACHINE_NAME "SideKick 289"
@@ -535,6 +540,7 @@
     #define LULZBOT_MOTOR_CURRENT_E0               960 // mA
     #define LULZBOT_MOTOR_CURRENT_E1               960 // mA
     #define SWITCHING_NOZZLE
+    #define TOOL_HEAD_ID                           13
 #endif /* TOOLHEAD_Quiver_DualExtruder */
 
 #if defined(TOOLHEAD_Galaxy_DualExtruder)
@@ -568,9 +574,9 @@
     /********************* MPC Settings **********************/
     #define LULZBOT_TOOLHEAD_WATT                 { 50.0f, 50.0f }
     #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.44f, 15.44f }
-    #define LULZBOT_MPC_SENSOR_RESPONSIVENESS     { 0.1128f, 0.1128f }
-    #define LULZBOT_MPC_AMBIENT_XFER_COEFF        { 0.0622f, 0.0622f }
-    #define LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255 { 0.1844f, 0.1844f }
+    #define LULZBOT_MPC_SENSOR_RESPONSIVENESS     { 0.1240f, 0.1240f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF        { 0.1469f, 0.1469f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255 { 0.2061f, 0.1761f }
     #define LULZBOT_FILAMENT_HEAT_CAPACITY_PERMM  { 5.6e-3f, 5.6e-3f }
   #endif /* TOOLHEAD_Galaxy_DualExtruder */
 
@@ -626,8 +632,13 @@
   #define SWITCHING_NOZZLE
 #endif
 #if ENABLED(SWITCHING_NOZZLE)
-  #define SWITCHING_NOZZLE_SERVO_NR 1
-  #define SWITCHING_NOZZLE_E1_SERVO_NR 2          // If two servos are used, the index of the second
+  #if ENABLED(LULZBOT_BLTouch)
+    #define BLTOUCH_ADDITIONAL_SERVO 1
+  #else
+      #define BLTOUCH_ADDITIONAL_SERVO 0
+  #endif
+  #define SWITCHING_NOZZLE_SERVO_NR (0 + BLTOUCH_ADDITIONAL_SERVO)
+  #define SWITCHING_NOZZLE_E1_SERVO_NR (1 + BLTOUCH_ADDITIONAL_SERVO)          // If two servos are used, the index of the second
   #define SWITCHING_NOZZLE_SERVO_ANGLES { LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES, LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES }   // A pair of angles for { E0, E1 }.
                                                     // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 300
@@ -1829,10 +1840,15 @@
  *   M204 T    Travel Acceleration
  */
 #if ANY(MiniV2, MiniV3, Sidekick_289, Sidekick_747)
-  #define DEFAULT_ACCELERATION          2000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_ACCELERATION       2000    // X, Y, Z and E acceleration for printing moves
+#elif ENABLED(LULZBOT_LONG_BED)
+  #define DEFAULT_ACCELERATION       750
+#elif ENABLED(TAZProXT)
+  #define DEFAULT_ACCELERATION       500
 #else
-  #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_ACCELERATION       1000    // X, Y, Z and E acceleration for printing moves
 #endif
+
 #define DEFAULT_TRAVEL_ACCELERATION   X_Y_MAX_ACCELERATION    // X, Y, Z acceleration for travel (non printing) moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 
@@ -2179,7 +2195,7 @@
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #if ENABLED(TazDualZ)
-  #define PROBING_MARGIN 5
+  #define PROBING_MARGIN 10
 #elif ENABLED(LULZBOT_BLTouch)
   #define PROBING_MARGIN 50
 #else
@@ -2306,7 +2322,9 @@
  * These options are most useful for the BLTouch probe, but may also improve
  * readings with inductive probes and piezo sensors.
  */
-#define PROBING_HEATERS_OFF       // Turn heaters off when probing
+#if DISABLED(LULZBOT_BLTouch)
+  #define PROBING_HEATERS_OFF       // Turn heaters off when probing
+#endif
 #if ENABLED(PROBING_HEATERS_OFF)
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
   //#define WAIT_FOR_HOTEND         // Wait for hotend to heat back up between probes (to improve accuracy & prevent cold extrude)
@@ -2387,9 +2405,12 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if ANY(Workhorse,TAZ6, TAZPro, TAZProXT, TAZProV2)
+#if ANY(Workhorse,TAZ6, TAZPro, TAZProXT)
   #define INVERT_E0_DIR true
   #define INVERT_E1_DIR true
+#elif ENABLED(TAZProV2)
+  #define INVERT_E0_DIR true
+  #define INVERT_E1_DIR false
 #else
   #define INVERT_E0_DIR false
   #define INVERT_E1_DIR false
@@ -2596,12 +2617,12 @@
     #define X_BED_SIZE 285
     #define Y_BED_SIZE 285
     // Travel limits (mm) after homing, corresponding to endstop positions.
-    #define LULZBOT_X_MIN_POS -15 // <-- changed   change this
-    #define LULZBOT_Y_MIN_POS -17 // <-- changed
+    #define LULZBOT_X_MIN_POS -9 // <-- changed   change this
+    #define LULZBOT_Y_MIN_POS -39 // <-- changed
     #define LULZBOT_X_MAX_POS 308 // <-- changed
-    #define LULZBOT_Y_MAX_POS 338 // <-- changed   change this
+    #define LULZBOT_Y_MAX_POS 293 // <-- changed   change this
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
-    #define LULZBOT_Z_MAX_POS 303 // <-- changed
+    #define LULZBOT_Z_MAX_POS 301 // <-- changed
   #elif defined(LULZBOT_LONG_BED)
     #define X_BED_SIZE        280
     #define Y_BED_SIZE        570
@@ -2617,11 +2638,11 @@
     #define Y_BED_SIZE 285
     // Travel limits (mm) after homing, corresponding to endstop positions.
     #define LULZBOT_X_MIN_POS -6
-    #define LULZBOT_Y_MIN_POS -17.5
-    #define LULZBOT_X_MAX_POS 313
-    #define LULZBOT_Y_MAX_POS 330
-    #define LULZBOT_Z_MIN_POS -9
-    #define LULZBOT_Z_MAX_POS 300
+    #define LULZBOT_Y_MIN_POS -36
+    #define LULZBOT_X_MAX_POS 303
+    #define LULZBOT_Y_MAX_POS 293
+    #define LULZBOT_Z_MIN_POS -5
+    #define LULZBOT_Z_MAX_POS 299
   #endif
 #elif defined(Sidekick_289)
   #define X_BED_SIZE 161
@@ -2775,7 +2796,7 @@
   // Commands to execute on filament runout.
   // With multiple runout sensors use the %c placeholder for the current tool in commands (e.g., "M600 T%c")
   // NOTE: After 'M412 H1' the host handles filament runout and this script does not apply.
-  #define FILAMENT_RUNOUT_SCRIPT "M25"
+  #define FILAMENT_RUNOUT_SCRIPT "M600 E0 U0 L0"
 
   //#define TOOL_SPECIFIC_SCRIPT  // Adding Tool specific commands to runout script
 
@@ -3323,7 +3344,7 @@
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE  Z_FEEDRATE   // (mm/s) Z axis feedrate (not used for delta printers)
   #define PARK_NOZZLE_MENU_OPTION       // Adds an option to park the nozzle under motion menu
-  #define PARKING_COMMAND_GCODE "G28O\nG0 X140  Y140 Z71 F3000"
+  #define PARKING_COMMAND_GCODE "G28O\nG0 X180 Y160 Z71 F3000"
 #endif
 
 /**
@@ -3385,8 +3406,12 @@
  *   Caveats: The ending Z should be the same as starting Z.
  * Attention: EXPERIMENTAL. G-code arguments may change.
  */
-#if ENABLED(LULZBOT_WIPE)
+#if ANY(LULZBOT_WIPE, LULZBOT_MANUAL_NOZZLE_CLEAN)
   #define NOZZLE_CLEAN_FEATURE
+#endif
+
+#if ENABLED(LULZBOT_MANUAL_NOZZLE_CLEAN)
+  #define MANUAL_NOZZLE_CLEAN
 #endif
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)

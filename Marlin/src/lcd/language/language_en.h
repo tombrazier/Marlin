@@ -122,6 +122,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_SELECT_ORIGIN                  = _UxGT("Select Origin");
   LSTR MSG_LAST_VALUE_SP                  = _UxGT("Last value ");
 
+  LSTR MSG_PREHEAT                        = _UxGT("Preheat");
   LSTR MSG_PREHEAT_1                      = _UxGT("Preheat ") PREHEAT_1_LABEL;
   LSTR MSG_PREHEAT_1_H                    = _UxGT("Preheat ") PREHEAT_1_LABEL " ~";
   LSTR MSG_PREHEAT_1_END                  = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End");
@@ -578,6 +579,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Unload Filament");
   LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Unload * Filament");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Unload All");
+  LSTR MSG_CLEAN_NOZZLE                   = _UxGT("Please Clean Nozzle");
+  LSTR MSG_NOZZLE_TOO_COLD                = _UxGT("Nozzle too Cold - Heating");
   LSTR MSG_ATTACH_MEDIA                   = _UxGT("Attach ") MEDIA_TYPE_EN;
   LSTR MSG_ATTACH_SD_MEDIA                = _UxGT("Attach SD Card");
   LSTR MSG_ATTACH_USB_MEDIA               = _UxGT("Attach USB Drive");

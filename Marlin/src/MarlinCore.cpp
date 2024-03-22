@@ -1242,9 +1242,9 @@ void setup() {
   #endif
 
   #if HAS_TMC_SPI
-    #if DISABLED(TMC_USE_SW_SPI)
+    //#if DISABLED(TMC_USE_SW_SPI)
       SETUP_RUN(SPI.begin());
-    #endif
+    //#endif
     SETUP_RUN(tmc_init_cs_pins());
   #endif
 

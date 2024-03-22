@@ -128,6 +128,7 @@ bool TemperatureScreen::onTouchHeld(uint8_t tag) {
     case 30:
       coolDown();
       TERN_(HAS_HEATED_CHAMBER, setTargetTemp_celsius(0, CHAMBER));
+      GOTO_SCREEN(StatusScreen);
       break;
     case 31: injectCommands_P(PSTR(PREHEAT_1_COMMAND)); GOTO_SCREEN(StatusScreen); break;
     case 32: injectCommands_P(PSTR(PREHEAT_2_COMMAND)); GOTO_SCREEN(StatusScreen); break;

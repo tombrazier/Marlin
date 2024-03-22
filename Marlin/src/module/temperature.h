@@ -798,9 +798,7 @@ class Temperature {
       }
     #endif
 
-    #if ENABLED(PROBING_HEATERS_OFF)
-      static bool paused_for_probing;
-    #endif
+    static bool paused_for_probing;
 
   public:
     /**
@@ -1289,9 +1287,7 @@ class Temperature {
 
     #endif // MPC_AUTOTUNE
 
-    #if ENABLED(PROBING_HEATERS_OFF)
-      static void pause_heaters(const bool p);
-    #endif
+    static void pause_heaters(const bool p);
 
     #if HEATER_IDLE_HANDLER
 

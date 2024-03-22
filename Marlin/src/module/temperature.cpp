@@ -619,9 +619,7 @@ volatile bool Temperature::raw_temps_ready = false;
   uint8_t Temperature::singlenozzle_fan_speed[EXTRUDERS];
 #endif
 
-#if ENABLED(PROBING_HEATERS_OFF)
-  bool Temperature::paused_for_probing;
-#endif
+bool Temperature::paused_for_probing;
 
 #if HAS_PID_HEATING
   static bool autoTuning;
@@ -1822,7 +1820,7 @@ void Temperature::mintemp_error(const heater_id_t heater_id OPTARG(ERR_INCLUDE_T
     }
     #endif // WATCH_BED
 
-    #if ALL(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
+    #if ENABLED(BED_LIMIT_SWITCHING)
       #define PAUSE_CHANGE_REQD 1
     #endif
 
@@ -2753,7 +2751,7 @@ void Temperature::updateTemperaturesFromRawValues() {
  */
 void Temperature::init() {
 
-  TERN_(PROBING_HEATERS_OFF, paused_for_probing = false);
+  paused_for_probing = false;
 
   // Init (and disable) SPI thermocouples
   #if TEMP_SENSOR_IS_ANY_MAX_TC(0) && PIN_EXISTS(TEMP_0_CS)
@@ -3286,7 +3284,7 @@ void Temperature::disable_all_heaters() {
 
   // Disable autotemp, unpause and reset everything
   TERN_(AUTOTEMP, planner.autotemp.enabled = false);
-  TERN_(PROBING_HEATERS_OFF, pause_heaters(false));
+  pause_heaters(false);
 
   #if HAS_HOTEND
     HOTEND_LOOP() {
@@ -3341,23 +3339,19 @@ void Temperature::disable_all_heaters() {
 
 #endif // PRINTJOB_TIMER_AUTOSTART
 
-#if ENABLED(PROBING_HEATERS_OFF)
-
-  void Temperature::pause_heaters(const bool p) {
-    if (p != paused_for_probing) {
-      paused_for_probing = p;
-      if (p) {
-        HOTEND_LOOP() heater_idle[e].expire();    // Timeout immediately
-        TERN_(HAS_HEATED_BED, heater_idle[IDLE_INDEX_BED].expire()); // Timeout immediately
-      }
-      else {
-        HOTEND_LOOP() reset_hotend_idle_timer(e);
-        TERN_(HAS_HEATED_BED, reset_bed_idle_timer());
-      }
+void Temperature::pause_heaters(const bool p) {
+  if (p != paused_for_probing) {
+    paused_for_probing = p;
+    if (p) {
+      HOTEND_LOOP() heater_idle[e].expire();    // Timeout immediately
+      TERN_(HAS_HEATED_BED, heater_idle[IDLE_INDEX_BED].expire()); // Timeout immediately
+    }
+    else {
+      HOTEND_LOOP() reset_hotend_idle_timer(e);
+      TERN_(HAS_HEATED_BED, reset_bed_idle_timer());
     }
   }
-
-#endif // PROBING_HEATERS_OFF
+}
 
 #if ANY(SINGLENOZZLE_STANDBY_TEMP, SINGLENOZZLE_STANDBY_FAN)
 

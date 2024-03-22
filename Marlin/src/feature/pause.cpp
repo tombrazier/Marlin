@@ -262,8 +262,8 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
   #if ENABLED(ADVANCED_PAUSE_CONTINUOUS_PURGE)
     if (show_lcd) ui.pause_show_message(PAUSE_MESSAGE_PURGE);
 
-    //TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE)));
-    TERN_(EXTENSIBLE_UI, ExtUI::filament_load_prompt(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE)));
+    TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE)));
+    //TERN_(EXTENSIBLE_UI, ExtUI::filament_load_prompt(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE)));
     TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_do(PROMPT_USER_CONTINUE, GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE), FPSTR(CONTINUE_STR)));
     wait_for_user = true; // A click or M108 breaks the purge_length loop
     for (float purge_count = purge_length; purge_count > 0 && wait_for_user; --purge_count)
@@ -280,18 +280,19 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
       }
 
       TERN_(HOST_PROMPT_SUPPORT, hostui.filament_load_prompt()); // Initiate another host prompt.
-      TERN_(EXTENSIBLE_UI, ExtUI::filament_load_prompt(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE)));
+      //TERN_(EXTENSIBLE_UI, ExtUI::filament_load_prompt(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE)));
+      TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE)));
 
       #if M600_PURGE_MORE_RESUMABLE
         if (show_lcd) {
           // Show "Purge More" / "Resume" menu and wait for reply
           KEEPALIVE_STATE(PAUSED_FOR_USER);
           wait_for_user = false;
-          #if ANY(HAS_MARLINUI_MENU, DWIN_LCD_PROUI)
+          #if ANY(HAS_MARLINUI_MENU, DWIN_LCD_PROUI, EXTENSIBLE_UI)
             ui.pause_show_message(PAUSE_MESSAGE_OPTION); // Also sets PAUSE_RESPONSE_WAIT_FOR
-          #else
-            pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
           #endif
+          pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
+
           while (pause_menu_response == PAUSE_RESPONSE_WAIT_FOR) idle_no_sleep();
         }
       #endif
@@ -370,12 +371,12 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
   #endif
 
   unscaled_e_move(unload_length * mix_multiplier, (FILAMENT_CHANGE_UNLOAD_FEEDRATE) * mix_multiplier);
-  
+
   // pausing to allow filament to stiffen up
-  safe_delay(LULZBOT_FILAMENT_UNLOAD_DELAY); 
-  
+  safe_delay(LULZBOT_FILAMENT_UNLOAD_DELAY);
+
   // Doing a fast unload to keep filament from deforming by hobbed gear
-  unscaled_e_move((-FILAMENT_UNLOAD_FAST_LENGTH) * mix_multiplier,  
+  unscaled_e_move((-FILAMENT_UNLOAD_FAST_LENGTH) * mix_multiplier,
                   (FILAMENT_UNLOAD_FAST_FEEDRATE) * mix_multiplier);
 
   #if FILAMENT_CHANGE_FAST_LOAD_ACCEL > 0
@@ -628,7 +629,7 @@ void resume_print(const bool loading_filament/*=false*/, const_float_t slow_load
   DEBUG_SECTION(rp, "resume_print", true);
   DEBUG_ECHOLNPGM("... slowlen:", slow_load_length, " fastlen:", fast_load_length, " purgelen:", purge_length, " maxbeep:", max_beep_count, " targetTemp:", targetTemp DXC_SAY);
 
-  if (!did_pause_print) 
+  if (!did_pause_print)
   {
     return;
   }

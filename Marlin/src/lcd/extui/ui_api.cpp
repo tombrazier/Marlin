@@ -1141,7 +1141,7 @@ namespace ExtUI {
   }
 
   bool isPrintingPaused() {
-    return isPrinting() && (isPrintingFromMediaPaused() || print_job_timer.isPaused());
+    return isPrinting() && (isPrintingFromMediaPaused() || print_job_timer.isPaused() || did_pause_print) ;
   }
 
   bool isOngoingPrintJob() {

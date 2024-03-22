@@ -108,7 +108,7 @@
 #endif
 
 #if ENABLED(LULZBOT_BLTouch, TAZProV2)
-  #define Z_MIN_PIN        32   // X_MAX_PIN
+  #define Z_MIN_PIN        108  // D108 PB9 (Header J20 13)
 #elif ENABLED(LULZBOT_BLTouch) && DISABLED(TAZProV2)
   #define Z_MIN_PIN        63   // PB18/RD/PWML2/AD11 THERM AN2
 #else
@@ -147,18 +147,53 @@
   #define Z_CS_PIN                            45  // PC18 Z_nCS
 #endif
 
-#define E0_STEP_PIN                          107  // PB10 E1-STEP -AddOns *
-#define E0_DIR_PIN                            96  // PC10 E1-DIR -AddOns *
-#define E0_ENABLE_PIN                        105  // PB22 E1-EN -AddOns *
-#ifndef E0_CS_PIN
-  #define E0_CS_PIN                          104  // PC20 E1_nCS -AddOns *
+#define DRIVER_3_STEP_PIN                          107  // PB10 E1-STEP -AddOns *
+#define DRIVER_3_DIR_PIN                            96  // PC10 E1-DIR -AddOns *
+#define DRIVER_3_ENABLE_PIN                        105  // PB22 E1-EN -AddOns *
+#ifndef DRIVER_3_CS_PIN
+  #define DRIVER_3_CS_PIN                          104  // PC20 E1_nCS -AddOns *
 #endif
 
-#define E1_STEP_PIN                           22  // PB26 E2_STEP *
-#define E1_DIR_PIN                            97  // PB24 E2_DIR -AddOns *
-#define E1_ENABLE_PIN                         18  // PA11 E2-EN
-#ifndef E1_CS_PIN
-  #define E1_CS_PIN                           19  // PA10 E2_nCS
+#define DRIVER_4_STEP_PIN                           22  // PB26 E2_STEP *
+#define DRIVER_4_DIR_PIN                            97  // PB24 E2_DIR -AddOns *
+#define DRIVER_4_ENABLE_PIN                         18  // PA11 E2-EN
+#ifndef DRIVER_4_CS_PIN
+  #define DRIVER_4_CS_PIN                           19  // PA10 E2_nCS
+#endif
+
+#define DRIVER_5_STEP_PIN                           93
+#define DRIVER_5_DIR_PIN                            94
+#define DRIVER_5_ENABLE_PIN                         95
+#ifndef DRIVER_5_CS_PIN
+  #define DRIVER_5_CS_PIN                           77
+#endif
+#define DRIVER_5_DIAG_PIN                           103
+
+#if ENABLED(TAZProV2)
+  #define Z2_STEP_PIN     DRIVER_3_STEP_PIN
+  #define Z2_ENABLE_PIN   DRIVER_3_ENABLE_PIN
+  #define Z2_DIR_PIN      DRIVER_3_DIR_PIN
+  #define Z2_CS_PIN       DRIVER_3_CS_PIN
+
+  #define E0_STEP_PIN     DRIVER_4_STEP_PIN
+  #define E0_ENABLE_PIN   DRIVER_4_ENABLE_PIN
+  #define E0_DIR_PIN      DRIVER_4_DIR_PIN
+  #define E0_CS_PIN       DRIVER_4_CS_PIN
+
+  #define E1_STEP_PIN     DRIVER_5_STEP_PIN
+  #define E1_ENABLE_PIN   DRIVER_5_ENABLE_PIN
+  #define E1_DIR_PIN      DRIVER_5_DIR_PIN
+  #define E1_CS_PIN       DRIVER_5_CS_PIN
+#else
+  #define E0_STEP_PIN     DRIVER_3_STEP_PIN
+  #define E0_ENABLE_PIN   DRIVER_3_ENABLE_PIN
+  #define E0_DIR_PIN      DRIVER_3_DIR_PIN
+  #define E0_CS_PIN       DRIVER_3_CS_PIN
+
+  #define E1_STEP_PIN     DRIVER_4_STEP_PIN
+  #define E1_ENABLE_PIN   DRIVER_4_ENABLE_PIN
+  #define E1_DIR_PIN      DRIVER_4_DIR_PIN
+  #define E1_CS_PIN       DRIVER_4_CS_PIN
 #endif
 
 //
@@ -199,6 +234,9 @@
 #define FAN2_PIN                               5  // D5 PC25 FET_PWM2
 #define FAN1_PIN                               8  // D8 PC22 FET_PWM5
 
+#define E0_AUTO_FAN_PIN                      101  // D101 PB5 (Header J20 10)
+#define E1_AUTO_FAN_PIN                       99  // D99 PB6 (Header J20 9)
+
 //
 // Misc. Functions
 //
@@ -220,11 +258,11 @@
 #define GPIO_PB0_J20_6                        95  // D95 PB0 (Header J20 6)
 #define GPIO_PB3_J20_7                       103  // D103 PB3 (Header J20 7)
 #define GPIO_PB2_J20_8                        93  // D93 PB2 (Header J20 8)
-#define GPIO_PB6_J20_9                        99  // D99 PB6 (Header J20 9)
-#define GPIO_PB5_J20_10                      101  // D101 PB5 (Header J20 10)
+//#define GPIO_PB6_J20_9                        99  // D99 PB6 (Header J20 9)
+//#define GPIO_PB5_J20_10                      101  // D101 PB5 (Header J20 10)
 #define GPIO_PB8_J20_11                      100  // D100 PB8 (Header J20 11)
 #define GPIO_PB4_J20_12                      102  // D102 PB4 (Header J20 12)
-#define GPIO_PB9_J20_13                      108  // D108 PB9 (Header J20 13)
+//#define GPIO_PB9_J20_13                      108  // D108 PB9 (Header J20 13)
 #define GPIO_PB7_J20_14                       98  // D98 PB7 (Header J20 14)
 #define GPIO_PB15_J20_15                      66  // D66 PB15 (Header J20 15)
 #define GPIO_PB16_J20_16                      67  // D67 PB16 (Header J20 16)

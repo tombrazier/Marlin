@@ -66,8 +66,9 @@ void MainMenu::onRedraw(draw_mode_t what) {
     cmd.colors(normal_btn)
        .font(Theme::font_medium)
        .tag(2).button(MOVE_AXIS_POS,         GET_TEXT_F(MSG_MOVE_AXIS))
-       .tag(3).button(DISABLE_STEPPERS_POS,  GET_TEXT_F(MSG_DISABLE_STEPPERS))
-       .tag(4).button(BACKLASH_POS,          GET_TEXT_F(MSG_BACKLASH))
+       .tag(3).button(DISABLE_STEPPERS_POS,  F(""));
+       draw_text_box(cmd, DISABLE_STEPPERS_POS, F("Disable\nSteppers"), OPT_CENTER, font_medium);
+    cmd.tag(4).button(BACKLASH_POS,          GET_TEXT_F(MSG_BACKLASH))
        .tag(5).button(CLEAN_NOZZLE_POS,      GET_TEXT_F(MSG_CLEAN_NOZZLE))
        .tag(6).button(TEMPERATURE_POS,       GET_TEXT_F(MSG_TEMPERATURE))
           .enabled(DISABLED(TOUCH_UI_LULZBOT_BIO))
