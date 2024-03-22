@@ -2269,7 +2269,9 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#if DISABLED(LULZBOT_BLTouch)
+  #define MULTIPLE_PROBING 2
+#endif
 //#define EXTRA_PROBING    1
 
 /**
