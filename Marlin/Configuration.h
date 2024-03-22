@@ -1820,11 +1820,7 @@
 #elif ENABLED(Sidekick_747)
   #define X_Y_MAX_ACCELERATION   4750
 #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
-  #if ENABLED(LULZBOT_LONG_BED)
-      #define X_Y_MAX_ACCELERATION   4000
-  #else
-    #define X_Y_MAX_ACCELERATION   4000
-  #endif
+  #define X_Y_MAX_ACCELERATION   4000
 #endif
 
 #define DEFAULT_MAX_ACCELERATION      { X_Y_MAX_ACCELERATION, X_Y_MAX_ACCELERATION, 100, 9000 }
