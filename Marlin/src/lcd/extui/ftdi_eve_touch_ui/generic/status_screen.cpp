@@ -343,8 +343,6 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
   #if ENABLED(TOUCH_UI_PORTRAIT)
     #define TOOL_HEAD_POS         BTN_POS(1,11), BTN_SIZE(1,2)
     #define CHANGE_FILAMENT_POS   BTN_POS(2,11), BTN_SIZE(1,2)
-    #define CHANGE_FILAMENT_POS_1 BTN_POS(2,11), BTN_SIZE(1,1)
-    #define CHANGE_FILAMENT_POS_2 BTN_POS(2,12), BTN_SIZE(1,1)
     #define PREHEAT_POS           BTN_POS(1,13), BTN_SIZE(1,2)
     #define Z_OFFSET_POS          BTN_POS(2,13), BTN_SIZE(1,2)
     #define MEDIA_BTN_POS         BTN_POS(1,15), BTN_SIZE(1,2)
@@ -362,9 +360,9 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
           .font(font_medium)
           .tag(!ExtUI::isPrintingPaused() ? 17 : 18)
           .button(TOOL_HEAD_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_PAUSE) : GET_TEXT_F(MSG_RESUME))
+          .tag(8).button(PREHEAT_POS, GET_TEXT_F(MSG_SENSOR))
           .tag(!ExtUI::isPrintingPaused() ? 7 : 14)
-          .button(CHANGE_FILAMENT_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_SPEED) : F(""))
-          .tag(8).button(PREHEAT_POS, GET_TEXT_F(MSG_SENSOR));
+          .button(CHANGE_FILAMENT_POS, !ExtUI::isPrintingPaused() ? GET_TEXT_F(MSG_SPEED) : F(""));
       if (ExtUI::isPrintingPaused())
         draw_text_box(cmd, CHANGE_FILAMENT_POS, F("Change\nFilament"), OPT_CENTER, font_medium);
     }
