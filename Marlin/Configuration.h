@@ -94,7 +94,7 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-#define LULZBOT_FW_VERSION "2.1.3.0.25"
+#define LULZBOT_FW_VERSION "2.1.3.0.26"
 #define CAPABILITIES_REPORT
 
 /**
@@ -2269,7 +2269,9 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#if DISABLED(LULZBOT_BLTouch)
+  #define MULTIPLE_PROBING 2
+#endif
 //#define EXTRA_PROBING    1
 
 /**
