@@ -147,53 +147,57 @@
   #define Z_CS_PIN                            45  // PC18 Z_nCS
 #endif
 
-#define DRIVER_3_STEP_PIN                          107  // PB10 E1-STEP -AddOns *
+#define DRIVER_3_STEP_PIN                           107  // PB10 E1-STEP -AddOns *
 #define DRIVER_3_DIR_PIN                            96  // PC10 E1-DIR -AddOns *
-#define DRIVER_3_ENABLE_PIN                        105  // PB22 E1-EN -AddOns *
-#ifndef DRIVER_3_CS_PIN
-  #define DRIVER_3_CS_PIN                          104  // PC20 E1_nCS -AddOns *
-#endif
+#define DRIVER_3_ENABLE_PIN                         105  // PB22 E1-EN -AddOns *
+#define DRIVER_3_CS_PIN                             104  // PC20 E1_nCS -AddOns *
 
 #define DRIVER_4_STEP_PIN                           22  // PB26 E2_STEP *
 #define DRIVER_4_DIR_PIN                            97  // PB24 E2_DIR -AddOns *
 #define DRIVER_4_ENABLE_PIN                         18  // PA11 E2-EN
-#ifndef DRIVER_4_CS_PIN
-  #define DRIVER_4_CS_PIN                           19  // PA10 E2_nCS
-#endif
+#define DRIVER_4_CS_PIN                             19  // PA10 E2_nCS
 
 #define DRIVER_5_STEP_PIN                           93
 #define DRIVER_5_DIR_PIN                            94
 #define DRIVER_5_ENABLE_PIN                         95
-#ifndef DRIVER_5_CS_PIN
-  #define DRIVER_5_CS_PIN                           77
-#endif
+#define DRIVER_5_CS_PIN                             77
 #define DRIVER_5_DIAG_PIN                           103
 
 #if ENABLED(TAZProV2)
-  #define Z2_STEP_PIN     DRIVER_3_STEP_PIN
-  #define Z2_ENABLE_PIN   DRIVER_3_ENABLE_PIN
-  #define Z2_DIR_PIN      DRIVER_3_DIR_PIN
-  #define Z2_CS_PIN       DRIVER_3_CS_PIN
+  #define Z2_STEP_PIN        DRIVER_3_STEP_PIN    //107  // PB10 E1-STEP -AddOns *
+  #define Z2_DIR_PIN         DRIVER_3_DIR_PIN     //96  // PC10 E1-DIR -AddOns *
+  #define Z2_ENABLE_PIN      DRIVER_3_ENABLE_PIN  //105  // PB22 E1-EN -AddOns *
+  #ifndef Z2_CS_PIN
+    #define Z2_CS_PIN        DRIVER_3_CS_PIN      //104  // PC20 E1_nCS -AddOns *
+  #endif
 
-  #define E0_STEP_PIN     DRIVER_4_STEP_PIN
-  #define E0_ENABLE_PIN   DRIVER_4_ENABLE_PIN
-  #define E0_DIR_PIN      DRIVER_4_DIR_PIN
-  #define E0_CS_PIN       DRIVER_4_CS_PIN
+  #define E0_STEP_PIN        DRIVER_4_STEP_PIN    //22  // PB26 E2_STEP *
+  #define E0_DIR_PIN         DRIVER_4_DIR_PIN     //97  // PB24 E2_DIR -AddOns *
+  #define E0_ENABLE_PIN      DRIVER_4_ENABLE_PIN  //18  // PA11 E2-EN
+  #ifndef E0_CS_PIN
+    #define E0_CS_PIN        DRIVER_4_CS_PIN      //19  // PA10 E2_nCS
+  #endif
 
-  #define E1_STEP_PIN     DRIVER_5_STEP_PIN
-  #define E1_ENABLE_PIN   DRIVER_5_ENABLE_PIN
-  #define E1_DIR_PIN      DRIVER_5_DIR_PIN
-  #define E1_CS_PIN       DRIVER_5_CS_PIN
+  #define E1_STEP_PIN     DRIVER_5_STEP_PIN       //93
+  #define E1_DIR_PIN      DRIVER_5_DIR_PIN        //94
+  #define E1_ENABLE_PIN   DRIVER_5_ENABLE_PIN     //95
+  #ifndef E1_CS_PIN
+    #define E1_CS_PIN       DRIVER_5_CS_PIN       //77
+  #endif
 #else
-  #define E0_STEP_PIN     DRIVER_3_STEP_PIN
-  #define E0_ENABLE_PIN   DRIVER_3_ENABLE_PIN
-  #define E0_DIR_PIN      DRIVER_3_DIR_PIN
-  #define E0_CS_PIN       DRIVER_3_CS_PIN
+  #define E0_STEP_PIN        DRIVER_3_STEP_PIN    //107  // PB10 E1-STEP -AddOns *
+  #define E0_DIR_PIN         DRIVER_3_DIR_PIN     //96  // PC10 E1-DIR -AddOns *
+  #define E0_ENABLE_PIN      DRIVER_3_ENABLE_PIN  //105  // PB22 E1-EN -AddOns *
+  #ifndef E0_CS_PIN
+    #define E0_CS_PIN        DRIVER_3_CS_PIN      //104  // PC20 E1_nCS -AddOns *
+  #endif
 
-  #define E1_STEP_PIN     DRIVER_4_STEP_PIN
-  #define E1_ENABLE_PIN   DRIVER_4_ENABLE_PIN
-  #define E1_DIR_PIN      DRIVER_4_DIR_PIN
-  #define E1_CS_PIN       DRIVER_4_CS_PIN
+  #define E1_STEP_PIN        DRIVER_4_STEP_PIN    //22  // PB26 E2_STEP *
+  #define E1_DIR_PIN         DRIVER_4_DIR_PIN     //97  // PB24 E2_DIR -AddOns *
+  #define E1_ENABLE_PIN      DRIVER_4_ENABLE_PIN  //18  // PA11 E2-EN
+  #ifndef E1_CS_PIN
+    #define E1_CS_PIN        DRIVER_4_CS_PIN      //19  // PA10 E2_nCS
+  #endif
 #endif
 
 //
