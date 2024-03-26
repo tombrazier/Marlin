@@ -549,7 +549,7 @@
     #define LULZBOT_M115_EXTRUDER_TYPE             "Galaxy Dual Extruder"
     #define LULZBOT_TOOLHEAD_X_MAX_ADJ             -12
     #define LULZBOT_TOOLHEAD_X_MIN_ADJ             -12
-    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -31
+    #define LULZBOT_TOOLHEAD_Y_MAX_ADJ             -25.5
     #define LULZBOT_TOOLHEAD_Y_MIN_ADJ             -23
     #define LULZBOT_TOOLHEAD_Z_MAX_ADJ             -10
     #define LULZBOT_TOOLHEAD_Z_MIN_ADJ             -10
@@ -2208,7 +2208,7 @@
   #elif ENABLED(Workhorse)
     #define PROBING_MARGIN -10
   #elif ANY(TAZPro, TAZProXT)
-    #define PROBING_MARGIN -8
+    #define PROBING_MARGIN -10
   #endif
 #endif
 
@@ -2547,7 +2547,7 @@
     // Travel limits (mm) after homing, corresponding to endstop positions.
     #define LULZBOT_X_MIN_POS -6// <-- changed
     #define LULZBOT_Y_MIN_POS -15 // <-- changed
-    #define LULZBOT_X_MAX_POS 300 // <-- changed
+    #define LULZBOT_X_MAX_POS 298 // <-- changed
     #define LULZBOT_Y_MAX_POS 318 // <-- changed
     #define LULZBOT_Z_MIN_POS  -9 // <-- changed
     #define LULZBOT_Z_MAX_POS 299 // <-- changed
