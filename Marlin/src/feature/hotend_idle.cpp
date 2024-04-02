@@ -115,7 +115,7 @@ void HotendIdleProtection::timed_out() {
 void HotendIdleProtection::bed_timed_out() {
   next_bed_protect_ms = 0;
   #if HAS_HEATED_BED
-    if (!printingIsPaused())
+    if (!printJobOngoing())
       if (cfg.bed_trigger < thermalManager.degTargetBed())
         thermalManager.setTargetBed(cfg.bed_target);
       SERIAL_ECHOLNPGM("Bed Idle Timeout");
