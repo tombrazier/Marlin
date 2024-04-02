@@ -132,7 +132,11 @@ enum StealthIndex : uint8_t {
   TMC_SPI_DEFINE_E(0);
 #endif
 #if AXIS_HAS_SPI(E1)
-  TMC_HW_SPI_DEFINE_E(1);
+  #if ENABLED(TAZProV2)
+    TMC_HW_SPI_DEFINE_E(1);
+  #else
+    TMC_SPI_DEFINE_E(1);
+  #endif
 #endif
 #if AXIS_HAS_SPI(E2)
   TMC_SPI_DEFINE_E(2);

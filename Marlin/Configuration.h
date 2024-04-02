@@ -96,6 +96,7 @@
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 #define LULZBOT_FW_VERSION "2.1.3.0.26"
 #define CAPABILITIES_REPORT
+#define EXTENDED_CAPABILITIES_REPORT
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -2959,7 +2960,7 @@
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  #define G26_MESH_VALIDATION
+  //#define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
@@ -3527,7 +3528,7 @@
  *   M76 - Pause the print job timer
  *   M77 - Stop the print job timer
  */
-//#define PRINTJOB_TIMER_AUTOSTART
+#define PRINTJOB_TIMER_AUTOSTART
 
 /**
  * End of Print Screen

@@ -74,6 +74,8 @@ namespace ExtUI {
 
   void onPrintTimerStarted() {
     InterfaceSoundsScreen::playEventSound(InterfaceSoundsScreen::PRINTING_STARTED);
+    current_screen.forget();
+    PUSH_SCREEN(StatusScreen);
   }
   void onPrintTimerStopped() {
     InterfaceSoundsScreen::playEventSound(InterfaceSoundsScreen::PRINTING_FINISHED);

@@ -139,6 +139,7 @@ namespace FTDI {
     }
   } else if (!ExtUI::awaitingUserConfirm() && !ExtUI::isPrintingPaused() && !ExtUI::getHostKeepaliveIsPaused()) {
     ConfirmUserRequestAlertBox::hide();
+    FilamentPromptBox::hide();
   }
 
     const uint8_t tag = CLCD::get_tag();
