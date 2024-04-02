@@ -4257,7 +4257,7 @@
 
     #if NONE(MiniV2, Sidekick_289) // Mini2 and 289 do not have the power to supply 100w to the tool head
       #define MAIN_MENU_ITEM_4_DESC "AST285|GM STEEL"
-      #define MAIN_MENU_ITEM_4_GCODE "M891 T10\nM92E439\nM306 A0.098 C36.75 F0.1632 P100 R0.0027\n" E_CURRENT_LGX285 "\nM900 K0.03\nM500\nM117 AST285|GM STEEL"
+      #define MAIN_MENU_ITEM_4_GCODE "M891 T10\nM92E439\nM306 A0.0936 C36.2925 F0.1744 P100 R0.1143\n" E_CURRENT_LGX285 "\nM900 K0.03\nM500\nM117 AST285|GM STEEL"
     #endif
 
   #elif defined(TOOLHEAD_Galaxy_DualExtruder)
