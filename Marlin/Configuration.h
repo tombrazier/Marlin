@@ -2310,7 +2310,9 @@
 #define PROBE_OFFSET_ZMAX  5    // (mm)
 
 // Enable the M48 repeatability test to test probe accuracy
-#define Z_MIN_PROBE_REPEATABILITY_TEST
+#if ENABLED(LULZBOT_BLTouch)
+  #define Z_MIN_PROBE_REPEATABILITY_TEST
+#endif
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -3367,6 +3369,8 @@
     #define PRESENT_BED_GCODE "G28 O\nG0 Y231 F10000\nG0 Y233 F10000\nM117 Printer Ready"
   #elif ENABLED(TAZWorkhorse)
     #define PRESENT_BED_GCODE "G28 O\nG0 Y304 F10000\nG0 Y306 F10000\nM117 Printer Ready"
+  #elif ENABLED(LULZBOT_LONG_BED)
+    #define PRESENT_BED_GCODE "G28 O\nG0 Y511 F10000\nG0 Y513 F10000\nM117 Printer Ready"
   #else
     #define PRESENT_BED_GCODE "G28 O\nG0 Y311 F10000\nG0 Y313 F10000\nM117 Printer Ready"
   #endif
