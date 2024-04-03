@@ -65,7 +65,7 @@
 // Limit Switches
 //
 #define X_MIN_PIN                             12
-#define X_MAX_PIN                             24
+//#define X_MAX_PIN                             24
 #define Y_MIN_PIN                             11
 #define Y_MAX_PIN                             23
 #ifndef Z_MIN_PIN
@@ -81,7 +81,9 @@
 #endif
 
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN                       5
+  #define FIL_RUNOUT_PIN                       24 //using X max port and the same connector as the sidekick filament runout sensor
+#else
+  #define X_MAX_PIN                             24
 #endif
 
 //
