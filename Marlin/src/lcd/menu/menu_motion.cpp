@@ -496,23 +496,12 @@ void menu_motion() {
   #if ENABLED(PARK_NOZZLE_MENU_OPTION)
     GCODES_ITEM(MSG_IDEX_MODE_AUTOPARK, F("G28 O\nG27"));
   #endif
-  
+
   //
   // M493 - Fixed-Time Motion
   //
   #if ENABLED(FT_MOTION_MENU)
     if (!is_busy) SUBMENU(MSG_FIXED_TIME_MOTION, menu_ft_motion);
-  #endif
-
-  //
-  // Auto-calibration
-  //
-
-
-  #if ANY(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION)
-    GCODES_ITEM(MSG_AUTO_Z_ALIGN, F("G34"));
-  #elif ENABLED(X_LEVEL_SEQUENCE)
-    GCODES_ITEM(MSG_AUTO_Z_ALIGN, F(LEVELING_COMMANDS));
   #endif
 
   //
@@ -594,6 +583,8 @@ void menu_motion() {
   //
   #if ANY(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION)
     GCODES_ITEM(MSG_AUTO_Z_ALIGN, F("G34"));
+  #elif ENABLED(X_LEVEL_SEQUENCE)
+    GCODES_ITEM(MSG_AUTO_Z_ALIGN, F(LEVELING_COMMANDS));
   #endif
 
   //
