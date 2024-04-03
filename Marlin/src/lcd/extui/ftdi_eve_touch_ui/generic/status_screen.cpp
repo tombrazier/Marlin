@@ -414,6 +414,9 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
             case 12:
               draw_text_box(cmd, TOOL_HEAD_POS, F(" \n Twin Nebula 285"), OPT_CENTER, font_small);
               break;
+            case 13:
+              draw_text_box(cmd, TOOL_HEAD_POS, F(" \n TAZ Dual Extruder"), OPT_CENTER, font_small);
+              break;
           }
     }
 
