@@ -1331,7 +1331,10 @@
 // Backlash Compensation
 // Adds extra movement to axes on direction-changes to account for backlash.
 //
-#define BACKLASH_COMPENSATION
+#if ANY(TAZPro, TAZProXT, Workhorse, TAZProV2)
+  #define BACKLASH_COMPENSATION
+#endif
+
 #if ENABLED(BACKLASH_COMPENSATION)
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
@@ -4217,7 +4220,7 @@
  * User-defined menu items to run custom G-code.
  * Up to 25 may be defined, but the actual number is LCD-dependent.
  */
-#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series, TOOLHEAD_Galaxy_DualExtruder)
+#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_Series, TOOLHEAD_Galaxy_DualExtruder)
   #define CUSTOM_MENU_MAIN
 #endif
  #define CUSTOM_MENU_MAIN_TITLE "Tool Heads"
@@ -4237,6 +4240,7 @@
   #else
     #define E_CURRENT_Aero "M906 E960"
     #define E_CURRENT_BMG  "M906 E960"
+    #define E_CURRENT_DUAL "M906 T0 E960\n M906 T1 E960"
     #define E_CURRENT_LGX175 "M906 E850"
     #define E_CURRENT_LGX285 "M906 E850"
     #define E_CURRENT_TWNB175 "M906 T0 E750\n M906 T1 E750"
@@ -4266,6 +4270,10 @@
 
     #define MAIN_MENU_ITEM_3_DESC "TWNB285|NKL-PL BRASS"
     #define MAIN_MENU_ITEM_3_GCODE "M891 T12\nM92E439\n" E_CURRENT_TWNB285 "\nM500\nM117 TWNB285|NKL-PL BRASS"
+
+  #elif defined(TOOLHEAD_Quiver_DualExtruder)
+    #define MAIN_MENU_ITEM_2_DESC "DUAL|0.50mm|HRD STEEL"
+    #define MAIN_MENU_ITEM_2_GCODE "M891 T13\nM92E420\n" E_CURRENT_DUAL "\nM500\nM117 DUAL|0.50mm|HRD STEEL"
 
   #elif defined(TOOLHEAD_Legacy_Universal)
     #if ANY(MiniV2, Workhorse, TAZPro, TAZProXT, TAZProV2)
