@@ -1241,11 +1241,9 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
-#if ANY(Workhorse, TAZ6, TAZPro, TAZProXT, TAZProV2) // Set Max Bed Power to 90% for a safety margin on the 15A fuse.
-  #define MAX_BED_POWER 229 // limits duty cycle to bed; 255=full current
-#else
-  #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
-#endif
+
+#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
