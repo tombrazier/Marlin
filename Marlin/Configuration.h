@@ -2172,7 +2172,7 @@
 #elif ANY(TAZPro, TAZProXT) && DISABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.102 }
 #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
-  #define NOZZLE_TO_PROBE_OFFSET { -38, -20, -3.2 }
+  #define NOZZLE_TO_PROBE_OFFSET { -38, -2, -3.2 }
 #elif ENABLED(TAZProV2)
   #if ENABLED(TOOLHEAD_Galaxy_DualExtruder)
     #define NOZZLE_TO_PROBE_OFFSET { 100, 70, -3.2 }
