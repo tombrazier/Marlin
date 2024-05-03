@@ -262,7 +262,8 @@ void StatusScreen::draw_progress(draw_mode_t what) {
     #define PROGRESS_POS_X     BTN_X(2)
     #define PROGRESS_POS_W     BTN_W(1)
     #define PROGRESSZONE_FIRSTLINE_Y BTN_Y(9)
-    #define PROGRESSBAR_POS  BTN_POS(1,8), BTN_SIZE(2,2)
+    #define PROGRESSBAR_POS    BTN_POS(1,8), BTN_SIZE(2,2)
+    #define CLEAR_PROGRESS_POS BTN_POS(0,6.75), BTN_SIZE(4,5)
   #else
     #define GRID_COLS 6
     #define PROGRESSZONE_POS BTN_POS(5,1), BTN_SIZE(2,4)
@@ -279,6 +280,9 @@ void StatusScreen::draw_progress(draw_mode_t what) {
   if (ExtUI::isOngoingPrintJob()|| ExtUI::isPrintingPaused()) {
 
     if (what & FOREGROUND) {
+      cmd.colors(temp_btn)
+       .tag(0).button(CLEAR_PROGRESS_POS, F(""), OPT_FLAT);
+
       const uint32_t elapsed = getProgress_seconds_elapsed();
       char elapsed_str[10];
       _format_time(elapsed_str, elapsed);

@@ -1493,7 +1493,7 @@ void MarlinUI::host_notify(const char * const cstr) {
       else if (print_job_timer.needsService(3)) msg = FPSTR(service3);
     #endif
 
-    else if (!no_welcome) msg = GET_TEXT_F(WELCOME_MSG);
+    //else if (!no_welcome) msg = GET_TEXT_F(WELCOME_MSG);
 
     else if (ENABLED(DWIN_LCD_PROUI))
         msg = F("");
