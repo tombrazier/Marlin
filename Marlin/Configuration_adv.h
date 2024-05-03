@@ -1525,7 +1525,7 @@
           /* Save settings */
           /* Status message */
       #elif LULZBOT_EXTRUDERS == 2
-        #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X44 Y0 Z0\nG28\nM109 R170 T0\nG12\nT1\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+        #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170 T0\nM104 S170 T1\nT0\nM218 T1 X44 Y0 Z0\nG28\nM109 R170 T0\nG12\nT1\nM109 R170 T1\nG12\nM117 Calibrating...\nG425\nM500\nM77\nM117 Calibration data saved"
           /* Status message */
           /* Start both nozzles heating*/
           /* Switch to first nozzle */
