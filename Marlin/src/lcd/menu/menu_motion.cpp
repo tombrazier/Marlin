@@ -606,7 +606,7 @@ void menu_motion() {
   // Auto-calibration with Object
   //
   #if ENABLED(CALIBRATION_GCODE)
-    GCODES_ITEM(MSG_AUTO_CALIBRATE, F("G425"));
+    GCODES_ITEM(MSG_AUTO_CALIBRATE, F(LULZBOT_CALIBRATION_SCRIPT));
   #endif
 
   //
