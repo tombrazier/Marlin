@@ -1453,6 +1453,7 @@
     //#define CALIBRATION_MEASURE_FRONT
     #define CALIBRATION_MEASURE_LEFT
     #define CALIBRATION_MEASURE_BACK
+    #define LULZBOT_CALIBRATION_SCRIPT "M117 Starting Auto-Calibration\nM104 S170\nG28\nM109 R170\nG12\nM117 Calibrating...\nG425\nM500\nM77\nM117 Calibration data saved"
   #else
     #if ANY(TAZPro, TAZProXT)
       #if defined(TOOLHEAD_Quiver_DualExtruder)
@@ -1460,7 +1461,7 @@
         #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
         #define CALIBRATION_MEASURE_FRONT
       #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
-        #define CALIBRATION_OBJECT_CENTER     {261.5, -24, -2.0} //  mm
+        #define CALIBRATION_OBJECT_CENTER     {261.5, -14.5, -2.0} //  mm
         #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
         #define CALIBRATION_MEASURE_FRONT
       #elif defined(LULZBOT_LONG_BED)
