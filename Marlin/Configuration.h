@@ -567,13 +567,13 @@
     #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
     #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44}
     #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}//M301 E1 P16.68 I1.07 D64.7
-    #define LULZBOT_E_STEPS                        415
+    #define LULZBOT_E_STEPS                        439
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
     #define LULZBOT_TEMP_SENSOR_1                  5
-    #define LULZBOT_MOTOR_CURRENT_E0               750 // mA
-    #define LULZBOT_MOTOR_CURRENT_E1               750 // mA
+    #define LULZBOT_MOTOR_CURRENT_E0               850 // mA
+    #define LULZBOT_MOTOR_CURRENT_E1               850 // mA
     #define SWITCHING_NOZZLE
-    #define TOOL_HEAD_ID                           11
+    #define TOOL_HEAD_ID                           12
     /********************* MPC Settings **********************/
     #define LULZBOT_TOOLHEAD_WATT                 { 50.0f, 50.0f }
     #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.44f, 15.44f }
@@ -2529,7 +2529,7 @@
   #define LULZBOT_X_MIN_POS -50
   #define LULZBOT_Y_MIN_POS -17
   #define LULZBOT_Z_MIN_POS -2
-  #define LULZBOT_X_MAX_POS 293
+  #define LULZBOT_X_MAX_POS 290.5
   #define LULZBOT_Y_MAX_POS 308
   #define LULZBOT_Z_MAX_POS 297
 
