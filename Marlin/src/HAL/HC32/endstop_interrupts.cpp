@@ -83,6 +83,8 @@ void setup_endstop_interrupts() {
 
   SETUP(Z_MIN_PROBE);
 
+  SETUP(CALIBRATION);
+
   #undef SETUP
 }
 

@@ -210,13 +210,11 @@ float measuring_movement(const AxisEnum axis, const int dir, const bool stop_sta
   const float limit    = fast ? 50 : 5;
 
   destination = current_position;
-  for (float travel = 0; travel < limit; travel += step) {
-    destination[axis] += dir * step;
-    do_blocking_move_to((xyz_pos_t)destination, mms);
-    planner.synchronize();
-    if (read_calibration_pin() == stop_state) break;
-  }
-  return destination[axis];
+  destination[axis] += dir * limit;
+  endstops.enable_calibration_probe(true, stop_state);
+  do_blocking_move_to((xyz_pos_t)destination, mms);
+  endstops.enable_calibration_probe(false);
+  return current_position[axis];
 }
 
 /**
