@@ -1228,7 +1228,7 @@
 #if ENABLED(GEARED_EXTRUDER)
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0*68/7/22.5 * 8 }
 #elif ENABLED(VDE_100)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.6 * 8 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/1.55 * 8 }
 #else
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 200.0/45.0/1.106 * 16, 200.0/40.0*(25.0/25.4) * 16, 96.0/18.0*54.0/27.0*62.0/28.0 * 16, 200.0/22.5 * 16 }
 #endif
@@ -1247,7 +1247,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 150, 25, 60 }
+#define DEFAULT_MAX_FEEDRATE          { 300, 150, 25, 12 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1260,7 +1260,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 5000, 3000, 1000, 1000 }
+#define DEFAULT_MAX_ACCELERATION      { 5000, 3000, 1000, 150 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -2306,8 +2306,8 @@
 
   #define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
-    #define XZ_DIAG_AC 56.44
-    #define XZ_DIAG_BD 56.89
+    #define XZ_DIAG_AC 56.55
+    #define XZ_DIAG_BD 56.78
     #define YZ_DIAG_AC 56.72
     #define YZ_DIAG_BD 56.43
     #define YZ_SIDE_AD 39.92
