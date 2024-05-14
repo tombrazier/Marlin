@@ -1107,6 +1107,9 @@ void Planner::forward_pass_kernel(const block_t * const previous, block_t * cons
       // If true, current block is full-acceleration and we can move the planned pointer forward.
       if (new_entry_speed_sqr < current->entry_speed_sqr) {
 
+        if (current->real_max_entry_speed_sqr != new_entry_speed_sqr)
+          SERIAL_ECHOLNPGM("Failed!");
+
         // Mark we need to recompute the trapezoidal shape, and do it now,
         // so the stepper ISR does not consume the block before being recalculated
         current->flag.recalculate = true;
@@ -1858,6 +1861,19 @@ bool Planner::_buffer_steps(const xyze_long_t &target
     // before the following line!!)
     delay_before_delivering = TERN_(FT_MOTION, ftMotion.cfg.mode ? BLOCK_DELAY_NONE :) BLOCK_DELAY_FOR_1ST_MOVE;
   }
+
+  uint8_t prev_index = block_buffer_head;
+  block_t *previous = 0;
+  while (!previous && prev_index != block_buffer_tail) {
+    prev_index = prev_block_index(prev_index);
+    previous = &block_buffer[prev_index];
+    if (!previous->is_move()) previous = 0;
+  }
+
+  if (!previous)
+    block->real_max_entry_speed_sqr = block->entry_speed_sqr;
+  else
+    block->real_max_entry_speed_sqr = _MIN(block->max_entry_speed_sqr, max_allowable_speed_sqr(-previous->acceleration, previous->real_max_entry_speed_sqr, previous->millimeters));
 
   // Move buffer head
   block_buffer_head = next_buffer_head;
