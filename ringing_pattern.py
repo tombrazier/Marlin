@@ -38,7 +38,7 @@ gives you the X or Y zeta value.
 
 ### Parameters for generating the gcode
 
-layer_height = 0.2          # (mm)
+layer_height = 0.3          # (mm)
 line_width = 0.5            # (mm)
 filament_dia = 1.75         # (mm)
 nozzle_temp = 220           # °C
@@ -53,7 +53,7 @@ amplitude = 0.5             # (mm) the peak to peak size of the zig-zag pattern
 top_freq = 60               # (Hz) the frequency scans from 0Hz to this value
 decel = 1000                # (mm/s^2) rate of deceleration at the end of the pattern
 
-pattern_type = "zeta_x"       # choose one of "freq", "zeta_x" or "zeta_y"
+pattern_type = "freq_z"       # choose one of "freq_x", "freq_y", "freq_z", "zeta_x", "zeta_y" or "zeta_z"
 
 
 ### Start of the script proper
@@ -93,7 +93,7 @@ print()
 
 # settings for the print
 print("M205 S0 T0           ; minimum extruding and travel feed rate")
-if pattern_type == "freq":
+if pattern_type[:4] == "freq":
   print("M593 F0              ; input shaping off")
 print("M900 K0              ; linear advance off")
 print("G90                  ; absolute positioning")
@@ -102,7 +102,7 @@ print()
 # heating and cooling
 print("M107                 ; fan off")
 print("M140 S%d             ; bed temperature" % bed_temp)
-print("M104 S%d            ; head temperature" % nozzle_temp)
+print("M104 S%d             ; head temperature" % nozzle_temp)
 print()
 
 # home and reset extruder pos
@@ -112,7 +112,7 @@ print()
 
 # wait for temperatures
 print("M190 S%d             ; bed temperature" % bed_temp)
-print("M109 S%d            ; head temperature" % nozzle_temp)
+print("M109 S%d             ; head temperature" % nozzle_temp)
 print()
 
 # level bed
@@ -126,9 +126,9 @@ line_to(20.0, 150.0, z, anchor_line_speed)
 line_to(20.0, 20.0, z, anchor_line_speed)
 
 # remove lots of limits
-print("M203 X500 Y500       ; maximum feedrates")
+print("M203 X500 Y500 Z500  ; maximum feedrates")
 print("M204 P10000          ; print acceleration")
-print("M205 X500.00 Y500.00 ; jerk limits very high")
+print("M205 X500 Y500 Z500  ; jerk limits very high")
 print("M205 J0.3            ; junction deviation maximum")
 print()
 
@@ -142,6 +142,42 @@ for i in range(top_freq):
 
 max_x_speed = wavelength * top_freq
 coast_dist = max_x_speed**2 / 2 / decel
+
+def draw_z_zigzags(zigzags, coast_dist):
+  print("M201 X10000 Z10000")
+
+  start_x = x
+  start_z = z
+  for x_offs, z_offs, f in zigzags:
+    line_to(start_x + x_offs, y, start_z + z_offs, f)
+
+  # go back to resonable acceleration limits
+  print("M201 X%d Z%d" % (decel, decel))
+
+  # coast down to stop
+  line_to(x + coast_dist, y, z)
+
+  print()
+
+def draw_z_zigzags_rev(zigzags, coast_dist):
+  # ramp up to speed
+  line_to(x - coast_dist, y, z, zigzags[-1][2])
+
+  print("M201 X10000 Z10000")
+
+  start_x = x - zigzags[-1][0]
+  start_z = z - zigzags[-1][1]
+  x_offsets, z_offsets, fs = zip(*zigzags)
+  x_offsets = ((0,) + x_offsets)[:-1]
+  z_offsets = ((0,) + z_offsets)[:-1]
+  zigzags = reversed(list(zip(x_offsets, z_offsets, fs)))
+  for x_offs, z_offs, f in zigzags:
+    line_to(start_x + x_offs, y, start_z + z_offs, f)
+
+  # go back to resonable acceleration limits
+  print("M201 X%d Z%d" % (decel, decel))
+
+  print()
 
 def draw_y_zigzags(zigzags, coast_dist):
   print("M201 X10000 Y10000")
@@ -215,12 +251,36 @@ def draw_x_zigzags_rev(zigzags, coast_dist):
 
   print()
 
-if pattern_type == "freq":
+if pattern_type == "freq_z":
+  # draw Z zigzags at constant X acceleration
+  draw_z_zigzags(zigzags, coast_dist)
+
+if pattern_type == "freq_y":
   # draw Y zigzags at constant X acceleration
   draw_y_zigzags(zigzags, coast_dist)
 
+if pattern_type == "freq_x":
+  # move a little away from the anchor line
+  line_to(x + 5, y, z)
+
   # draw X zigzags at constant Y acceleration
   draw_x_zigzags(zigzags, coast_dist)
+
+if pattern_type == "zeta_z":
+  # move a little away from the anchor line
+  line_to(x + 5, y, z)
+
+  # draw alternating Z zigzags at constant X acceleration
+  zeta = 0.0
+  for i in range(10):
+    zeta += 0.05
+    print("M593 Z D%.2f" % zeta)
+    draw_z_zigzags(zigzags, coast_dist)
+    go_to(x, y + 5, z, travel_speed)
+    zeta += 0.05
+    print("M593 Z D%.2f" % zeta)
+    draw_z_zigzags_rev(zigzags, coast_dist)
+    go_to(x, y + 5, z, travel_speed)
 
 if pattern_type == "zeta_y":
   # move a little away from the anchor line
