@@ -205,7 +205,6 @@ inline bool read_calibration_pin() {
  *   fast         in - Fast vs. precise measurement
  */
 float measuring_movement(const AxisEnum axis, const int dir, const bool stop_state, const bool fast) {
-  const float step     = fast ? 0.25 : CALIBRATION_MEASUREMENT_RESOLUTION;
   const feedRate_t mms = fast ? MMM_TO_MMS(CALIBRATION_FEEDRATE_FAST) : MMM_TO_MMS(CALIBRATION_FEEDRATE_SLOW);
   const float limit    = fast ? 50 : 5;
 
@@ -216,6 +215,7 @@ float measuring_movement(const AxisEnum axis, const int dir, const bool stop_sta
   endstops.enable_calibration_probe(false);
   return current_position[axis];
 }
+
 
 /**
  * Move along axis until the probe is triggered. Move toolhead to its starting
