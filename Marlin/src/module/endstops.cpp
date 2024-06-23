@@ -824,9 +824,9 @@ void Endstops::update() {
   #if ENABLED(CALIBRATION_GCODE)
     if (calibration_probe_enabled) {
       #if PIN_EXISTS(CALIBRATION)
-        if (TEST(live_state, CALIBRATION) == calibration_stop_state) quickstop_stepper();
+        if (TEST(live_state, CALIBRATION) == calibration_stop_state) stepper.quick_stop();
       #else
-        if (TEST(live_state, Z_MIN_PROBE) == calibration_stop_state) quickstop_stepper();
+        if (TEST(live_state, Z_MIN_PROBE) == calibration_stop_state) stepper.quick_stop();
       #endif
     }
   #endif

@@ -213,6 +213,9 @@ float measuring_movement(const AxisEnum axis, const int dir, const bool stop_sta
   endstops.enable_calibration_probe(true, stop_state);
   do_blocking_move_to((xyz_pos_t)destination, mms);
   endstops.enable_calibration_probe(false);
+  endstops.hit_on_purpose();
+  set_current_from_steppers_for_axis(axis);
+  sync_plan_position();
   return current_position[axis];
 }
 
