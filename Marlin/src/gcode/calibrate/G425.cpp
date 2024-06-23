@@ -181,13 +181,13 @@ inline void park_above_object(measurements_t &m, const float uncertainty) {
 
 #endif
 
-#if !PIN_EXISTS(CALIBRATION)
+#if !HAS_CALIBRATION_STATE
   #include "../../module/probe.h"
 #endif
 
 inline bool read_calibration_pin() {
   return (
-    #if PIN_EXISTS(CALIBRATION)
+    #if HAS_CALIBRATION_STATE
       READ(CALIBRATION_PIN) != CALIBRATION_PIN_INVERTING
     #else
       PROBE_TRIGGERED()
@@ -205,18 +205,17 @@ inline bool read_calibration_pin() {
  *   fast         in - Fast vs. precise measurement
  */
 float measuring_movement(const AxisEnum axis, const int dir, const bool stop_state, const bool fast) {
-  const float step     = fast ? 0.25 : CALIBRATION_MEASUREMENT_RESOLUTION;
   const feedRate_t mms = fast ? MMM_TO_MMS(CALIBRATION_FEEDRATE_FAST) : MMM_TO_MMS(CALIBRATION_FEEDRATE_SLOW);
   const float limit    = fast ? 50 : 5;
-
   destination = current_position;
-  for (float travel = 0; travel < limit; travel += step) {
-    destination[axis] += dir * step;
-    do_blocking_move_to((xyz_pos_t)destination, mms);
-    planner.synchronize();
-    if (read_calibration_pin() == stop_state) break;
-  }
-  return destination[axis];
+  destination[axis] += dir * limit;
+  endstops.enable_calibration_probe(true, stop_state);
+  do_blocking_move_to((xyz_pos_t)destination, mms);
+  endstops.enable_calibration_probe(false);
+  endstops.hit_on_purpose();
+  set_current_from_steppers_for_axis(axis);
+  sync_plan_position();
+  return current_position[axis];
 }
 
 /**

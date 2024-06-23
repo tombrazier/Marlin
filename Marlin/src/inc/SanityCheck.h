@@ -2365,6 +2365,10 @@ static_assert(NUM_SERVOS <= NUM_SERVO_PLUGS, "NUM_SERVOS (or some servo index) i
   #endif
 #endif
 
+#if CALIBRATION_PIN == -1 && defined(CALIBRATION_PIN_INVERTING)
+  #error "CALIBRATION_PIN_INVERTING is not required if CALIBRATION_PIN is -1"
+#endif
+
 // Z homing with probe requirements
 #if ALL(HOMING_Z_WITH_PROBE, Z_MULTI_ENDSTOPS)
   #error "Z_MULTI_ENDSTOPS is incompatible with USE_PROBE_FOR_Z_HOMING (i.e., Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)."
