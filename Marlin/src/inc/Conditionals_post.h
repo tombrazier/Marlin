@@ -2205,6 +2205,11 @@
   #define HAS_Z_PROBE_STATE 1
 #endif
 
+#if PIN_EXISTS(CALIBRATION)
+  #define USE_CALIBRATION 1
+  #define HAS_CALIBRATION_STATE 1
+#endif
+
 #undef _USE_STOP
 
 /**

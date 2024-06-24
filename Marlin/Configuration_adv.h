@@ -1396,15 +1396,6 @@
   //#define CALIBRATION_SCRIPT_PRE  "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating..."
   //#define CALIBRATION_SCRIPT_POST "M500\nM117 Calibration data saved"
 
-  // Calculate single step resolution
-  #if ENABLED(Mini)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/833.0f)  // mm
-  #elif ENABLED(TAZ6)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/830.0f)  // mm
-  #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2, MiniV2, MiniV3)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/420.0f)  // mm
-  #endif
-
   #define CALIBRATION_FEEDRATE_SLOW             60    // mm/m
   #define CALIBRATION_FEEDRATE_FAST           1200    // mm/m
   #define CALIBRATION_FEEDRATE_TRAVEL         3000    // mm/m

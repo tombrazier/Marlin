@@ -687,6 +687,8 @@
   #error "ANET_FULL_GRAPHICS_LCD_ALT_WIRING is now CTC_A10S_A13."
 #elif defined(Z_PROBE_END_SCRIPT)
   #error "Z_PROBE_END_SCRIPT is now EVENT_GCODE_AFTER_G29."
+#elif defined(CALIBRATION_MEASUREMENT_RESOLUTION)
+  #error "CALIBRATION_MEASUREMENT_RESOLUTION is no longer needed and should be removed."
 #endif
 
 // Changes to Probe Temp Compensation (#17392)
