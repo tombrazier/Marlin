@@ -152,8 +152,6 @@ static_assert(DISABLED(BAUD_RATE_GCODE), "BAUD_RATE_GCODE is not yet supported o
     #error "Serial port pins (2) conflict with Y endstop pin!"
   #elif USE_Z_MIN_PROBE && IS_TX2(Z_MIN_PROBE_PIN)
     #error "Serial port pins (2) conflict with probe pin!"
-  #elif HAS_CALIBRATION_STATE && IS_TX2(CALIBRATION_PIN)
-    #error "Serial port pins (2) conflict with calibration pin!"
   #elif ANY_TX(2, X_ENABLE_PIN, Y_ENABLE_PIN) || ANY_RX(2, X_DIR_PIN, Y_DIR_PIN)
     #error "Serial port pins (2) conflict with X/Y stepper pins!"
   #elif HAS_MULTI_EXTRUDER && (IS_TX2(E1_ENABLE_PIN) || (AXIS_HAS_SPI(E1) && IS_TX2(E1_CS_PIN)))
@@ -244,8 +242,6 @@ static_assert(DISABLED(BAUD_RATE_GCODE), "BAUD_RATE_GCODE is not yet supported o
     #if PIN_IS_SDA2(Y_STOP)
       #error "i2c SDA2 overlaps with Y endstop pin!"
     #elif USE_Z_MIN_PROBE && PIN_IS_SDA2(Z_MIN_PROBE)
-      #error "i2c SDA2 overlaps with Z probe pin!"
-    #elif HAS_CALIBRATION_STATE && PIN_IS_SDA2(CALIBRATION)
       #error "i2c SDA2 overlaps with Z probe pin!"
     #elif PIN_IS_SDA2(X_ENABLE) || PIN_IS_SDA2(Y_ENABLE)
       #error "i2c SDA2 overlaps with X/Y ENABLE pin!"

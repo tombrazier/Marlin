@@ -346,7 +346,7 @@ void setup_endstop_interrupts() {
       pciSetup(Z_MIN_PROBE_PIN);
     #endif
   #endif
-  #if HAS_CALIBRATION_STATE
+  #if USE_CALIBRATION
     #if (digitalPinToInterrupt(CALIBRATION_PIN) != NOT_AN_INTERRUPT)
       _ATTACH(CALIBRATION_PIN);
     #else

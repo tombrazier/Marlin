@@ -1396,15 +1396,6 @@
   //#define CALIBRATION_SCRIPT_PRE  "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating..."
   //#define CALIBRATION_SCRIPT_POST "M500\nM117 Calibration data saved"
 
-  // Calculate single step resolution
-  #if ENABLED(Mini)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/833.0f)  // mm
-  #elif ENABLED(TAZ6)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/830.0f)  // mm
-  #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2, MiniV2, MiniV3)
-    #define CALIBRATION_MEASUREMENT_RESOLUTION   (1.0f/420.0f)  // mm
-  #endif
-
   #define CALIBRATION_FEEDRATE_SLOW             60    // mm/m
   #define CALIBRATION_FEEDRATE_FAST           1200    // mm/m
   #define CALIBRATION_FEEDRATE_TRAVEL         3000    // mm/m
@@ -1569,13 +1560,14 @@
   #ifndef CALIBRATION_PIN
     #if defined(LULZBOT_BLTouch) && ANY(TAZPro, TAZProXT, TAZProV2)
       #define CALIBRATION_PIN 31 // Override in pins.h or set to -1 to use your Z probe pin
-      #define CALIBRATION_PIN_INVERTING true // Set to true to invert the pin
     #else
       #define CALIBRATION_PIN -1 // Override in pins.h or set to -1 to use your Z probe pin
-      #define CALIBRATION_PIN_INVERTING false // Set to true to invert the pin
     #endif
-    //#define CALIBRATION_PIN_PULLDOWN
-    #define CALIBRATION_PIN_PULLUP
+    #if CALIBRATION_PIN != -1
+      #define CALIBRATION_PIN_INVERTING true // Set to true to invert the pin
+      //#define CALIBRATION_PIN_PULLDOWN
+      #define CALIBRATION_PIN_PULLUP
+    #endif
   #endif
 #endif
 

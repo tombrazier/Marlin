@@ -204,7 +204,7 @@ void Endstops::init() {
     _INIT_ENDSTOP(MAX,W,);
   #endif
 
-  #if HAS_CALIBRATION_STATE
+  #if USE_CALIBRATION
     #if ENABLED(CALIBRATION_PIN_PULLUP)
       SET_INPUT_PULLUP(CALIBRATION_PIN);
     #elif ENABLED(CALIBRATION_PIN_PULLDOWN)
@@ -497,7 +497,7 @@ void __O2 Endstops::report_states() {
   #if USE_Z_MIN_PROBE
     print_es_state(PROBE_TRIGGERED(), F(STR_Z_PROBE));
   #endif
-  #if HAS_CALIBRATION_STATE
+  #if USE_CALIBRATION
     print_es_state(READ(CALIBRATION_PIN) != CALIBRATION_PIN_INVERTING, F(STR_CALIBRATION));
   #endif
   #if MULTI_FILAMENT_SENSOR
@@ -824,7 +824,7 @@ void Endstops::update() {
   #if ENABLED(CALIBRATION_GCODE)
     if (calibration_probe_enabled) {
       #if HAS_CALIBRATION_STATE
-        if (TEST(live_state, CALIBRATION) == calibration_stop_state) quickstop_stepper();
+        if (TEST(live_state, CALIBRATION) == calibration_stop_state) stepper.quick_stop();
       #else
         if (TEST(live_state, Z_MIN_PROBE) == calibration_stop_state) stepper.quick_stop();
       #endif
@@ -1196,7 +1196,7 @@ void Endstops::update() {
     #if USE_Z_MIN_PROBE
       ES_GET_STATE(Z_MIN_PROBE);
     #endif
-    #if HAS_CALIBRATION_STATE
+    #if USE_CALIBRATION
       ES_GET_STATE(CALIBRATION);
     #endif
     #if USE_X2_MIN
@@ -1291,7 +1291,7 @@ void Endstops::update() {
       #if USE_Z_MIN_PROBE
         ES_REPORT_CHANGE(Z_MIN_PROBE);
       #endif
-      #if HAS_CALIBRATION_STATE
+      #if USE_CALIBRATION
         ES_REPORT_STATE(CALIBRATION);
       #endif
       #if USE_X2_MIN
