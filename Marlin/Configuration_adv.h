@@ -1295,7 +1295,7 @@
 //#define Z_AFTER_DEACTIVATE Z_HOME_POS
 
 #if ANY(TAZPro, TAZProXT, TAZProV2, MiniV2, MiniV3)
-  #define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
+  //#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 #endif
 
 // Default Minimum Feedrates for printing and travel moves
@@ -1355,14 +1355,14 @@
 
   // Set BACKLASH_SMOOTHING_MM to spread backlash correction over multiple segments
   // to reduce print artifacts. (Enabling this is costly in memory and computation!)
-  #define BACKLASH_SMOOTHING_MM 3 // (mm)
+  //#define BACKLASH_SMOOTHING_MM 3 // (mm)
 
   // Add runtime configuration and tuning of backlash values (M425)
   #define BACKLASH_GCODE
 
   #if ENABLED(BACKLASH_GCODE)
     // Measure the Z backlash when probing (G29) and set with "M425 Z"
-    #define MEASURE_BACKLASH_WHEN_PROBING
+    //#define MEASURE_BACKLASH_WHEN_PROBING
 
     #if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
       // When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
@@ -1396,7 +1396,7 @@
   //#define CALIBRATION_SCRIPT_PRE  "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating..."
   //#define CALIBRATION_SCRIPT_POST "M500\nM117 Calibration data saved"
 
-  #define CALIBRATION_FEEDRATE_SLOW             60    // mm/m
+  #define CALIBRATION_FEEDRATE_SLOW            480    // mm/m
   #define CALIBRATION_FEEDRATE_FAST           1200    // mm/m
   #define CALIBRATION_FEEDRATE_TRAVEL         3000    // mm/m
 
@@ -1405,7 +1405,7 @@
   #define CALIBRATION_NOZZLE_OUTER_DIAMETER      2.0  // mm
 
   // Uncomment to enable reporting (required for "G425 V", but consumes flash).
-  //#define CALIBRATION_REPORTING
+  #define CALIBRATION_REPORTING
 
   #if ENABLED(TAZProV2)
     #define CALIBRATION_MEASUREMENT_UNKNOWN 2
@@ -1448,7 +1448,7 @@
   #else
     #if ANY(TAZPro, TAZProXT)
       #if defined(TOOLHEAD_Quiver_DualExtruder)
-        #define CALIBRATION_OBJECT_CENTER     {263, -21, -2.0} //  mm
+        #define CALIBRATION_OBJECT_CENTER     {263, -20, -3.0} //  mm
         #define CALIBRATION_OBJECT_DIMENSIONS {10.0, 10.0, 10.0} //  mm
         #define CALIBRATION_MEASURE_FRONT
       #elif ENABLED(TOOLHEAD_Galaxy_DualExtruder)
@@ -2607,7 +2607,7 @@
  * Stop after G29_MAX_RETRIES attempts.
  */
 #if DISABLED(LULZBOT_BLTouch)
-  #define G29_RETRY_AND_RECOVER
+//  #define G29_RETRY_AND_RECOVER
 #endif
 #if ENABLED(G29_RETRY_AND_RECOVER)
   #define G29_MAX_RETRIES 3
@@ -2902,7 +2902,7 @@
 //#define NO_TIMEOUTS 1000 // (ms)
 
 // Some clients will have this feature soon. This could make the NO_TIMEOUTS unnecessary.
-#define ADVANCED_OK
+//#define ADVANCED_OK
 
 // Printrun may have trouble receiving long strings all at once.
 // This option inserts short delays between lines of serial output.

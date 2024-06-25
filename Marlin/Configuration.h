@@ -8,14 +8,14 @@
 /************** Uncomment a Tool Head Option From Below *********************/
 
 //#define TOOLHEAD_Legacy_Universal
-#define TOOLHEAD_Galaxy_Series
+//#define TOOLHEAD_Galaxy_Series
 //#define TOOLHEAD_SL_SE_HE
 //#define TOOLHEAD_HS_HSPLUS
 //#define TOOLHEAD_H175
 //#define TOOLHEAD_M175
 //#define TOOLHEAD_SK175
 //#define TOOLHEAD_SK285
-//#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
+#define TOOLHEAD_Quiver_DualExtruder            // TAZ Pro Dual Extruder
 //#define TOOLHEAD_Galaxy_DualExtruder            // TAZ Pro Galaxy-Series Dual Extruders
 //#define TOOLHEAD_KangarooPaw_SingleExtruder     // Bio Single syringe
 
@@ -976,12 +976,12 @@
   #define MAX31865_CALIBRATION_OHMS_2 430
 #endif
 
-#define TEMP_RESIDENCY_TIME          5  // (seconds) Time to wait for hotend to "settle" in M109
-#define TEMP_WINDOW                  3  // (°C) Temperature proximity for the "temperature reached" timer
+#define TEMP_RESIDENCY_TIME          1  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_WINDOW                  5  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_HYSTERESIS              3  // (°C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_BED_RESIDENCY_TIME      5  // (seconds) Time to wait for bed to "settle" in M190
-#define TEMP_BED_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
+#define TEMP_BED_RESIDENCY_TIME      1  // (seconds) Time to wait for bed to "settle" in M190
+#define TEMP_BED_WINDOW              3  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_BED_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
 
 #define TEMP_CHAMBER_RESIDENCY_TIME 10  // (seconds) Time to wait for chamber to "settle" in M191
@@ -2429,8 +2429,8 @@
 
 // @section homing
 
-#define NO_MOTION_BEFORE_HOMING // Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
-#define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
+//#define NO_MOTION_BEFORE_HOMING // Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
+//#define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
 
 /**
  * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
@@ -2538,8 +2538,8 @@
     #define X_BED_SIZE 281
     #define Y_BED_SIZE 283
     // Travel limits (mm) after homing, corresponding to endstop positions.
-    #define LULZBOT_X_MIN_POS -7// <-- changed
-    #define LULZBOT_Y_MIN_POS -13 // <-- changed
+    #define LULZBOT_X_MIN_POS -6// <-- changed
+    #define LULZBOT_Y_MIN_POS -15 // <-- changed
     #define LULZBOT_X_MAX_POS 308 // <-- changed
     #define LULZBOT_Y_MAX_POS 315 // <-- changed
     #define LULZBOT_Z_MIN_POS -9 // <-- changed
@@ -2968,7 +2968,7 @@
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  //#define G26_MESH_VALIDATION
+  #define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
@@ -3493,8 +3493,8 @@
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z0.5 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000"
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
-    #define WIPE_SEQUENCE_COMMANDS "T0\nG1 X-17 Y25 Z15 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
-    #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT1\nG1 X296 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nG1 X150\nT0\nM400"
+    #define WIPE_SEQUENCE_COMMANDS "T1\nG1 X296 Y25 Z15 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nM400"
+    #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
   #elif ENABLED(TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nT0\nG1 X115 Y297.5 Z5 F4000\nG1 Z0 F6000\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nM114"
   #elif ENABLED(TAZProV2) && ENABLED(TOOLHEAD_Galaxy_DualExtruder)
