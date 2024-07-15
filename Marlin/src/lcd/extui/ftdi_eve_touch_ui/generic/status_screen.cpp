@@ -299,7 +299,7 @@ void StatusScreen::draw_interaction_buttons(draw_mode_t what) {
     #define MENU_BTN_POS   BTN_POS(3,13), BTN_SIZE(2,4)
   #endif
 
-    const bool has_media = isMediaInserted() && !isPrintingFromMedia();
+    const bool has_media = isMediaMounted() && !isPrintingFromMedia();
 
     CommandProcessor cmd;
     cmd.colors(normal_btn)
@@ -376,10 +376,10 @@ void StatusScreen::loadBitmaps() {
   // Load the bitmaps for the status screen
   using namespace Theme;
   constexpr uint32_t base = ftdi_memory_map::RAM_G;
-  CLCD::mem_write_pgm(base + TD_Icon_Info.RAMG_offset,       TD_Icon,       sizeof(TD_Icon));
-  CLCD::mem_write_pgm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
-  CLCD::mem_write_pgm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
-  CLCD::mem_write_pgm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
+  CLCD::mem_write_xbm(base + TD_Icon_Info.RAMG_offset,       TD_Icon,       sizeof(TD_Icon));
+  CLCD::mem_write_xbm(base + Extruder_Icon_Info.RAMG_offset, Extruder_Icon, sizeof(Extruder_Icon));
+  CLCD::mem_write_xbm(base + Bed_Heat_Icon_Info.RAMG_offset, Bed_Heat_Icon, sizeof(Bed_Heat_Icon));
+  CLCD::mem_write_xbm(base + Fan_Icon_Info.RAMG_offset,      Fan_Icon,      sizeof(Fan_Icon));
 
   // Load fonts for internationalization
   #if ENABLED(TOUCH_UI_USE_UTF8)
@@ -453,7 +453,7 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
   return true;
 }
 
-void StatusScreen::onMediaInserted() {
+void StatusScreen::onMediaMounted() {
   if (AT_SCREEN(StatusScreen))
     setStatusMessage(GET_TEXT_F(MSG_MEDIA_INSERTED));
 }

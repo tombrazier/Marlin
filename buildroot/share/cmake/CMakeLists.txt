@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5)
 #====================================================================#
 # Usage under Linux:                                                 #
 #                                                                    #
@@ -20,7 +20,7 @@ cmake_minimum_required(VERSION 2.8.12)
 # and add the path to the module path                                #
 #====================================================================#
 
-set(SCRIPT_BRANCH 1.0.2) #Set to wanted marlin-cmake release tag or branch
+set(SCRIPT_BRANCH 1.0.2) # Set to wanted marlin-cmake release tag or branch
 
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/marlin-cmake)
 
@@ -82,19 +82,20 @@ message("-- Running CMake version: " ${CMAKE_VERSION})
 
 # Replace the CMake Ver. in the Arduino.cmake
 file(READ "${CMAKE_CURRENT_LIST_DIR}/marlin-cmake/Platform/Arduino.cmake" ORIGINAL_FILE_CONTENTS)
-string(REPLACE "cmake_minimum_required(VERSION 2.8.5)" "cmake_minimum_required(VERSION 2.8.12)" NEW_FILE_CONTENTS "${ORIGINAL_FILE_CONTENTS}")
+string(REGEX REPLACE "cmake_minimum_required\\(VERSION[^\n]*\n" "cmake_minimum_required(VERSION 3.5)\n" NEW_FILE_CONTENTS "${ORIGINAL_FILE_CONTENTS}")
 file(WRITE "${CMAKE_CURRENT_LIST_DIR}/marlin-cmake/Platform/Arduino.cmake" "${NEW_FILE_CONTENTS}")
 
 set(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/marlin-cmake/modules)
 
 #====================================================================#
-#  Custom path to Arduino SDK can be set here.                       #
+#  Custom path to Arduino SDK can be set here                        #
 #  It can also be set from command line. eg.:                        #
 #  cmake .. -DARDUINO_SDK_PATH="/path/to/arduino-1.x.x"              #
 #====================================================================#
 set(ARDUINO_SDK_PATH ${CMAKE_CURRENT_LIST_DIR}/arduino-1.8.19)
 #set(ARDUINO_SDK_PATH /Applications/Arduino.app/Contents/Java)
 #set(ARDUINO_SDK_PATH $HOME/ArduinoAddons/Arduino_1.6.x)
+
 #====================================================================#
 #  Set included cmake files                                          #
 #====================================================================#
@@ -108,6 +109,19 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/marlin-cmake/toolchain/Arduin
 
 #====================================================================#
 #  Setup Project                                                     #
+#                                                                    #
+#  If you receive this error:                                        #
+#   'Unknown CMake command "_cmake_record_install_prefix".'          #
+#                                                                    #
+#   Go to the file in your CMake directory                           #
+#                                                                    #
+#   For Windows: cmake\Modules\Platform\WindowsPaths.cmake           #
+#   For Linux: cmake/Modules/Platform/UnixPaths.cmake                #
+#                                                                    #
+#   Comment out "_cmake_record_install_prefix()"                     #
+#     - OR -                                                         #
+#   Add "include(CMakeSystemSpecificInformation)" above the line     #
+#                                                                    #
 #====================================================================#
 project(Marlin C CXX)
 

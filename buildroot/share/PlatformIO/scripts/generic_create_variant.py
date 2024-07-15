@@ -8,14 +8,14 @@
 import pioutil, re
 marlin_variant_pattern = re.compile("marlin_.*")
 if pioutil.is_pio_build():
-    import shutil,marlin
+    import shutil, marlin
     from pathlib import Path
 
     #
     # Get the platform name from the 'platform_packages' option,
     # or look it up by the platform.class.name.
     #
-    env = marlin.env
+    env = pioutil.env
     platform = env.PioPlatform()
 
     from platformio.package.meta import PackageSpec
@@ -31,10 +31,11 @@ if pioutil.is_pio_build():
         }
         platform_name = framewords[platform.__class__.__name__]
     else:
-        platform_name = PackageSpec(platform_packages[0]).name
-
-    if platform_name in [ "Arduino_Core_STM32", "usb-host-msc", "usb-host-msc-cdc-msc", "usb-host-msc-cdc-msc-2", "usb-host-msc-cdc-msc-3", "tool-stm32duino", "biqu-bx-workaround", "main" ]:
-        platform_name = "framework-arduinoststm32"
+        spec = PackageSpec(platform_packages[0])
+        if spec.uri and '@' in spec.uri:
+            platform_name = re.sub(r'@.+', '', spec.uri)
+        else:
+            platform_name = spec.name
 
     FRAMEWORK_DIR = Path(platform.get_package_dir(platform_name))
     assert FRAMEWORK_DIR.is_dir()
