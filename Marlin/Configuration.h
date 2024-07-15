@@ -544,6 +544,13 @@
     #define LULZBOT_MOTOR_CURRENT_E1               960 // mA
     #define SWITCHING_NOZZLE
     #define TOOL_HEAD_ID                           13
+    /********************* MPC Settings **********************/
+    #define LULZBOT_TOOLHEAD_WATT                 { 50.0f, 50.0f }
+    #define LULZBOT_MPC_BLOCK_HEAT_CAPACITY       { 15.9f, 15.9f }
+    #define LULZBOT_MPC_SENSOR_RESPONSIVENESS     { 0.43f, 0.43f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF        { 0.07f, 0.07f }
+    #define LULZBOT_MPC_AMBIENT_XFER_COEFF_FAN255 { 0.17f, 0.17f }
+    #define LULZBOT_FILAMENT_HEAT_CAPACITY_PERMM  { 5.6e-3f, 5.6e-3f }
 #endif /* TOOLHEAD_Quiver_DualExtruder */
 
 #if defined(TOOLHEAD_Galaxy_DualExtruder)
@@ -1058,11 +1065,7 @@
  * PIDTEMP : PID temperature control (~4.1K)
  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
  */
-#if ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Quiver_DualExtruder)
-  #define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
-#elif ANY(TOOLHEAD_Galaxy_Series, TOOLHEAD_Galaxy_DualExtruder)
-  #define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
-#endif
+#define MPCTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1     0.95   // Smoothing factor within any PID loop
@@ -1177,8 +1180,8 @@
  */
 #if ENABLED(MPCTEMP)
   #define MPC_AUTOTUNE                                // Include a method to do MPC auto-tuning (~6.3K bytes of flash)
-  #define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
-  #define MPC_AUTOTUNE_MENU                         // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
+  #define MPC_EDIT_MENU                               // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
+  #define MPC_AUTOTUNE_MENU                           // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
 
   #define MPC_MAX 255                                 // (0..255) Current to nozzle while MPC is active.
   #define MPC_HEATER_POWER LULZBOT_TOOLHEAD_WATT      // (W) Heat cartridge powers.
