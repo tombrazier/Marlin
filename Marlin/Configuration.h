@@ -534,8 +534,9 @@
     #define LULZBOT_SWITCHING_NOZZLE_E1_SERVO_NR   1
     #define LULZBOT_SWITCHING_NOZZLE_SERVO_ANGLES  { 55,   120}
     #define LULZBOT_SWITCHING_NOZZLE_OPPOSING_SERVOS
-    #define LULZBOT_HOTEND_OFFSET_X                {0.0, 45}
-    #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0}
+    #define LULZBOT_HOTEND_OFFSET_X                {0.0, 44.71}
+    #define LULZBOT_HOTEND_OFFSET_Y                {0.0,  0.08}
+    #define LULZBOT_HOTEND_OFFSET_Z                {0.0,  0.38}
     #define LULZBOT_E_STEPS                        420
     #define LULZBOT_X_MAX_ENDSTOP_INVERTING        LULZBOT_NO_ENDSTOP
     #define LULZBOT_E3D_Titan_Aero_V6
@@ -769,7 +770,7 @@
 // For the other hotends it is their distance from the extruder 0 hotend.
 #define HOTEND_OFFSET_X LULZBOT_HOTEND_OFFSET_X // <-- changed:  (mm) relative X-offset for each nozzle
 #define HOTEND_OFFSET_Y LULZBOT_HOTEND_OFFSET_Y // <-- changed:  (mm) relative Y-offset for each nozzle
-//#define HOTEND_OFFSET_Z {0.0, 0.005} // <-- changed:  (mm) relative Z-offset for each nozzle
+#define HOTEND_OFFSET_Z LULZBOT_HOTEND_OFFSET_Z // <-- changed:  (mm) relative Z-offset for each nozzle
 
 // @section multi-material
 
@@ -1699,8 +1700,8 @@
   #define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
   #define Z_MIN_ENDSTOP_HIT_STATE HIGH
 #else
-  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
-  #define Z_MIN_ENDSTOP_HIT_STATE LOW
+  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
+  #define Z_MIN_ENDSTOP_HIT_STATE HIGH
 #endif
 
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1802,7 +1803,7 @@
 #elif ENABLED(TAZ6)
   #define Z_FEEDRATE   5
 #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
-  #define Z_FEEDRATE   25             // <-- changed: LDO geared motor max feedrate
+  #define Z_FEEDRATE   40             // <-- changed: LDO geared motor max feedrate
 #endif
 
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, Z_FEEDRATE, 40 }
@@ -2175,7 +2176,7 @@
 #elif ANY(TAZ6, Workhorse) && ENABLED(TOOLHEAD_Galaxy_Series)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 #elif ANY(TAZPro, TAZProXT) && DISABLED(LULZBOT_BLTouch)
-  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -1.102 }
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.1 }
 #elif ANY(TAZPro, TAZProXT) && ENABLED(LULZBOT_BLTouch)
   #define NOZZLE_TO_PROBE_OFFSET { -38, -2, -3.2 }
 #elif ENABLED(TAZProV2)
@@ -2212,7 +2213,7 @@
   #elif ENABLED(Workhorse)
     #define PROBING_MARGIN -10
   #elif ANY(TAZPro, TAZProXT)
-    #define PROBING_MARGIN -10
+    #define PROBING_MARGIN 30
   #endif
 #endif
 
@@ -2226,7 +2227,7 @@
   #define Z_PROBE_FEEDRATE_FAST (8*60)
 #endif
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
+#define Z_PROBE_FEEDRATE_SLOW (40*60)
 
 /**
  * Probe Activation Switch
@@ -2274,7 +2275,7 @@
  * A total of 3 or more adds more slow probes, taking the average.
  */
 #if DISABLED(LULZBOT_BLTouch)
-  #define MULTIPLE_PROBING 2
+//  #define MULTIPLE_PROBING 2
 #endif
 //#define EXTRA_PROBING    1
 
@@ -2998,7 +2999,7 @@
     #elif defined(LULZBOT_BLTouch) && ANY(TAZPro, TAZProXT, TAZProV2, Workhorse, TAZ6)
       #define GRID_MAX_POINTS_X 3  //3x3 grid to increase startup speed
     #else
-      #define GRID_MAX_POINTS_X 2  //2x2 grid of mounted washers
+      #define GRID_MAX_POINTS_X 4  //2x2 grid of mounted washers
     #endif
     #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
   #endif
@@ -3011,7 +3012,7 @@
 
     // Beyond the probed grid, continue the implied tilt?
     // Default is to maintain the height of the nearest edge.
-    //#define EXTRAPOLATE_BEYOND_GRID
+    #define EXTRAPOLATE_BEYOND_GRID
 
     //
     // Subdivision of the grid by Catmull-Rom method.

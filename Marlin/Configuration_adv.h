@@ -951,7 +951,7 @@
   #endif
 #endif
 
-#define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
+//#define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
 #define HOMING_BUMP_DIVISOR { 1, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
 //#define XY_COUNTERPART_BACKOFF_MM 0         // (mm) Backoff X after homing Y, and vice-versa
@@ -1343,7 +1343,7 @@
   // Define values for backlash distance and correction.
   // If BACKLASH_GCODE is enabled these values are the defaults.
   #if ANY(TAZPro, TAZProXT)
-    #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // <-- changed:  (mm)
+    #define BACKLASH_DISTANCE_MM {0.40, 0.07, 0.06} // <-- changed:  (mm)
     #define BACKLASH_CORRECTION    1.0 // <-- changed:  0.0 = no correction; 1.0 = full correction
   #else
     #define BACKLASH_DISTANCE_MM {0.25, 0.25, 0.04} // (mm)
