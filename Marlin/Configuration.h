@@ -1700,8 +1700,8 @@
   #define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
   #define Z_MIN_ENDSTOP_HIT_STATE HIGH
 #else
-  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
-  #define Z_MIN_ENDSTOP_HIT_STATE HIGH
+  #define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
+  #define Z_MIN_ENDSTOP_HIT_STATE LOW
 #endif
 
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1803,7 +1803,7 @@
 #elif ENABLED(TAZ6)
   #define Z_FEEDRATE   5
 #elif ANY(Workhorse, TAZPro, TAZProXT, TAZProV2)
-  #define Z_FEEDRATE   40             // <-- changed: LDO geared motor max feedrate
+  #define Z_FEEDRATE   25             // <-- changed: LDO geared motor max feedrate
 #endif
 
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, Z_FEEDRATE, 40 }
@@ -1829,7 +1829,7 @@
   #define X_Y_MAX_ACCELERATION   4000
 #endif
 
-#define DEFAULT_MAX_ACCELERATION      { X_Y_MAX_ACCELERATION, X_Y_MAX_ACCELERATION, 100, 9000 }
+#define DEFAULT_MAX_ACCELERATION      { X_Y_MAX_ACCELERATION, X_Y_MAX_ACCELERATION, 500, 9000 }
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -2302,7 +2302,7 @@
 #if defined(LULZBOT_BLTouch)
   #define Z_PROBE_LOW_POINT          -9 // Farthest distance below the trigger-point to go before stopping
 #else
-  #define Z_PROBE_LOW_POINT          -4 // (mm) Farthest distance below the trigger-point to go before stopping
+  #define Z_PROBE_LOW_POINT          -3 // (mm) Farthest distance below the trigger-point to go before stopping
 #endif
 
 // For M851 provide ranges for adjusting the X, Y, and Z probe offsets
@@ -2766,7 +2766,7 @@
   #if defined (TAZ6)  //Standard Tool Head uses the filament runout port for the X-Max limit switch
     #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #else
-    #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
+    #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #endif
   #define NUM_RUNOUT_SENSORS   LULZBOT_EXTRUDERS      // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
   #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
@@ -3497,8 +3497,8 @@
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nT0\nG1 X300 Y25 Z10 F4000\nG1 Z0.5 F4000\nM114\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Y25 F4000\nG1 Y95 F4000\nG1 Z15 F4000\nM400\nG0 Y-9.0 F4000"
   #elif ANY(TAZPro, TAZProXT) && ANY(TOOLHEAD_Quiver_DualExtruder, TOOLHEAD_Galaxy_DualExtruder)
-    #define WIPE_SEQUENCE_COMMANDS "T1\nG1 X296 Y25 Z15 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nM400"
-    #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT0\nG1 X-17 Y25 Z10 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
+    #define WIPE_SEQUENCE_COMMANDS "T1\nG1 X296 Y20 Z15 F4000\nG1 Z0\nM114\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 X296 Y25\nG1 X296 Y95\nG1 Z15\nM400"
+    #define WIPE_SEQUENCE_2_COMMANDS "G1 X150 Y95 Z15 F4000\nT0\nG1 X-17 Y20 Z10 F4000\nG1 Z0\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400"
   #elif ENABLED(TAZProV2) && ANY(TOOLHEAD_Legacy_Universal, TOOLHEAD_Galaxy_Series)
     #define WIPE_SEQUENCE_COMMANDS "G28O\nT0\nG1 X115 Y297.5 Z5 F4000\nG1 Z0 F6000\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nG0 X160\nG0 X115\nM114"
   #elif ENABLED(TAZProV2) && ENABLED(TOOLHEAD_Galaxy_DualExtruder)
