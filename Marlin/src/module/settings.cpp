@@ -3795,6 +3795,10 @@ void MarlinSettings::reset() {
   //
   #if ENABLED(MPCTEMP)
     constexpr float _mpc_heater_power[] = MPC_HEATER_POWER;
+    #if ENABLED(MPC_PTC)
+      constexpr float _mpc_heater_alpha[] = MPC_HEATER_ALPHA;
+      constexpr float _mpc_heater_reftemp[] = MPC_HEATER_REFTEMP;
+    #endif
     constexpr float _mpc_block_heat_capacity[] = MPC_BLOCK_HEAT_CAPACITY;
     constexpr float _mpc_sensor_responsiveness[] = MPC_SENSOR_RESPONSIVENESS;
     constexpr float _mpc_ambient_xfer_coeff[] = MPC_AMBIENT_XFER_COEFF;
@@ -3804,6 +3808,10 @@ void MarlinSettings::reset() {
     constexpr float _filament_heat_capacity_permm[] = FILAMENT_HEAT_CAPACITY_PERMM;
 
     static_assert(COUNT(_mpc_heater_power) == HOTENDS, "MPC_HEATER_POWER must have HOTENDS items.");
+    #if ENABLED(MPC_PTC)
+      static_assert(COUNT(_mpc_heater_alpha) == HOTENDS, "MPC_HEATER_ALPHA must have HOTENDS items.");
+      static_assert(COUNT(_mpc_heater_reftemp) == HOTENDS, "MPC_HEATER_REFTEMP must have HOTENDS items.");
+    #endif
     static_assert(COUNT(_mpc_block_heat_capacity) == HOTENDS, "MPC_BLOCK_HEAT_CAPACITY must have HOTENDS items.");
     static_assert(COUNT(_mpc_sensor_responsiveness) == HOTENDS, "MPC_SENSOR_RESPONSIVENESS must have HOTENDS items.");
     static_assert(COUNT(_mpc_ambient_xfer_coeff) == HOTENDS, "MPC_AMBIENT_XFER_COEFF must have HOTENDS items.");
@@ -3815,6 +3823,10 @@ void MarlinSettings::reset() {
     HOTEND_LOOP() {
       MPC_t &mpc = thermalManager.temp_hotend[e].mpc;
       mpc.heater_power = _mpc_heater_power[e];
+      #if ENABLED(MPC_PTC)
+        mpc.heater_alpha = _mpc_heater_alpha[e];
+        mpc.heater_reftemp = _mpc_heater_reftemp[e];
+      #endif
       mpc.block_heat_capacity = _mpc_block_heat_capacity[e];
       mpc.sensor_responsiveness = _mpc_sensor_responsiveness[e];
       mpc.ambient_xfer_coeff_fan0 = _mpc_ambient_xfer_coeff[e];
